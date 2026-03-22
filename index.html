@@ -11,8 +11,8 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html, body { height:100%; overflow:hidden; -webkit-overflow-scrolling:touch; }
-body { background:#111; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; min-height:-webkit-fill-available; gap:16px; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; }
-.screen { width:360px; height:640px; border-radius:12px; position:relative; overflow:hidden; box-shadow:0 20px 80px rgba(0,0,0,0.9); cursor:pointer; background:#edf4fb; }
+body { background:#edf4fb; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; min-height:-webkit-fill-available; gap:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; margin:0; padding:0; }
+.screen { width:100vw; height:100vh; height:-webkit-fill-available; border-radius:0; position:relative; overflow:hidden; box-shadow:none; cursor:pointer; background:#edf4fb; max-width:480px; }
 canvas { width:100%; height:100%; position:absolute; top:0; left:0; }
 .ticker-overlay { position:absolute; top:390px; left:0; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:8px; opacity:0; pointer-events:none; transition:opacity 0.6s; z-index:10; background:linear-gradient(to bottom,rgba(237,244,251,0) 0%,rgba(218,234,246,0.88) 25%); }
 .ticker-overlay.visible { opacity:1; pointer-events:all; }
@@ -35,7 +35,7 @@ canvas { width:100%; height:100%; position:absolute; top:0; left:0; }
 .cta-report { position:absolute; bottom:46px; left:16px; right:16px; background:transparent; border:none; padding:0; font-size:10px; font-weight:500; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; color:#4a8a6a; cursor:pointer; letter-spacing:1px; text-align:center; text-decoration:underline; opacity:0; z-index:30; }
 .progress { position:absolute; bottom:0; left:0; height:2px; background:linear-gradient(90deg,#1a8a3a,#00cc66); width:0%; opacity:0.5; z-index:5; }
 .hint { position:absolute; bottom:28px; width:100%; text-align:center; color:rgba(60,100,160,0.35); font-size:10px; letter-spacing:4px; text-transform:uppercase; pointer-events:none; transition:opacity 0.6s; z-index:5; }
-button.replay { background:transparent; border:1px solid #222; color:#444; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:11px; letter-spacing:3px; padding:10px 28px; border-radius:4px; cursor:pointer; text-transform:uppercase; transition:all 0.3s; }
+button.replay { display:none; }
 button.replay:hover { border-color:#1a8a3a; color:#1a8a3a; }
 .paywall-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(8,14,26,0.88); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.4s; z-index:50; }
 .paywall-overlay.visible { opacity:1; pointer-events:all; }
@@ -374,7 +374,7 @@ function drawScoreScreen(ticker,data,t){
     }
     sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,W-36,101);sc.restore();}
   const lineA=eeo(eop(0.4,1.2));
-  if(lineA>0){sc.save();sc.globalAlpha=lineA;const lTop=130,lBot=178,lLeft=22,lRight=W-22;sc.fillStyle='rgba(26,138,58,0.04)';sc.fillRect(lLeft,lTop,lRight-lLeft,lBot-lTop);const lp=eeo(eop(0.5,1.8)),pts=100,drawn=Math.floor(pts*lp);if(drawn>1){sc.strokeStyle=GREEN;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=GREEN;sc.shadowBlur=4;sc.beginPath();for(let i=0;i<=drawn;i++){const xf=i/pts,x=lLeft+xf*(lRight-lLeft),y=lBot-(surgeY(xf)-(1-((lBot-lTop)/H)))*(lBot-lTop)*3.2,yc=Math.max(lTop,Math.min(lBot,y));i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);}sc.stroke();sc.shadowBlur=0;}sc.fillStyle=GREEN;sc.font=`700 11px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(data.surge,lRight+2,lTop+8);sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText('52W PATTERN',lLeft,lBot+12);sc.restore();}
+  if(lineA>0){sc.save();sc.globalAlpha=lineA;const lTop=130,lBot=178,lLeft=22,lRight=W-22;sc.fillStyle='rgba(26,138,58,0.04)';sc.fillRect(lLeft,lTop,lRight-lLeft,lBot-lTop);const lp=eeo(eop(0.5,1.8)),pts=100,drawn=Math.floor(pts*lp);if(drawn>1){sc.strokeStyle=GREEN;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=GREEN;sc.shadowBlur=4;sc.beginPath();for(let i=0;i<=drawn;i++){const xf=i/pts,x=lLeft+xf*(lRight-lLeft),y=lBot-(surgeY(xf)-(1-((lBot-lTop)/H)))*(lBot-lTop)*3.2,yc=Math.max(lTop,Math.min(lBot,y));i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);}sc.stroke();sc.shadowBlur=0;}sc.fillStyle=GREEN;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.textBaseline='middle';sc.fillText(data.surge,lRight-4,lTop+8);sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText('52W PATTERN',lLeft,lBot+12);sc.restore();}
   const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
   const names=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Catalyst Dated','Levels & Macro','Vol + Short'];
   const startY=200,rowH=32;
