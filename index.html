@@ -373,7 +373,7 @@ function drawScoreScreen(ticker,data,t){
 
 function runScoreAnimation(ticker,data){scoreStart=null;if(scoreRaf)cancelAnimationFrame(scoreRaf);function loop(ts){if(!scoreStart)scoreStart=ts;const t=(ts-scoreStart)/1000;drawScoreScreen(ticker,data,t);if(t<4.5)scoreRaf=requestAnimationFrame(loop);else scoreRaf=requestAnimationFrame(()=>{drawScoreScreen(ticker,data,4.5);});}scoreRaf=requestAnimationFrame(loop);}
 
-let scansUsed=0;const FREE_SCANS=3;
+const FREE_SCANS=3;let scansUsed=parseInt(localStorage.getItem("k1ladex_scans")||"0");
 function updateScanLabel(){const r=Math.max(0,FREE_SCANS-scansUsed);document.querySelector('.free-label').textContent=r>0?`${r} FREE SCAN${r===1?'':'S'} REMAINING`:'FREE SCANS USED — $6.99/mo for unlimited';document.querySelector('.cta-share').textContent=`Share this score · ${r} free scan${r===1?'':'s'} remaining`;}
 function showPaywall(){document.getElementById('paywallOverlay').classList.add('visible');}
 
@@ -384,7 +384,7 @@ document.getElementById('goBtn').addEventListener('click', async () => {
   const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
   if(!ticker) return;
   if(scansUsed >= FREE_SCANS){ showPaywall(); return; }
-  scansUsed++;
+  scansUsed++;localStorage.setItem("k1ladex_scans",scansUsed);
   updateScanLabel();
 
   // Build base data from SCORES db or seed fallback
