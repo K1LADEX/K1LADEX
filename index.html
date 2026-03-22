@@ -230,27 +230,59 @@ const SCORES = {
   'SWMR':{name:'Swarm & Sting',score:7.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+950%',short:'12%',float:'8M',revenue:'$12M TTM',earnings:'Jun 10, 2026',rec:'WATCH',verdict:'SHAKEDOWN STREET SCOUT',col:'#886600'},
   'DPRO':{name:'Draganfly',score:5.5,s:1.0,i:1.0,g:0.5,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+180%',short:'98%',float:'12M',revenue:'$4M TTM',earnings:'May 28, 2026',rec:'WATCH',verdict:'SHAKEDOWN SCOUT — 98% SHORT',col:'#886600'},
   'SPY':{name:'SPDR S&P 500 ETF',score:6.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+180%',short:'0.2%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'BROAD MARKET INDEX',col:'#886600'},
+'CVNA':{name:'Carvana',score:5.0,s:1.5,i:0.0,g:1.0,n:1.0,a:0.5,l:0.5,plus:0.5,surge:'+9800%',short:'12%',float:'219M',revenue:'$20.3B TTM',earnings:'May 2026',rec:'PASS',verdict:'DOWNTREND — MARGIN COMPRESSION WATCH',col:'#cc4400'},
+'BABA':{name:'Alibaba',score:5.5,s:0.5,i:0.5,g:1.5,n:1.0,a:0.5,l:1.0,plus:0.5,surge:'+85%',short:'1.2%',float:'2.1B',revenue:'$130B TTM',earnings:'May 2026',rec:'PASS',verdict:'NO SURGE — CHINA MACRO RISK',col:'#cc4400'},
+'ABNB':{name:'Airbnb',score:6.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+165%',short:'2.8%',float:'640M',revenue:'$11.1B TTM',earnings:'May 2026',rec:'HOLD',verdict:'TRAVEL PLATFORM — WATCH MARGINS',col:'#886600'},
+'LYFT':{name:'Lyft',score:5.0,s:1.0,i:0.5,g:1.0,n:1.0,a:0.5,l:0.5,plus:0.5,surge:'+95%',short:'8.4%',float:'370M',revenue:'$5.8B TTM',earnings:'May 2026',rec:'PASS',verdict:'UBER COMPETITOR — NO CLEAR EDGE',col:'#cc4400'},
+'SNAP':{name:'Snap',score:4.5,s:1.0,i:0.0,g:0.5,n:1.0,a:0.5,l:0.5,plus:1.0,surge:'+68%',short:'8.4%',float:'1.6B',revenue:'$5.3B TTM',earnings:'Apr 2026',rec:'PASS',verdict:'NO SURGE PATTERN — USER GROWTH FLAT',col:'#cc4400'},
+'PANW':{name:'Palo Alto Networks',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+320%',short:'1.8%',float:'640M',revenue:'$8.2B TTM',earnings:'May 2026',rec:'HOLD',verdict:'AI CYBERSECURITY PLATFORM',col:'#886600'},
+'ORCL':{name:'Oracle',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+245%',short:'0.9%',float:'2.8B',revenue:'$57B TTM',earnings:'Jun 2026',rec:'HOLD',verdict:'AI CLOUD DATABASE BACKBONE',col:'#886600'},
+'IBM':{name:'IBM',score:6.0,s:1.0,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+95%',short:'0.8%',float:'900M',revenue:'$62B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'AI CONSULTING PIVOT WATCH',col:'#886600'},
+'DELL':{name:'Dell Technologies',score:6.5,s:1.5,i:0.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+180%',short:'1.4%',float:'720M',revenue:'$96B TTM',earnings:'May 2026',rec:'HOLD',verdict:'AI SERVER INFRASTRUCTURE',col:'#886600'},
+'HPE':{name:'Hewlett Packard Enterprise',score:5.5,s:1.0,i:0.5,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+65%',short:'1.2%',float:'1.3B',revenue:'$32B TTM',earnings:'Jun 2026',rec:'PASS',verdict:'NO SURGE — LEGACY INFRASTRUCTURE',col:'#cc4400'},
+'RBLX':{name:'Roblox',score:6.0,s:1.5,i:1.0,g:0.5,n:1.0,a:1.0,l:1.0,plus:0.0,surge:'+185%',short:'6.8%',float:'1.2B',revenue:'$3.6B TTM',earnings:'May 2026',rec:'HOLD',verdict:'METAVERSE GAMING PLATFORM',col:'#886600'},
+'PINS':{name:'Pinterest',score:6.0,s:1.5,i:0.5,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+145%',short:'3.2%',float:'680M',revenue:'$3.6B TTM',earnings:'May 2026',rec:'HOLD',verdict:'AI SEARCH COMMERCE PIVOT',col:'#886600'},
+'MTCH':{name:'Match Group',score:4.0,s:0.0,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+22%',short:'6.8%',float:'270M',revenue:'$3.5B TTM',earnings:'May 2026',rec:'PASS',verdict:'USER DECLINE — NO THESIS',col:'#cc4400'},
+'TTWO':{name:'Take-Two Interactive',score:5.5,s:1.0,i:0.5,g:1.0,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+85%',short:'4.2%',float:'185M',revenue:'$5.8B TTM',earnings:'May 2026',rec:'PASS',verdict:'GTA VI CATALYST — HEAVY DEBT',col:'#cc4400'},
+'EA':{name:'Electronic Arts',score:5.5,s:1.0,i:0.5,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+65%',short:'1.8%',float:'260M',revenue:'$7.4B TTM',earnings:'May 2026',rec:'PASS',verdict:'NO SURGE PATTERN',col:'#cc4400'},
+'NKLA':{name:'Nikola',score:1.5,s:0.0,i:0.0,g:0.0,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'18%',float:'320M',revenue:'$48M TTM',earnings:'May 2026',rec:'PASS',verdict:'FRAUD HISTORY — AUTOMATIC FAIL',col:'#cc0000'},
+'LCID':{name:'Lucid Group',score:3.0,s:0.5,i:0.0,g:0.0,n:0.5,a:1.0,l:0.5,plus:0.5,surge:'+45%',short:'12%',float:'2.8B',revenue:'$285M TTM',earnings:'May 2026',rec:'PASS',verdict:'CASH BURN — NO SURGE',col:'#cc4400'},
+'F':{name:'Ford Motor',score:5.0,s:0.5,i:0.5,g:1.0,n:1.0,a:0.5,l:1.0,plus:0.5,surge:'+45%',short:'2.8%',float:'3.9B',revenue:'$185B TTM',earnings:'Apr 2026',rec:'PASS',verdict:'EV LOSSES — NO SURGE PATTERN',col:'#cc4400'},
+'GM':{name:'General Motors',score:5.5,s:1.0,i:0.5,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+85%',short:'2.2%',float:'1.1B',revenue:'$187B TTM',earnings:'Apr 2026',rec:'PASS',verdict:'NO CLEAR SURGE PATTERN',col:'#cc4400'},
+'BAC':{name:'Bank of America',score:6.0,s:1.5,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+145%',short:'0.6%',float:'7.8B',revenue:'$98B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'RATE ENVIRONMENT WATCH',col:'#886600'},
+'JPM':{name:'JPMorgan Chase',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+185%',short:'0.5%',float:'2.8B',revenue:'$240B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'STRONGEST BANK — MACRO ALIGNED',col:'#886600'},
+'GS':{name:'Goldman Sachs',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+180%',short:'0.8%',float:'310M',revenue:'$55B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'AI TRADING + M&A CYCLE',col:'#886600'},
+'MS':{name:'Morgan Stanley',score:6.5,s:1.5,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+155%',short:'0.7%',float:'1.6B',revenue:'$60B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'WEALTH MANAGEMENT GROWTH',col:'#886600'},
+'V':{name:'Visa',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+195%',short:'0.5%',float:'2.1B',revenue:'$36B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'PAYMENTS INFRASTRUCTURE — LEVI STRAUSS',col:'#886600'},
+'MA':{name:'Mastercard',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+205%',short:'0.5%',float:'930M',revenue:'$27B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'PAYMENTS INFRASTRUCTURE — LEVI STRAUSS',col:'#886600'},
+'DIS':{name:'Walt Disney',score:5.5,s:0.5,i:0.5,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+55%',short:'1.4%',float:'1.8B',revenue:'$91B TTM',earnings:'May 2026',rec:'PASS',verdict:'NO SURGE — STREAMING BATTLE',col:'#cc4400'},
+'NFLX':{name:'Netflix',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+440%',short:'1.2%',float:'430M',revenue:'$38B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'SUBSCRIBER GROWTH WATCH',col:'#886600'},
+'ROKU':{name:'Roku',score:5.5,s:1.5,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+95%',short:'8.2%',float:'140M',revenue:'$4.4B TTM',earnings:'May 2026',rec:'PASS',verdict:'NO CONSOLIDATION — DOWNTREND',col:'#cc4400'},
+'TWLO':{name:'Twilio',score:5.5,s:1.0,i:0.5,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+85%',short:'3.8%',float:'170M',revenue:'$4.4B TTM',earnings:'May 2026',rec:'PASS',verdict:'NO SURGE PATTERN',col:'#cc4400'},
+'ZM':{name:'Zoom Video',score:4.5,s:0.5,i:0.5,g:0.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+35%',short:'2.8%',float:'310M',revenue:'$4.7B TTM',earnings:'May 2026',rec:'PASS',verdict:'POST-COVID DECAY — NO THESIS',col:'#cc4400'},
+'DOCU':{name:'DocuSign',score:5.5,s:1.0,i:1.0,g:1.0,n:1.5,a:0.5,l:0.5,plus:0.0,surge:'+95%',short:'2.4%',float:'195M',revenue:'$2.9B TTM',earnings:'Jun 2026',rec:'PASS',verdict:'AI DOCUMENT DISRUPTION RISK',col:'#cc4400'},
+'HIMS':{name:'Hims & Hers Health',score:7.5,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.0,surge:'+380%',short:'18%',float:'185M',revenue:'$1.5B TTM',earnings:'May 2026',rec:'HOLD',verdict:'GLP-1 TELEHEALTH PLAY',col:'#886600'},
+'CELH':{name:'Celsius Holdings',score:6.5,s:1.5,i:0.5,g:1.5,n:1.0,a:0.5,l:1.0,plus:0.5,surge:'+580%',short:'12%',float:'235M',revenue:'$1.4B TTM',earnings:'May 2026',rec:'HOLD',verdict:'ENERGY DRINK SURGE — WATCH DISTRIBUTION',col:'#886600'},
+'NVO':{name:'Novo Nordisk',score:7.0,s:1.5,i:0.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+340%',short:'0.8%',float:'2.2B',revenue:'$42B TTM',earnings:'May 2026',rec:'HOLD',verdict:'GLP-1 KING — OZEMPIC PATENT WATCH',col:'#886600'},
+'LLY':{name:'Eli Lilly',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+580%',short:'0.6%',float:'950M',revenue:'$54B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'OBESITY DRUG DOMINANCE',col:'#886600'},
+'PFE':{name:'Pfizer',score:4.5,s:0.0,i:0.5,g:0.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+22%',short:'1.2%',float:'5.6B',revenue:'$63B TTM',earnings:'Apr 2026',rec:'PASS',verdict:'NO SURGE — POST-COVID HANGOVER',col:'#cc4400'},
+'JNJ':{name:'Johnson & Johnson',score:6.0,s:1.0,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+65%',short:'0.6%',float:'2.4B',revenue:'$88B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'DEFENSIVE HOLD — NO CATALYST',col:'#886600'},
+'UNH':{name:'UnitedHealth Group',score:6.5,s:1.5,i:0.5,g:1.5,n:1.0,a:0.5,l:1.0,plus:0.5,surge:'+145%',short:'0.8%',float:'920M',revenue:'$400B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'HEALTHCARE INFRASTRUCTURE',col:'#886600'},
+'AMGN':{name:'Amgen',score:6.0,s:1.0,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+85%',short:'1.2%',float:'530M',revenue:'$33B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'BIOTECH PIPELINE WATCH',col:'#886600'},
+'GILD':{name:'Gilead Sciences',score:6.0,s:1.0,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+95%',short:'1.4%',float:'1.2B',revenue:'$28B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'HIV + ONCOLOGY PIPELINE',col:'#886600'},
+'BA':{name:'Boeing',score:4.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:1.0,plus:1.0,surge:'+45%',short:'2.8%',float:'760M',revenue:'$66B TTM',earnings:'Apr 2026',rec:'PASS',verdict:'SAFETY CRISIS — NO SURGE',col:'#cc4400'},
+'CAT':{name:'Caterpillar',score:6.5,s:1.5,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+145%',short:'1.2%',float:'490M',revenue:'$65B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'INFRASTRUCTURE CYCLE PLAY',col:'#886600'},
+'DE':{name:'John Deere',score:6.0,s:1.5,i:0.5,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+125%',short:'1.4%',float:'280M',revenue:'$51B TTM',earnings:'May 2026',rec:'HOLD',verdict:'AG CYCLE WATCH',col:'#886600'},
+'TSMC':{name:'Taiwan Semiconductor',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+285%',short:'0.8%',float:'5.2B',revenue:'$90B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'AI CHIP FOUNDRY — GEOPOLITICAL RISK',col:'#1a8a3a'},
+'TSM':{name:'Taiwan Semiconductor',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+285%',short:'0.8%',float:'5.2B',revenue:'$90B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'AI CHIP FOUNDRY — GEOPOLITICAL RISK',col:'#1a8a3a'},
+'NDAQ':{name:'Nasdaq',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+180%',short:'0.8%',float:'1.8B',revenue:'$7.4B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'FINANCIAL INFRASTRUCTURE PLAY',col:'#886600'},
+'ICE':{name:'Intercontinental Exchange',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+165%',short:'0.6%',float:'560M',revenue:'$9.4B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'EXCHANGE INFRASTRUCTURE — LEVI STRAUSS',col:'#886600'},
   'QQQ':{name:'Invesco QQQ ETF',score:6.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+210%',short:'0.3%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'TECH BASKET INDEX',col:'#886600'},
 };
 
-// ── SEED-BASED FALLBACK for truly unknown tickers ───────────
+// ── UNKNOWN TICKER HANDLER ──────────────────────────────────
 function seedScore(ticker) {
-  let seed=0; for(const c of ticker)seed+=c.charCodeAt(0);
-  const r=(n)=>((Math.sin(seed*n)*43758.5)%1+1)/2;
-  const score=Math.round((4+r(1)*6)*2)/2;
-  const cp=[r(2)>0.5?1.5:r(2)>0.25?1.0:0.5,r(3)>0.5?1.5:r(3)>0.25?1.0:0.0,r(4)>0.5?1.5:r(4)>0.25?1.0:0.5,r(5)>0.6?1.5:r(5)>0.3?1.0:0.5,r(6)>0.5?1.5:r(6)>0.25?1.0:0.0,r(7)>0.5?1.0:0.5,r(8)>0.5?1.0:0.5];
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const ri=score>=8?0:score>=6?1:2;
-  return {
-    name:ticker, price:'N/A', change:'—',
-    score, s:cp[0],i:cp[1],g:cp[2],n:cp[3],a:cp[4],l:cp[5],plus:cp[6],
-    surge:`+${Math.round(r(9)*400+50)}%`, short:`${Math.round(r(10)*40+2)}%`,
-    float:`${Math.round(r(11)*900+10)}M`, revenue:`$${Math.round(r(14)*500+10)}M TTM`,
-    earnings:`${months[Math.floor(r(15)*12)]} ${Math.floor(r(16)*27)+1}, 2026`,
-    rec:['BUY','HOLD','PASS'][ri],
-    verdict:['WATCH — BUILDING PATTERN','PASS — THESIS UNCLEAR','WATCHLIST CANDIDATE','SIGNAL WEAK — MONITOR','APPROACHING ENTRY ZONE'][Math.floor(r(17)*5)],
-    col:['#1a8a3a','#886600','#cc4400'][ri]
-  };
+  return { _unknown: true, name: ticker, price: 'N/A', change: '—' };
 }
 
 // ── COMMERCIAL ──────────────────────────────────────────────
@@ -453,22 +485,26 @@ document.getElementById('goBtn').addEventListener('click', async () => {
   scansUsed++;localStorage.setItem("k1ladex_scans",scansUsed);
   updateScanLabel();
 
-  // Build base data from SCORES db or seed fallback
-  const base = SCORES[ticker] ? {...SCORES[ticker]} : seedScore(ticker);
-  base.price = base.price || 'N/A';
-  base.change = base.change || '—';
+  // Check if ticker is in our database
+  if (!SCORES[ticker]) {
+    // Not in database — show friendly message, don't waste a scan
+    scansUsed--;localStorage.setItem("k1ladex_scans",scansUsed);
+    updateScanLabel();
+    alert(`${ticker} is not yet in the K1LADEX database.\n\nSubscribe to request a full scan at k1ladex.com`);
+    return;
+  }
+
+  const base = {...SCORES[ticker]};
 
   // Show loading spinner while fetching live price
   document.getElementById('loadingTicker').textContent = ticker;
   document.getElementById('loadingOverlay').classList.add('visible');
 
-  // Fetch live price — replaces price/change/name for ALL tickers
+  // Fetch live price — always runs for known tickers
   const live = await fetchLivePrice(ticker);
   if (live) {
     base.price  = live.price;
     base.change = live.change;
-    // Only override name if we don't have a curated one
-    if (!SCORES[ticker]) base.name = live.name;
   }
 
   currentTicker = ticker;
