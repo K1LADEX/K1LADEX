@@ -434,7 +434,7 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   const ticker=document.getElementById('tickerInput').value.trim().toUpperCase();
   if(!ticker)return;
   if(scansUsed>=FREE_SCANS){showPaywall();return;}
-  if(ticker==='KLXADMIN'){
+  if(ticker==='KLDX'){
     scansUsed=0;
     try{localStorage.setItem('k1ladex_scans','0');}catch(e){}
     updateScanLabel();
