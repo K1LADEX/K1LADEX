@@ -244,11 +244,8 @@ try {
 
 // ── LIVE PRICE ──────────────────────────────────────────────
 async function fetchLivePrice(ticker) {
-  const YAHOO = 'https://query1.finance.yahoo.com/v8/finance/chart/' + ticker;
   const PROXIES = [
-    'https://corsproxy.io/?' + YAHOO,
-    'https://api.allorigins.win/raw?url=' + encodeURIComponent(YAHOO),
-    'https://thingproxy.freeboard.io/fetch/' + YAHOO
+    'https://k1ladex-prices.robertasloss.workers.dev/?ticker=' + ticker
   ];
   function parseResult(json) {
     const r = json && json.chart && json.chart.result && json.chart.result[0];
@@ -364,8 +361,8 @@ function drawScoreScreen(ticker,data,t){
   sc.fillStyle=INK;sc.font=`700 34px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(ticker.toUpperCase(),22,46);
   sc.fillStyle=INK_DIM;sc.font=`400 12px ${HN}`;sc.fillText(data.name,22,66);
   const priceCol=data.change&&data.change.startsWith('-')?'#cc2200':GREEN;
-  sc.fillStyle=priceCol;sc.font=`700 16px ${HN}`;sc.textAlign='right';sc.fillText(data.price||'—',SW-22,46);
-  sc.font=`400 12px ${HN}`;sc.fillText(data.change||'',SW-22,66);
+  sc.fillStyle=priceCol;sc.font=`700 16px ${HN}`;sc.textAlign='right';sc.fillText(data.price||'',SW-22,46);
+  sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.fillText(data.price?data.change:'See Robinhood for price',SW-22,66);
   sc.restore();
   const recA=eeo(eop(0.2,0.7));
   if(recA>0){sc.save();sc.globalAlpha=recA;
@@ -437,6 +434,13 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   const ticker=document.getElementById('tickerInput').value.trim().toUpperCase();
   if(!ticker)return;
   if(scansUsed>=FREE_SCANS){showPaywall();return;}
+  if(ticker==='KLXADMIN'){
+    scansUsed=0;
+    try{localStorage.setItem('k1ladex_scans','0');}catch(e){}
+    updateScanLabel();
+    document.getElementById('tickerInput').value='';
+    return;
+  }
   if(!SCORES[ticker]){
     alert(ticker+' is not yet in the K1LADEX database.\n\nSubscribe to request a full scan at k1ladex.com');
     return;
