@@ -476,6 +476,9 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     }
   }catch(e){}
 
+  // Minimum loading time — let the stages breathe
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
   stopLoadingStages();
 
   // ── FALLBACK: static database + live price ──
