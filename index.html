@@ -355,7 +355,12 @@ function drawScoreScreen(ticker,data,t){
     sc.fillStyle=data.col;sc.font=`700 44px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.shadowColor=data.col;sc.shadowBlur=14*scoreA;sc.fillText(data.score,22,sy2);
     const snW=sc.measureText(String(data.score)).width;sc.shadowBlur=0;
     sc.fillStyle=INK_DIM;sc.font=`400 18px ${HN}`;sc.fillText('/10',22+snW+4,sy2+4);
-    [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{const dy=(sy2-18)+i*20;sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText(label,130,dy);sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.fillText(val,130,dy+12);});
+    [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{const dy=(sy2-18)+i*20;sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText(label,130,dy);sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.fillText(val,130,dy+12);
+      if(label==='Short Interest'&&val==='N/A'){
+        sc.fillStyle='rgba(100,200,255,0.5)';sc.font=`400 8px ${HN}`;sc.textAlign='left';
+        sc.fillText('← coming soon',170,dy+12);
+      }
+    });
     // Scan timestamp
     if(data.scanTime){sc.fillStyle='rgba(100,200,255,0.35)';sc.font=`400 9px ${HN}`;sc.textAlign='center';sc.fillText('Scanned '+data.scanTime,SW/2,SH-32);}
     sc.restore();
@@ -467,7 +472,7 @@ function generateReport(ticker,data){
   const dateStr=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
   const recCol=data.rec==='BUY'?[26,138,58]:data.rec==='HOLD'?[136,102,0]:[204,68,0];
   const scoreCol=data.col==='#1a8a3a'?[26,138,58]:data.col==='#886600'?[136,102,0]:[204,68,0];
-  function hdr(n){doc.setFillColor(8,14,26);doc.rect(0,0,pw,52,'F');doc.setFillColor(100,200,255);doc.rect(0,52,pw,3,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('K1LADEX',M,34);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(100,200,255);doc.text('INTELLIGENCE FRAMEWORK',M,45);doc.setTextColor(180,200,220);doc.setFontSize(8);doc.text(ticker+' · '+dateStr,pw-M,34,{align:'right'});doc.text('Page '+n,pw-M,45,{align:'right'});}
+  function hdr(n){doc.setFillColor(8,14,26);doc.rect(0,0,pw,ph,'F');doc.setFillColor(8,14,26);doc.rect(0,0,pw,52,'F');doc.setFillColor(100,200,255);doc.rect(0,52,pw,3,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('K1LADEX',M,34);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(100,200,255);doc.text('INTELLIGENCE FRAMEWORK',M,45);doc.setTextColor(180,200,220);doc.setFontSize(8);doc.text(ticker+' · '+dateStr,pw-M,34,{align:'right'});doc.text('Page '+n,pw-M,45,{align:'right'});}
   function ftr(){doc.setFillColor(8,14,26);doc.rect(0,ph-36,pw,36,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);doc.text('K1LADEX',M,ph-18);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(100,200,255);doc.text("Finally know what you're doing.  ·  k1ladex.com",M+52,ph-18);doc.setTextColor(100,120,140);doc.text('For informational purposes only. Not financial advice.',pw-M,ph-18,{align:'right'});}
   function sec(y,title,sub){doc.setFillColor(13,23,38);doc.rect(M,y,CW,26,'F');doc.setDrawColor(...scoreCol);doc.setLineWidth(2);doc.line(M,y,M,y+26);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(255,255,255);doc.text(title,M+10,y+17);if(sub){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(100,200,255);doc.text(sub,pw-M,y+17,{align:'right'});}return y+38;}
   function sBar(x,y,w,h,val,max,col){doc.setFillColor(20,30,50);doc.rect(x,y,w,h,'F');const f=(val/max)*w;if(f>0){doc.setFillColor(...col);doc.rect(x,y,f,h,'F');}}
