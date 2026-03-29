@@ -58,6 +58,15 @@ body{background:linear-gradient(180deg,#edf4fb 0%,#daeaf6 100%);display:flex;ali
 .paywall-tagline{font-size:13px;color:#4a6888;font-style:italic;margin-bottom:4px;}
 .paywall-btn-primary{width:100%;background:#1a8a3a;border:none;border-radius:10px;padding:14px;font-size:13px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#fff;cursor:pointer;letter-spacing:0.5px;margin-bottom:10px;}
 .paywall-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:16px;color:#4a6888;cursor:pointer;padding:4px 8px;}
+/* BTC Easter Egg */
+.btc-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#080e1a;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:60;}
+.btc-overlay.visible{opacity:1;pointer-events:all;}
+.btc-box{border:2px solid #f5c400;border-radius:16px;padding:40px 32px;width:300px;text-align:center;box-shadow:0 0 40px rgba(245,196,0,0.2);}
+.btc-crown{font-size:48px;margin-bottom:12px;}
+.btc-logo{font-size:28px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:4px;}
+.btc-sub{font-size:10px;color:#f5c400;letter-spacing:3px;margin-bottom:24px;}
+.btc-msg{font-size:14px;color:#aabbc8;line-height:1.6;font-style:italic;}
+.btc-close{margin-top:24px;background:none;border:1px solid rgba(245,196,0,0.4);border-radius:20px;padding:6px 20px;font-size:10px;color:#f5c400;cursor:pointer;letter-spacing:2px;}
 </style>
 </head>
 <body>
@@ -82,9 +91,9 @@ body{background:linear-gradient(180deg,#edf4fb 0%,#daeaf6 100%);display:flex;ali
   </div>
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-ticker" id="loadingTicker">—</div>
-    <div class="loading-sub">Fetching live price...</div>
+    <div class="loading-sub" id="loadingSub">Running SIGNAL+ scan...</div>
     <div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
-    <div class="loading-label">K1LADEX AI² scanning</div>
+    <div class="loading-label" id="loadingLabel">K1LADEX AI² scanning</div>
   </div>
   <div class="score-overlay" id="scoreOverlay">
     <canvas class="score-canvas" id="sc" width="360" height="640"></canvas>
@@ -106,6 +115,15 @@ body{background:linear-gradient(180deg,#edf4fb 0%,#daeaf6 100%);display:flex;ali
       <button class="paywall-close" id="paywallCloseBtn">✕</button>
     </div>
   </div>
+  <div class="btc-overlay" id="btcOverlay">
+    <div class="btc-box">
+      <div class="btc-crown">👑</div>
+      <div class="btc-logo">K1LADEX</div>
+      <div class="btc-sub">INTELLIGENCE FRAMEWORK</div>
+      <div class="btc-msg">Warren Buffett doesn't play with coins. Either does K1LADEX.</div>
+      <button class="btc-close" id="btcCloseBtn">BACK TO STOCKS</button>
+    </div>
+  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -113,168 +131,180 @@ const HN="'Helvetica Neue',Helvetica,Arial,sans-serif";
 
 // ── AI² PIXEL ANIMATION ──────────────────────────────────────
 try {
-  const canvas = document.getElementById('ai2c');
-  const ctx = canvas.getContext('2d');
-  const CW = canvas.width, CH = canvas.height;
-  const BRIGHT = '#00e676';
-
-  // Build pixel clouds manually — no offscreen canvas sampling needed
-  function makeWordCloud(texts, step) {
-    const off = document.createElement('canvas');
-    off.width = CW; off.height = CH;
-    const oc = off.getContext('2d');
-    texts.forEach(function(t) {
-      oc.fillStyle = '#fff';
-      oc.font = 'bold ' + t.sz + 'px Helvetica,Arial,sans-serif';
-      oc.textAlign = 'center';
-      oc.textBaseline = 'middle';
-      oc.fillText(t.t, t.x, t.y);
-    });
-    const d = oc.getImageData(0, 0, CW, CH).data;
-    const pts = [];
-    for (var y = 0; y < CH; y += step)
-      for (var x = 0; x < CW; x += step)
-        if (d[(y * CW + x) * 4] > 80) pts.push({x: x, y: y});
+  const canvas=document.getElementById('ai2c');
+  const ctx=canvas.getContext('2d');
+  const CW=canvas.width,CH=canvas.height;
+  const BRIGHT='#00e676';
+  function makeWordCloud(texts,step){
+    const off=document.createElement('canvas');off.width=CW;off.height=CH;
+    const oc=off.getContext('2d');
+    texts.forEach(function(t){oc.fillStyle='#fff';oc.font='bold '+t.sz+'px Helvetica,Arial,sans-serif';oc.textAlign='center';oc.textBaseline='middle';oc.fillText(t.t,t.x,t.y);});
+    const d=oc.getImageData(0,0,CW,CH).data;const pts=[];
+    for(var y=0;y<CH;y+=step)for(var x=0;x<CW;x+=step)if(d[(y*CW+x)*4]>80)pts.push({x:x,y:y});
     return pts;
   }
-
-  const wCloud = makeWordCloud([
-    {t:'Augmented',    x:CW/2, y:CH*0.20, sz:11},
-    {t:'Investor',     x:CW/2, y:CH*0.50, sz:11},
-    {t:'Intelligence', x:CW/2, y:CH*0.80, sz:11}
-  ], 3);
-
-  const aCloud = makeWordCloud([
-    {t:'AI', x:CW/2-12, y:CH/2+4, sz:46},
-    {t:'²',  x:CW/2+28, y:CH/2-16, sz:24}
-  ], 3);
-
-  const N = Math.min(wCloud.length, aCloud.length, 220);
-
-  function shuffle(a) {
-    for (var i = a.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-    }
-    return a;
-  }
-
-  shuffle(wCloud); shuffle(aCloud);
-
-  var P = [];
-  for (var i = 0; i < N; i++) {
-    P.push({
-      ox: (Math.random() - 0.5) * CW * 3 + CW / 2,
-      oy: (Math.random() - 0.5) * CH * 3 + CH / 2,
-      wx: wCloud[i].x, wy: wCloud[i].y,
-      ax: aCloud[i].x, ay: aCloud[i].y,
-      ex: (Math.random() - 0.5) * CW * 5 + CW / 2,
-      ey: (Math.random() - 0.5) * CH * 5 + CH / 2,
-      sz: 1.2 + Math.random() * 0.8
-    });
-  }
-
-  // Timing (seconds)
-  var T0=0, T1=0.40, T2=0.62, T3=1.05, T4=1.40, T5=1.70, T6=1.95;
-  var st = null, animRaf = null;
-
-  function eo(t) { return 1 - Math.pow(1 - t, 3); }
-  function eio(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
-  function lerp(a, b, t) { return a + (b - a) * t; }
-  function pr(t, s, e) { return Math.max(0, Math.min(1, (t - s) / (e - s))); }
-
-  function aiLoop(ts) {
-    if (!st) st = ts;
-    var t = (ts - st) / 1000;
-
-    if (t >= T6) {
-      ctx.clearRect(0, 0, CW, CH);
-      canvas.style.opacity = '0';
-      setTimeout(function() {
-        canvas.style.height = '0';
-        canvas.style.margin = '0';
-      }, 350);
-      document.getElementById('revealWrap').style.opacity = '1';
-      return;
-    }
-
-    ctx.clearRect(0, 0, CW, CH);
-    var fade = t >= T5 ? 1 - pr(t, T5, T6) : 1;
-    var holdAI2 = t >= T3 && t < T4;
-    var pulse = holdAI2 ? (0.5 + 0.5 * Math.sin((t - T3) * 14)) : 0;
-
-    ctx.shadowColor = '#00ff88';
-    ctx.shadowBlur = holdAI2 ? (5 + pulse * 14) : 2;
-    ctx.fillStyle = BRIGHT;
-    ctx.globalAlpha = fade;
-
-    for (var i = 0; i < P.length; i++) {
-      var p = P[i], px, py;
-      if (t < T1) {
-        var g = eo(pr(t, T0, T1));
-        px = lerp(p.ox, p.wx, g); py = lerp(p.oy, p.wy, g);
-      } else if (t < T2) {
-        px = p.wx; py = p.wy;
-      } else if (t < T3) {
-        var g2 = eio(pr(t, T2, T3));
-        px = lerp(p.wx, p.ax, g2); py = lerp(p.wy, p.ay, g2);
-      } else if (t < T4) {
-        px = p.ax; py = p.ay;
-      } else {
-        var g3 = eo(pr(t, T4, T5));
-        px = lerp(p.ax, p.ex, g3); py = lerp(p.ay, p.ey, g3);
-      }
-      var sz = p.sz * (holdAI2 ? 2.2 : 1.3);
-      ctx.fillRect(px - sz/2, py - sz/2, sz, sz);
-    }
-
-    ctx.shadowBlur = 0;
-    ctx.globalAlpha = 1;
-    animRaf = requestAnimationFrame(aiLoop);
-  }
-
-  animRaf = requestAnimationFrame(aiLoop);
-
-} catch(err) {
-  // Animation failed — just show the static screen immediately
-  var c = document.getElementById('ai2c');
-  c.style.height = '0'; c.style.margin = '0';
-  document.getElementById('revealWrap').style.opacity = '1';
+  const wCloud=makeWordCloud([{t:'Augmented',x:CW/2,y:CH*0.20,sz:11},{t:'Investor',x:CW/2,y:CH*0.50,sz:11},{t:'Intelligence',x:CW/2,y:CH*0.80,sz:11}],3);
+  const aCloud=makeWordCloud([{t:'AI',x:CW/2-12,y:CH/2+4,sz:46},{t:'²',x:CW/2+28,y:CH/2-16,sz:24}],3);
+  const N=Math.min(wCloud.length,aCloud.length,220);
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=a[i];a[i]=a[j];a[j]=tmp;}return a;}
+  shuffle(wCloud);shuffle(aCloud);
+  var P=[];
+  for(var i=0;i<N;i++){P.push({ox:(Math.random()-0.5)*CW*3+CW/2,oy:(Math.random()-0.5)*CH*3+CH/2,wx:wCloud[i].x,wy:wCloud[i].y,ax:aCloud[i].x,ay:aCloud[i].y,ex:(Math.random()-0.5)*CW*5+CW/2,ey:(Math.random()-0.5)*CH*5+CH/2,sz:1.2+Math.random()*0.8});}
+  var T0=0,T1=0.40,T2=0.62,T3=1.05,T4=1.40,T5=1.70,T6=1.95;
+  var st=null,animRaf=null;
+  function eo(t){return 1-Math.pow(1-t,3);}
+  function eio(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function pr(t,s,e){return Math.max(0,Math.min(1,(t-s)/(e-s)));}
+  function aiLoop(ts){
+    if(!st)st=ts;var t=(ts-st)/1000;
+    if(t>=T6){ctx.clearRect(0,0,CW,CH);canvas.style.opacity='0';setTimeout(function(){canvas.style.height='0';canvas.style.margin='0';},350);document.getElementById('revealWrap').style.opacity='1';return;}
+    ctx.clearRect(0,0,CW,CH);var fade=t>=T5?1-pr(t,T5,T6):1;var holdAI2=t>=T3&&t<T4;var pulse=holdAI2?(0.5+0.5*Math.sin((t-T3)*14)):0;
+    ctx.shadowColor='#00ff88';ctx.shadowBlur=holdAI2?(5+pulse*14):2;ctx.fillStyle=BRIGHT;ctx.globalAlpha=fade;
+    for(var i=0;i<P.length;i++){var p=P[i],px,py;
+      if(t<T1){var g=eo(pr(t,T0,T1));px=lerp(p.ox,p.wx,g);py=lerp(p.oy,p.wy,g);}
+      else if(t<T2){px=p.wx;py=p.wy;}
+      else if(t<T3){var g2=eio(pr(t,T2,T3));px=lerp(p.wx,p.ax,g2);py=lerp(p.wy,p.ay,g2);}
+      else if(t<T4){px=p.ax;py=p.ay;}
+      else{var g3=eo(pr(t,T4,T5));px=lerp(p.ax,p.ex,g3);py=lerp(p.ay,p.ey,g3);}
+      var sz=p.sz*(holdAI2?2.2:1.3);ctx.fillRect(px-sz/2,py-sz/2,sz,sz);}
+    ctx.shadowBlur=0;ctx.globalAlpha=1;animRaf=requestAnimationFrame(aiLoop);}
+  animRaf=requestAnimationFrame(aiLoop);
+}catch(err){
+  var c=document.getElementById('ai2c');c.style.height='0';c.style.margin='0';
+  document.getElementById('revealWrap').style.opacity='1';
 }
 
-// ── LIVE PRICE ──────────────────────────────────────────────
-async function fetchLivePrice(ticker) {
-  const PROXIES = [
-    'https://k1ladex-prices.robertasloss.workers.dev/?ticker=' + ticker
-  ];
-  function parseResult(json) {
-    const r = json && json.chart && json.chart.result && json.chart.result[0];
-    if (!r) return null;
-    const price = r.meta.regularMarketPrice;
-    if (!price) return null;
-    const prev = r.meta.chartPreviousClose || r.meta.previousClose;
-    const chg = prev ? ((price - prev) / prev * 100) : 0;
-    const raw = r.meta.longName || r.meta.shortName || ticker;
-    const name = raw.replace(/,?\s*(Inc\.?|Corp\.?|Ltd\.?|LLC\.?|PLC\.?|N\.V\.?|S\.A\.?)$/gi, '').trim();
-    return { name, price: '$' + price.toFixed(2), change: (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' };
-  }
-  for (const url of PROXIES) {
-    try {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 7000);
-      const resp = await fetch(url, { signal: ctrl.signal });
-      clearTimeout(timer);
-      if (!resp.ok) continue;
-      const json = await resp.json();
-      const parsed = parseResult(json);
-      if (parsed) return parsed;
-    } catch(e) { continue; }
-  }
-  return null;
+// ── WORKER ENDPOINTS ─────────────────────────────────────────
+const WORKER_BASE='https://k1ladex-prices.robertasloss.workers.dev';
+
+// Full live scan — calls /scan route (returns Yahoo data + N checkpoint)
+async function fetchScan(ticker){
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),18000);
+  try{
+    const resp=await fetch(WORKER_BASE+'/scan?ticker='+ticker,{signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!resp.ok)return null;
+    const data=await resp.json();
+    if(data.error||!data.currentPrice)return null;
+    return data;
+  }catch(e){clearTimeout(timer);return null;}
 }
 
-// ── SIGNAL+ SCORE DATABASE ──────────────────────────────────
-const SCORES = {
+// Legacy price only — fallback for static scores
+async function fetchLivePrice(ticker){
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),7000);
+    const resp=await fetch(WORKER_BASE+'/?ticker='+ticker,{signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!resp.ok)return null;
+    const json=await resp.json();
+    const r=json&&json.chart&&json.chart.result&&json.chart.result[0];
+    if(!r)return null;
+    const price=r.meta.regularMarketPrice;
+    if(!price)return null;
+    const prev=r.meta.chartPreviousClose||r.meta.previousClose;
+    const chg=prev?((price-prev)/prev*100):0;
+    const raw=r.meta.longName||r.meta.shortName||ticker;
+    const name=raw.replace(/,?\s*(Inc\.?|Corp\.?|Ltd\.?|LLC\.?|PLC\.?)$/gi,'').trim();
+    return{name,price:'$'+price.toFixed(2),change:(chg>=0?'+':'')+chg.toFixed(2)+'%'};
+  }catch(e){return null;}
+}
+
+// ── LIVE SCORING ENGINE ──────────────────────────────────────
+// Called when Worker /scan returns full data.
+// Calculates S, I, G, A, L, + mechanically. N comes from Anthropic via Worker.
+function scoreFromLiveData(ticker,d){
+
+  // S — Surge from 52W low
+  const surge=d.surgeVal||0;
+  const s=surge>=200?1.5:surge>=100?0.75:0;
+
+  // I — In Consolidation (3 gates)
+  let iGates=0;
+  if(d.week52High&&d.currentPrice>=d.week52High*0.70)iGates++; // within 30% of 52W high
+  if(d.ma50&&d.currentPrice>d.ma50)iGates++;                    // above 50MA
+  if(!d.newLow30d)iGates++;                                      // no new 52W low in 30 days
+  const i=iGates>=2?1.5:iGates===1?0.75:0;
+
+  // G — Growth (from Yahoo financialData)
+  let g=0.5;
+  if(d.totalRevenue&&d.revenueGrowth!==null&&d.revenueGrowth!==undefined){
+    if(d.revenueGrowth>0.05&&d.totalCash>0)g=1.5;
+    else if(d.revenueGrowth>0)g=1.0;
+    else g=0.5;
+  }else if(!d.totalRevenue){g=0.5;} // pre-revenue
+
+  // N — from Anthropic scan (computed in Worker, API key never in browser)
+  // SMCI Rule: 2+ strikes = automatic 0 regardless of other scores
+  let n=typeof d.nScore==='number'?d.nScore:1.5;
+  const strikes=d.nStrikes||0;
+  if(strikes>=2)n=0;
+
+  // A — Approaching dated catalyst
+  const a=d.nextEarnings?1.5:0;
+
+  // L — Levels (mechanical proxy: distance from 52W floor + not at ceiling)
+  let l=1.0;
+  if(d.currentPrice&&d.week52Low){
+    const distFromLow=(d.currentPrice-d.week52Low)/d.week52Low;
+    if(distFromLow<0.05)l=0.5;       // essentially at the floor — no support
+    else if(distFromLow>0.25)l=1.5;  // healthy distance, support established
+    else l=1.0;
+  }
+
+  // + — Volume / Short pressure
+  // Float Velocity Rule: >100M float = kill switch unless short interest is extreme
+  let plus=0;
+  const highShort=d.shortPct&&d.shortPct>0.10;
+  const tightFloat=d.floatShares&&d.floatShares<30000000;
+  const megaFloat=d.floatShares&&d.floatShares>100000000;
+  if(highShort&&tightFloat)plus=1.5;
+  else if(highShort||tightFloat)plus=0.75;
+  else plus=0;
+  if(megaFloat&&!highShort)plus=0; // Float Velocity kill
+
+  // Total — max 10
+  const raw=s+i+g+n+a+l+plus;
+  const score=Math.round(Math.min(10,raw)*10)/10;
+
+  // Rec — SMCI Rule forces PASS on 2+ strikes regardless of score
+  let rec=score>=9?'BUY':score>=7?'HOLD':'PASS';
+  if(strikes>=2)rec='PASS';
+
+  // Verdict
+  let verdict;
+  if(strikes>=2){
+    verdict='SMCI RULE — 2+ LEGAL STRIKES';
+  }else if(d.nFlags&&d.nFlags.length>0&&n<1.5){
+    verdict=d.nFlags[0].substring(0,38).toUpperCase();
+  }else{
+    verdict=score>=9?'MAXIMUM CONVICTION':
+            score>=7?'WATCHLIST CANDIDATE':
+            score>=5?'MONITOR ONLY':
+            'FAILED SIGNAL+ — PASS';
+  }
+
+  const col=rec==='BUY'?'#1a8a3a':rec==='HOLD'?'#886600':'#cc4400';
+
+  return{
+    name:d.name||ticker,score,
+    s,i,g,n,a,l,plus,
+    surge:d.surgeFormatted||'—',
+    short:d.shortPctFormatted||'N/A',
+    float:d.floatFormatted||'N/A',
+    revenue:d.revenueFormatted||'N/A',
+    earnings:d.nextEarnings||'TBD',
+    rec,verdict,col,
+    price:d.price,change:d.change
+  };
+}
+
+// ── FALLBACK SCORES DATABASE ─────────────────────────────────
+// Used only when Worker /scan is unavailable. Never the source of truth.
+const FALLBACK_SCORES={
   'ONDS':{name:'Ondas Holdings',score:9,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.0,plus:1.0,surge:'+248%',short:'35%',float:'8.2M',revenue:'$38-41M guided',earnings:'May 14, 2026',rec:'BUY',verdict:'CROWN CANDIDATE',col:'#1a8a3a'},
   'GSAT':{name:'Globalstar',score:8.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:1.0,surge:'+162%',short:'12%',float:'1.2B',revenue:'$280-305M guided',earnings:'Apr 30, 2026',rec:'HOLD',verdict:'APPLE CONSTELLATION CATALYST',col:'#1a8a3a'},
   'LWLG':{name:'Lightwave Logic',score:5.75,s:1.5,i:1.0,g:0.5,n:0.75,a:1.0,l:1.0,plus:0.0,surge:'+245%',short:'6%',float:'131M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'HOLD',verdict:'CEO SELLING FLAG — DO NOT ADD',col:'#886600'},
@@ -290,57 +320,19 @@ const SCORES = {
   'LPTH':{name:'LightPath Technologies',score:7.0,s:1.5,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+240%',short:'5%',float:'32M',revenue:'$55M TTM',earnings:'May 9, 2026',rec:'HOLD',verdict:'INFRARED OPTICS — DEFENSE BACKLOG',col:'#886600'},
   'ASTS':{name:'AST SpaceMobile',score:5.0,s:1.5,i:1.5,g:0.5,n:0.5,a:1.5,l:1.0,plus:0.5,surge:'+480%',short:'20%',float:'220M',revenue:'$70.9M TTM',earnings:'May 12, 2026',rec:'HOLD',verdict:'RE-SCORE H2 2026',col:'#886600'},
   'LTRX':{name:'Lantronix',score:7.0,s:1.5,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+210%',short:'4%',float:'28M',revenue:'$64M TTM',earnings:'May 5, 2026',rec:'HOLD',verdict:'EDGE AI — DRONE INFRASTRUCTURE',col:'#886600'},
-  'AAPL':{name:'Apple',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+180%',short:'0.6%',float:'15.2B',revenue:'$124B TTM',earnings:'May 1, 2026',rec:'HOLD',verdict:'SOLID — NO NEAR CATALYST',col:'#886600'},
-  'MSFT':{name:'Microsoft',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+185%',short:'0.5%',float:'7.4B',revenue:'$245B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'SOLID — AI TAILWIND',col:'#886600'},
-  'GOOGL':{name:'Alphabet',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+175%',short:'0.6%',float:'12.1B',revenue:'$350B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'SEARCH + CLOUD THESIS',col:'#886600'},
-  'GOOG':{name:'Alphabet',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+175%',short:'0.6%',float:'12.1B',revenue:'$350B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'SEARCH + CLOUD THESIS',col:'#886600'},
-  'META':{name:'Meta Platforms',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+580%',short:'0.8%',float:'2.5B',revenue:'$164B TTM',earnings:'Apr 23, 2026',rec:'HOLD',verdict:'AI MONETIZATION WATCH',col:'#1a8a3a'},
-  'AMZN':{name:'Amazon',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+220%',short:'0.7%',float:'10.5B',revenue:'$637B TTM',earnings:'May 1, 2026',rec:'HOLD',verdict:'AWS GROWTH WATCH',col:'#886600'},
-  'TSLA':{name:'Tesla',score:5.5,s:1.5,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+210%',short:'3.2%',float:'3.1B',revenue:'$97B TTM',earnings:'Apr 22, 2026',rec:'PASS',verdict:'CAUTION — CONSOLIDATING LOW',col:'#cc4400'},
-  'AMD':{name:'Advanced Micro Devices',score:6.5,s:1.5,i:0.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+340%',short:'2.1%',float:'1.6B',revenue:'$25B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'DOWNTREND — WAIT FOR TURN',col:'#886600'},
-  'AVGO':{name:'Broadcom',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+520%',short:'0.9%',float:'4.6B',revenue:'$52B TTM',earnings:'Jun 5, 2026',rec:'HOLD',verdict:'AI NETWORKING BACKBONE',col:'#1a8a3a'},
-  'PLTR':{name:'Palantir Technologies',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+520%',short:'3.4%',float:'2.1B',revenue:'$2.8B TTM',earnings:'May 5, 2026',rec:'HOLD',verdict:'DEFENSE AI PLATFORM',col:'#1a8a3a'},
-  'SMCI':{name:'Super Micro Computer',score:4.5,s:1.5,i:0.0,g:1.0,n:0.0,a:0.5,l:1.0,plus:0.5,surge:'+280%',short:'14%',float:'580M',revenue:'$14B TTM',earnings:'May 6, 2026',rec:'PASS',verdict:'ACCOUNTING FLAGS — SMCI RULE',col:'#cc4400'},
-  'LMT':{name:'Lockheed Martin',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+185%',short:'1.4%',float:'240M',revenue:'$67B TTM',earnings:'Apr 22, 2026',rec:'HOLD',verdict:'DEFENSE SPENDING TAILWIND',col:'#886600'},
-  'RTX':{name:'RTX',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+175%',short:'1.2%',float:'1.3B',revenue:'$80B TTM',earnings:'Apr 22, 2026',rec:'HOLD',verdict:'MISSILES + ENGINES — NATO',col:'#886600'},
-  'AXON':{name:'Axon Enterprise',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+520%',short:'2.8%',float:'68M',revenue:'$2B TTM',earnings:'May 6, 2026',rec:'HOLD',verdict:'AI LAW ENFORCEMENT PLATFORM',col:'#1a8a3a'},
-  'TSMC':{name:'Taiwan Semiconductor',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+285%',short:'0.8%',float:'5.2B',revenue:'$90B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'AI CHIP FOUNDRY — GEOPOLITICAL RISK',col:'#1a8a3a'},
-  'TSM':{name:'Taiwan Semiconductor',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+285%',short:'0.8%',float:'5.2B',revenue:'$90B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'AI CHIP FOUNDRY — GEOPOLITICAL RISK',col:'#1a8a3a'},
-  'VKTX':{name:'Viking Therapeutics',score:8.0,s:1.5,i:1.5,g:0.5,n:1.5,a:1.5,l:1.0,plus:0.5,surge:'+680%',short:'22%',float:'92M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'BUY',verdict:'GLP-1 ORAL OBESITY — PHASE 3',col:'#1a8a3a'},
-  'COIN':{name:'Coinbase Global',score:7.0,s:1.5,i:1.0,g:1.0,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+280%',short:'8.4%',float:'240M',revenue:'$6.5B TTM',earnings:'May 6, 2026',rec:'HOLD',verdict:'CRYPTO CYCLE DEPENDENT',col:'#886600'},
-  'HIMS':{name:'Hims & Hers Health',score:7.5,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.0,surge:'+380%',short:'18%',float:'185M',revenue:'$1.5B TTM',earnings:'May 2026',rec:'HOLD',verdict:'GLP-1 TELEHEALTH PLAY',col:'#886600'},
-  'LLY':{name:'Eli Lilly',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+580%',short:'0.6%',float:'950M',revenue:'$54B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'OBESITY DRUG DOMINANCE',col:'#886600'},
-  'GME':{name:'GameStop',score:3.0,s:1.0,i:0.0,g:0.0,n:1.0,a:0.5,l:0.5,plus:0.0,surge:'+65%',short:'12%',float:'305M',revenue:'$1.1B TTM',earnings:'Mar 26, 2026',rec:'PASS',verdict:'NO THESIS — MEME ONLY',col:'#cc4400'},
-  'NKLA':{name:'Nikola',score:1.5,s:0.0,i:0.0,g:0.0,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'18%',float:'320M',revenue:'$48M TTM',earnings:'May 2026',rec:'PASS',verdict:'FRAUD HISTORY — AUTOMATIC FAIL',col:'#cc0000'},
-  'DPRO':{name:'Draganfly',score:5.5,s:1.0,i:1.0,g:0.5,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+180%',short:'98%',float:'12M',revenue:'$4M TTM',earnings:'May 28, 2026',rec:'WATCH',verdict:'SHAKEDOWN SCOUT — 98% SHORT',col:'#886600'},
-  'SPY':{name:'SPDR S&P 500 ETF',score:6.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+180%',short:'0.2%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'BROAD MARKET INDEX',col:'#886600'},
-  'JPM':{name:'JPMorgan Chase',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+185%',short:'0.5%',float:'2.8B',revenue:'$240B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'STRONGEST BANK — MACRO ALIGNED',col:'#886600'},
-  'V':{name:'Visa',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+195%',short:'0.5%',float:'2.1B',revenue:'$36B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'PAYMENTS INFRASTRUCTURE',col:'#886600'},
-  'MA':{name:'Mastercard',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+205%',short:'0.5%',float:'930M',revenue:'$27B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'PAYMENTS INFRASTRUCTURE',col:'#886600'},
-  'XOM':{name:'ExxonMobil',score:6.5,s:1.0,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+125%',short:'0.8%',float:'4.0B',revenue:'$398B TTM',earnings:'Apr 25, 2026',rec:'HOLD',verdict:'OIL MACRO TAILWIND',col:'#886600'},
-  'LNG':{name:'Cheniere Energy',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+280%',short:'1.8%',float:'220M',revenue:'$18B TTM',earnings:'May 8, 2026',rec:'HOLD',verdict:'LNG INFRASTRUCTURE — MACRO ALIGNED',col:'#886600'},
-  'CCJ':{name:'Cameco',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+285%',short:'2.4%',float:'420M',revenue:'$2.6B TTM',earnings:'May 2, 2026',rec:'HOLD',verdict:'URANIUM SUPPLY THESIS',col:'#886600'},
-  'NOW':{name:'ServiceNow',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+480%',short:'0.9%',float:'200M',revenue:'$10.9B TTM',earnings:'Apr 23, 2026',rec:'HOLD',verdict:'ENTERPRISE AI WORKFLOW',col:'#1a8a3a'},
-  'CRWD':{name:'CrowdStrike',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+380%',short:'1.8%',float:'240M',revenue:'$3.9B TTM',earnings:'Jun 3, 2026',rec:'HOLD',verdict:'AI CYBERSECURITY LEADER',col:'#886600'},
-  'PANW':{name:'Palo Alto Networks',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+320%',short:'1.8%',float:'640M',revenue:'$8.2B TTM',earnings:'May 2026',rec:'HOLD',verdict:'AI CYBERSECURITY PLATFORM',col:'#886600'},
-  'NFLX':{name:'Netflix',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+440%',short:'1.2%',float:'430M',revenue:'$38B TTM',earnings:'Apr 15, 2026',rec:'HOLD',verdict:'SUBSCRIBER GROWTH WATCH',col:'#886600'},
-  'SPOT':{name:'Spotify',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+420%',short:'1.8%',float:'195M',revenue:'$16B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'AI AUDIO PLATFORM',col:'#886600'},
-  'HOOD':{name:'Robinhood Markets',score:6.5,s:1.5,i:1.0,g:1.0,n:1.0,a:0.5,l:1.0,plus:0.5,surge:'+310%',short:'5.2%',float:'870M',revenue:'$2.9B TTM',earnings:'Apr 30, 2026',rec:'HOLD',verdict:'CRYPTO TAILWIND PRESENT',col:'#886600'},
-  'COST':{name:'Costco',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+195%',short:'0.5%',float:'443M',revenue:'$249B TTM',earnings:'Jun 5, 2026',rec:'HOLD',verdict:'MEMBERSHIP MODEL COMPOUNDING',col:'#886600'},
-  'BA':{name:'Boeing',score:4.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:1.0,plus:1.0,surge:'+45%',short:'2.8%',float:'760M',revenue:'$66B TTM',earnings:'Apr 2026',rec:'PASS',verdict:'SAFETY CRISIS — NO SURGE',col:'#cc4400'},
-  'ACHR':{name:'Archer Aviation',score:3.0,s:0.0,i:0.5,g:0.0,n:0.5,a:1.0,l:0.5,plus:0.5,surge:'+42%',short:'18%',float:'280M',revenue:'Pre-revenue',earnings:'May 8, 2026',rec:'PASS',verdict:'FAILED SIGNAL — PRE-REVENUE',col:'#cc4400'},
-  'TMUS':{name:'T-Mobile',score:6.0,s:1.5,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+165%',short:'1.2%',float:'1.2B',revenue:'$81B TTM',earnings:'Apr 24, 2026',rec:'HOLD',verdict:'5G SATELLITE INFRASTRUCTURE',col:'#886600'},
-  'INTC':{name:'Intel',score:4.0,s:0.0,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+18%',short:'2.4%',float:'4.2B',revenue:'$53B TTM',earnings:'Apr 24, 2026',rec:'PASS',verdict:'NO SURGE — RESTRUCTURING RISK',col:'#cc4400'},
-  'BRKB':{name:'Berkshire Hathaway',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.5,surge:'+185%',short:'0.1%',float:'2.1B',revenue:'$364B TTM',earnings:'May 2026',rec:'HOLD',verdict:'BUFFETT INFRASTRUCTURE',col:'#886600'},
-  'QQQ':{name:'Invesco QQQ ETF',score:6.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+210%',short:'0.3%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'TECH BASKET INDEX',col:'#886600'},
-  'CRM':{name:'Salesforce',score:6.5,s:1.0,i:0.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+145%',short:'1.6%',float:'960M',revenue:'$38B TTM',earnings:'May 28, 2026',rec:'HOLD',verdict:'AGENTFORCE — DOWNTREND WATCH',col:'#886600'},
-  'MU':{name:'Micron Technology',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+195%',short:'1.8%',float:'1.1B',revenue:'$25B TTM',earnings:'Mar 27, 2026',rec:'HOLD',verdict:'HBM MEMORY CYCLE WATCH',col:'#886600'},
   'CODA':{name:'Coda Octopus',score:8.25,s:1.5,i:1.5,g:1.5,n:1.5,a:1.25,l:1.0,plus:0.0,surge:'+310%',short:'12%',float:'15M',revenue:'$25M TTM',earnings:'Jun 17, 2026',rec:'BUY',verdict:'UNDERWATER DEFENSE INFRASTRUCTURE',col:'#1a8a3a'},
   'SWMR':{name:'Swarm & Sting',score:7.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+950%',short:'12%',float:'8M',revenue:'$12M TTM',earnings:'Jun 10, 2026',rec:'WATCH',verdict:'SHAKEDOWN STREET SCOUT',col:'#886600'},
-  'RXRX':{name:'Recursion Pharma',score:6.5,s:1.5,i:1.0,g:0.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+280%',short:'12%',float:'220M',revenue:'$48M TTM',earnings:'May 8, 2026',rec:'HOLD',verdict:'AI DRUG DISCOVERY — NVIDIA PARTNER',col:'#886600'},
+  'DPRO':{name:'Draganfly',score:5.5,s:1.0,i:1.0,g:0.5,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+180%',short:'98%',float:'12M',revenue:'$4M TTM',earnings:'May 28, 2026',rec:'WATCH',verdict:'SHAKEDOWN SCOUT — 98% SHORT',col:'#886600'},
+  'PLTR':{name:'Palantir Technologies',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+520%',short:'3.4%',float:'2.1B',revenue:'$2.8B TTM',earnings:'May 5, 2026',rec:'HOLD',verdict:'DEFENSE AI PLATFORM',col:'#1a8a3a'},
+  'SMCI':{name:'Super Micro Computer',score:4.5,s:1.5,i:0.0,g:1.0,n:0.0,a:0.5,l:1.0,plus:0.5,surge:'+280%',short:'14%',float:'580M',revenue:'$14B TTM',earnings:'May 6, 2026',rec:'PASS',verdict:'ACCOUNTING FLAGS — SMCI RULE',col:'#cc4400'},
+  'GME':{name:'GameStop',score:3.0,s:1.0,i:0.0,g:0.0,n:1.0,a:0.5,l:0.5,plus:0.0,surge:'+65%',short:'12%',float:'305M',revenue:'$1.1B TTM',earnings:'Mar 26, 2026',rec:'PASS',verdict:'NO THESIS — MEME ONLY',col:'#cc4400'},
+  'NKLA':{name:'Nikola',score:1.5,s:0.0,i:0.0,g:0.0,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'18%',float:'320M',revenue:'$48M TTM',earnings:'May 2026',rec:'PASS',verdict:'FRAUD HISTORY — AUTOMATIC FAIL',col:'#cc0000'},
+  'BA':{name:'Boeing',score:4.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:1.0,plus:1.0,surge:'+45%',short:'2.8%',float:'760M',revenue:'$66B TTM',earnings:'Apr 2026',rec:'PASS',verdict:'SAFETY CRISIS — NO SURGE',col:'#cc4400'},
+  'TSLA':{name:'Tesla',score:5.5,s:1.5,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+210%',short:'3.2%',float:'3.1B',revenue:'$97B TTM',earnings:'Apr 22, 2026',rec:'PASS',verdict:'CAUTION — CONSOLIDATING LOW',col:'#cc4400'},
+  'SPY':{name:'SPDR S&P 500 ETF',score:6.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+180%',short:'0.2%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'BROAD MARKET INDEX',col:'#886600'},
 };
 
-// ── SCORE CANVAS ────────────────────────────────────────────
+// ── SCORE CANVAS ─────────────────────────────────────────────
 const SW=360,SH=640,GREEN='#1a8a3a',INK='#0a1628',INK_MID='#163058',INK_DIM='#4a6888';
 const BG_TOP='#edf4fb',BG_BOT='#daeaf6',RULE='rgba(80,120,180,0.06)';
 const sc_el=document.getElementById('sc');
@@ -414,7 +406,7 @@ function runScoreAnimation(ticker,data){
   scoreRaf=requestAnimationFrame(loop);
 }
 
-// ── SCAN COUNTER ────────────────────────────────────────────
+// ── SCAN COUNTER ─────────────────────────────────────────────
 const FREE_SCANS=3;
 let scansUsed=0;
 try{scansUsed=parseInt(localStorage.getItem('k1ladex_scans')||'0');}catch(e){}
@@ -426,13 +418,36 @@ function updateScanLabel(){
 }
 
 function showPaywall(){document.getElementById('paywallOverlay').classList.add('visible');}
-
 let currentTicker='',currentData=null;
 
-// ── GO BUTTON ───────────────────────────────────────────────
+// ── LOADING STATE HELPERS ────────────────────────────────────
+const LOAD_STAGES=['Fetching live data...','Calculating SIGNAL+...','Running legal scan...','Building score...'];
+let loadStageTimer=null;
+function startLoadingStages(){
+  let stage=0;
+  document.getElementById('loadingSub').textContent=LOAD_STAGES[0];
+  loadStageTimer=setInterval(function(){
+    stage=Math.min(stage+1,LOAD_STAGES.length-1);
+    document.getElementById('loadingSub').textContent=LOAD_STAGES[stage];
+  },3500);
+}
+function stopLoadingStages(){
+  if(loadStageTimer){clearInterval(loadStageTimer);loadStageTimer=null;}
+}
+
+// ── GO BUTTON ────────────────────────────────────────────────
 document.getElementById('goBtn').addEventListener('click',async function(){
   const ticker=document.getElementById('tickerInput').value.trim().toUpperCase();
   if(!ticker)return;
+
+  // BTC Easter egg
+  if(ticker==='BTC'){
+    document.getElementById('btcOverlay').classList.add('visible');
+    document.getElementById('tickerInput').value='';
+    return;
+  }
+
+  // Reset code
   if(ticker==='KLDX'){
     scansUsed=0;
     try{localStorage.setItem('k1ladex_scans','0');}catch(e){}
@@ -440,25 +455,54 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     document.getElementById('tickerInput').value='';
     return;
   }
+
   if(scansUsed>=FREE_SCANS){showPaywall();return;}
-  if(!SCORES[ticker]){
-    alert(ticker+' is not yet in the K1LADEX database.\n\nSubscribe to request a full scan at k1ladex.com');
-    return;
-  }
+
   scansUsed++;
   try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}
   updateScanLabel();
-  const base=Object.assign({},SCORES[ticker]);
+
   document.getElementById('loadingTicker').textContent=ticker;
   document.getElementById('loadingOverlay').classList.add('visible');
+  startLoadingStages();
+
+  let scoreData=null;
+
+  // ── PRIMARY PATH: live scan via Worker /scan ──
   try{
-    const live=await fetchLivePrice(ticker);
-    if(live){base.price=live.price;base.change=live.change;}
+    const liveData=await fetchScan(ticker);
+    if(liveData){
+      scoreData=scoreFromLiveData(ticker,liveData);
+    }
   }catch(e){}
-  currentTicker=ticker;currentData=base;
+
+  stopLoadingStages();
+
+  // ── FALLBACK: static database + live price ──
+  if(!scoreData){
+    if(FALLBACK_SCORES[ticker]){
+      scoreData=Object.assign({},FALLBACK_SCORES[ticker]);
+      try{
+        const lp=await fetchLivePrice(ticker);
+        if(lp){scoreData.price=lp.price;scoreData.change=lp.change;}
+      }catch(e){}
+    }else{
+      // Unknown ticker — can't score
+      document.getElementById('loadingOverlay').classList.remove('visible');
+      scansUsed--;
+      try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}
+      updateScanLabel();
+      alert(ticker+'\n\nNo data returned. Check the ticker symbol and try again.');
+      document.getElementById('tickerInput').value='';
+      return;
+    }
+  }
+
+  currentTicker=ticker;
+  currentData=scoreData;
   document.getElementById('loadingOverlay').classList.remove('visible');
   document.getElementById('scoreOverlay').classList.add('visible');
-  runScoreAnimation(ticker,base);
+  runScoreAnimation(ticker,scoreData);
 });
 
 document.getElementById('tickerInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('goBtn').click();});
@@ -470,12 +514,20 @@ function goBack(){
   document.getElementById('reportBtn').style.opacity=0;
   document.getElementById('ctaShare').style.opacity=0;
   if(scoreRaf)cancelAnimationFrame(scoreRaf);
+  stopLoadingStages();
   document.getElementById('tickerInput').value='';
   setTimeout(function(){document.getElementById('tickerInput').focus();},300);
 }
 
 document.getElementById('backBtn').addEventListener('click',goBack);
 document.getElementById('backBtn').addEventListener('touchend',function(e){e.preventDefault();goBack();},{passive:false});
+
+// BTC close
+document.getElementById('btcCloseBtn').addEventListener('click',function(){
+  document.getElementById('btcOverlay').classList.remove('visible');
+  document.getElementById('tickerInput').value='';
+  setTimeout(function(){document.getElementById('tickerInput').focus();},300);
+});
 
 const WAITLIST='mailto:k1ladexintelligence@gmail.com?subject=K1LADEX%20Waitlist&body=I%20want%20early%20access%20to%20K1LADEX%20Intelligence.';
 document.getElementById('subscribeBtn').addEventListener('click',function(){window.open(WAITLIST,'_blank');});
@@ -487,7 +539,7 @@ function closePaywall(){document.getElementById('paywallOverlay').classList.remo
 document.getElementById('paywallCloseBtn').addEventListener('click',closePaywall);
 document.getElementById('paywallCloseBtn').addEventListener('touchend',function(e){e.preventDefault();closePaywall();},{passive:false});
 
-// ── PDF ─────────────────────────────────────────────────────
+// ── PDF ──────────────────────────────────────────────────────
 function generateReport(ticker,data){
   const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'pt',format:'letter'});
   const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight(),M=54,CW=pw-M*2;
