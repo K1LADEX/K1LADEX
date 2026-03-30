@@ -192,18 +192,6 @@ async function fetchScan(ticker){
   }catch(e){clearTimeout(timer);return null;}
 }
 
-async function fetchCandles(ticker){
-  try{
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),8000);
-    const resp=await fetch(WORKER_BASE+'/candles?ticker='+ticker,{signal:ctrl.signal});
-    clearTimeout(timer);
-    if(!resp.ok)return null;
-    const data=await resp.json();
-    return Array.isArray(data)&&data.length>2?data:null;
-  }catch(e){return null;}
-}
-
 async function fetchLivePrice(ticker){
   try{
     const ctrl=new AbortController();
@@ -339,9 +327,11 @@ function drawScoreScreen(ticker,data,t){
     sc.fillStyle='rgba(100,200,255,0.04)';sc.fillRect(lLeft,lTop,lW,lH);
     const lp=eeo(eop(0.5,1.8));
     const candles=data.candles&&data.candles.length>2?data.candles:null;
+    const isDown=data.score<7;
+    const lineCol=isDown?'#cc4400':BLUE;
     let endX=lRight,endY=lTop+lH*0.5;
     if(lp>0){
-      sc.strokeStyle=BLUE;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=BLUE;sc.shadowBlur=4;sc.beginPath();
+      sc.strokeStyle=lineCol;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=lineCol;sc.shadowBlur=4;sc.beginPath();
       if(candles){
         const pts=candles.length;
         const drawn=Math.max(2,Math.min(Math.floor((pts-1)*lp)+1,pts));
@@ -354,32 +344,42 @@ function drawScoreScreen(ticker,data,t){
           if(i===drawn-1){endX=x;endY=yc;}
         }
       }else{
-        // Fallback: simple ascending line suggesting upward trend
         const steps=60,drawn=Math.max(2,Math.floor(steps*lp));
         for(let i=0;i<drawn;i++){
           const xf=i/(steps-1);
           const x=lLeft+xf*lW;
-          // gentle S-curve upward from bottom-left to upper-right with slight noise
-          const base=lBot-lH*(0.15+xf*0.55);
-          const wave=Math.sin(xf*Math.PI*3)*lH*0.08;
+          let base;
+          if(isDown){base=lTop+lH*(0.15+xf*0.62);}
+          else{base=lBot-lH*(0.15+xf*0.55);}
+          const wave=Math.sin(xf*Math.PI*3)*lH*0.07;
           const yc=Math.max(lTop+1,Math.min(lBot-1,base+wave));
           i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);
           if(i===drawn-1){endX=x;endY=yc;}
         }
       }
       sc.stroke();sc.shadowBlur=0;
-      // Arrow + label when fully drawn
       if(lp>=0.98){
-        const arrowY=Math.max(lTop+14,endY-2);
-        sc.fillStyle=BLUE;sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';
-        sc.shadowColor=BLUE;sc.shadowBlur=6;
-        sc.beginPath();sc.moveTo(endX,arrowY+8);sc.lineTo(endX,arrowY+1);sc.stroke();
-        sc.beginPath();sc.moveTo(endX-4,arrowY+5);sc.lineTo(endX,arrowY-1);sc.lineTo(endX+4,arrowY+5);sc.closePath();sc.fill();
-        sc.shadowBlur=0;
-        sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,arrowY-3);
+        if(isDown){
+          const arrowY=Math.min(lBot-14,endY+2);
+          sc.fillStyle=lineCol;sc.strokeStyle=lineCol;sc.lineWidth=1.5;sc.lineCap='round';
+          sc.shadowColor=lineCol;sc.shadowBlur=6;
+          sc.beginPath();sc.moveTo(endX,arrowY-8);sc.lineTo(endX,arrowY-1);sc.stroke();
+          sc.beginPath();sc.moveTo(endX-4,arrowY-5);sc.lineTo(endX,arrowY+1);sc.lineTo(endX+4,arrowY-5);sc.closePath();sc.fill();
+          sc.shadowBlur=0;
+          sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='top';sc.fillText(data.surge,endX,arrowY+3);
+        }else{
+          const arrowY=Math.max(lTop+14,endY-2);
+          sc.fillStyle=lineCol;sc.strokeStyle=lineCol;sc.lineWidth=1.5;sc.lineCap='round';
+          sc.shadowColor=lineCol;sc.shadowBlur=6;
+          sc.beginPath();sc.moveTo(endX,arrowY+8);sc.lineTo(endX,arrowY+1);sc.stroke();
+          sc.beginPath();sc.moveTo(endX-4,arrowY+5);sc.lineTo(endX,arrowY-1);sc.lineTo(endX+4,arrowY+5);sc.closePath();sc.fill();
+          sc.shadowBlur=0;
+          sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,arrowY-3);
+        }
       }
     }
-    sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';sc.fillText('52W PATTERN',lLeft,lBot+12);
+    sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
+    sc.fillText('52W Low → Current',lLeft,lBot+12);
     sc.restore();
   }
   const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
@@ -491,18 +491,15 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   document.getElementById('loadingOverlay').classList.add('visible');
   startLoadingStages();
   let scoreData=null;
-  const candlesPromise=fetchCandles(ticker);
   try{const liveData=await fetchScan(ticker);if(liveData){scoreData=scoreFromLiveData(ticker,liveData);}}catch(e){}
   await new Promise(resolve=>setTimeout(resolve,3000));
   stopLoadingStages();
-  if(scoreData){try{const candles=await candlesPromise;if(candles)scoreData.candles=candles;}catch(e){}}
   if(!scoreData){
     if(FALLBACK_SCORES[ticker]){
       scoreData=Object.assign({},FALLBACK_SCORES[ticker]);
       const now=new Date();
       scoreData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
       try{const lp=await fetchLivePrice(ticker);if(lp){scoreData.price=lp.price;scoreData.change=lp.change;}}catch(e){}
-      try{const candles=await candlesPromise;if(candles)scoreData.candles=candles;}catch(e){}
     }else{
       document.getElementById('loadingOverlay').classList.remove('visible');
       scansUsed--;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
