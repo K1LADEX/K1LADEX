@@ -192,6 +192,18 @@ async function fetchScan(ticker){
   }catch(e){clearTimeout(timer);return null;}
 }
 
+async function fetchCandles(ticker){
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),8000);
+    const resp=await fetch(WORKER_BASE+'/candles?ticker='+ticker,{signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!resp.ok)return null;
+    const data=await resp.json();
+    return Array.isArray(data)&&data.length>2?data:null;
+  }catch(e){return null;}
+}
+
 async function fetchLivePrice(ticker){
   try{
     const ctrl=new AbortController();
@@ -321,7 +333,7 @@ function drawScoreScreen(ticker,data,t){
     if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
     sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);sc.restore();}
   const lineA=eeo(eop(0.4,1.2));
-  if(lineA>0){sc.save();sc.globalAlpha=lineA;const lTop=130,lBot=178,lLeft=22,lRight=SW-22;sc.fillStyle='rgba(100,200,255,0.04)';sc.fillRect(lLeft,lTop,lRight-lLeft,lBot-lTop);const lp=eeo(eop(0.5,1.8)),pts=100,drawn=Math.floor(pts*lp);if(drawn>1){sc.strokeStyle=BLUE;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=BLUE;sc.shadowBlur=4;sc.beginPath();for(let i=0;i<=drawn;i++){const xf=i/pts,x=lLeft+xf*(lRight-lLeft),y=lBot-(surgeY(xf)-(1-((lBot-lTop)/SH)))*(lBot-lTop)*3.2,yc=Math.max(lTop,Math.min(lBot,y));i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);}sc.stroke();sc.shadowBlur=0;}sc.fillStyle=BLUE;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.textBaseline='middle';sc.fillText(data.surge,lRight-4,lTop+8);sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText('52W PATTERN',lLeft,lBot+12);sc.restore();}
+  if(lineA>0){sc.save();sc.globalAlpha=lineA;const lTop=130,lBot=178,lLeft=22,lRight=SW-22,lW=SW-44,lH=lBot-lTop;sc.fillStyle='rgba(100,200,255,0.04)';sc.fillRect(lLeft,lTop,lW,lH);const lp=eeo(eop(0.5,1.8));const candles=data.candles&&data.candles.length>2?data.candles:null;const pts=candles?candles.length:100;const drawn=Math.floor(pts*lp);let endX=lRight,endY=lTop+lH*0.25;if(drawn>1){let getY;if(candles){const minP=Math.min(...candles),maxP=Math.max(...candles),rng=maxP-minP||1;getY=(i)=>lBot-((candles[i]-minP)/rng)*lH;}else{getY=(i)=>{const xf=i/pts;return lBot-(surgeY(xf)-(1-((lBot-lTop)/SH)))*(lBot-lTop)*3.2;};}sc.strokeStyle=BLUE;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=BLUE;sc.shadowBlur=4;sc.beginPath();for(let i=0;i<=drawn;i++){const x=lLeft+(i/(pts-1))*lW;const y=Math.max(lTop+2,Math.min(lBot-2,getY(i)));i===0?sc.moveTo(x,y):sc.lineTo(x,y);if(i===drawn){endX=x;endY=y;}}sc.stroke();sc.shadowBlur=0;if(lp>=0.98&&candles){const tipY=Math.max(lTop+14,endY-4);sc.strokeStyle=BLUE;sc.fillStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.shadowColor=BLUE;sc.shadowBlur=6;sc.beginPath();sc.moveTo(endX,tipY+9);sc.lineTo(endX,tipY+2);sc.stroke();sc.beginPath();sc.moveTo(endX-4,tipY+6);sc.lineTo(endX,tipY);sc.lineTo(endX+4,tipY+6);sc.closePath();sc.fill();sc.shadowBlur=0;sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,tipY-2);}else if(!candles){sc.fillStyle=BLUE;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.textBaseline='middle';sc.fillText(data.surge,lRight-4,lTop+8);}}sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText('52W PATTERN',lLeft,lBot+12);sc.restore();}
   const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
   const names=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Catalyst Dated','Levels & Macro','Vol + Short'];
   const startY=200,rowH=32;
@@ -431,15 +443,18 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   document.getElementById('loadingOverlay').classList.add('visible');
   startLoadingStages();
   let scoreData=null;
+  const candlesPromise=fetchCandles(ticker);
   try{const liveData=await fetchScan(ticker);if(liveData){scoreData=scoreFromLiveData(ticker,liveData);}}catch(e){}
   await new Promise(resolve=>setTimeout(resolve,3000));
   stopLoadingStages();
+  if(scoreData){try{const candles=await candlesPromise;if(candles)scoreData.candles=candles;}catch(e){}}
   if(!scoreData){
     if(FALLBACK_SCORES[ticker]){
       scoreData=Object.assign({},FALLBACK_SCORES[ticker]);
       const now=new Date();
       scoreData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
       try{const lp=await fetchLivePrice(ticker);if(lp){scoreData.price=lp.price;scoreData.change=lp.change;}}catch(e){}
+      try{const candles=await candlesPromise;if(candles)scoreData.candles=candles;}catch(e){}
     }else{
       document.getElementById('loadingOverlay').classList.remove('visible');
       scansUsed--;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
