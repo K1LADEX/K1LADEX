@@ -333,7 +333,55 @@ function drawScoreScreen(ticker,data,t){
     if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
     sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);sc.restore();}
   const lineA=eeo(eop(0.4,1.2));
-  if(lineA>0){sc.save();sc.globalAlpha=lineA;const lTop=130,lBot=178,lLeft=22,lRight=SW-22,lW=SW-44,lH=lBot-lTop;sc.fillStyle='rgba(100,200,255,0.04)';sc.fillRect(lLeft,lTop,lW,lH);const lp=eeo(eop(0.5,1.8));const candles=data.candles&&data.candles.length>2?data.candles:null;const pts=candles?candles.length:100;const drawn=Math.floor(pts*lp);let endX=lRight,endY=lTop+lH*0.25;if(drawn>1){let getY;if(candles){const minP=Math.min(...candles),maxP=Math.max(...candles),rng=maxP-minP||1;getY=(i)=>lBot-((candles[i]-minP)/rng)*lH;}else{getY=(i)=>{const xf=i/pts;return lBot-(surgeY(xf)-(1-((lBot-lTop)/SH)))*(lBot-lTop)*3.2;};}sc.strokeStyle=BLUE;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=BLUE;sc.shadowBlur=4;sc.beginPath();for(let i=0;i<=drawn;i++){const x=lLeft+(i/(pts-1))*lW;const y=Math.max(lTop+2,Math.min(lBot-2,getY(i)));i===0?sc.moveTo(x,y):sc.lineTo(x,y);if(i===drawn){endX=x;endY=y;}}sc.stroke();sc.shadowBlur=0;if(lp>=0.98&&candles){const tipY=Math.max(lTop+14,endY-4);sc.strokeStyle=BLUE;sc.fillStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.shadowColor=BLUE;sc.shadowBlur=6;sc.beginPath();sc.moveTo(endX,tipY+9);sc.lineTo(endX,tipY+2);sc.stroke();sc.beginPath();sc.moveTo(endX-4,tipY+6);sc.lineTo(endX,tipY);sc.lineTo(endX+4,tipY+6);sc.closePath();sc.fill();sc.shadowBlur=0;sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,tipY-2);}else if(!candles){sc.fillStyle=BLUE;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.textBaseline='middle';sc.fillText(data.surge,lRight-4,lTop+8);}}sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText('52W PATTERN',lLeft,lBot+12);sc.restore();}
+  if(lineA>0){
+    sc.save();sc.globalAlpha=lineA;
+    const lTop=130,lBot=178,lLeft=22,lRight=SW-22,lW=SW-44,lH=lBot-lTop;
+    sc.fillStyle='rgba(100,200,255,0.04)';sc.fillRect(lLeft,lTop,lW,lH);
+    const lp=eeo(eop(0.5,1.8));
+    const candles=data.candles&&data.candles.length>2?data.candles:null;
+    let endX=lRight,endY=lTop+lH*0.5;
+    if(lp>0){
+      sc.strokeStyle=BLUE;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=BLUE;sc.shadowBlur=4;sc.beginPath();
+      if(candles){
+        const pts=candles.length;
+        const drawn=Math.max(2,Math.min(Math.floor((pts-1)*lp)+1,pts));
+        const minP=Math.min(...candles),maxP=Math.max(...candles),rng=maxP-minP||1;
+        for(let i=0;i<drawn;i++){
+          const x=lLeft+(i/(pts-1))*lW;
+          const y=lBot-((candles[i]-minP)/rng)*lH;
+          const yc=Math.max(lTop+1,Math.min(lBot-1,y));
+          i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);
+          if(i===drawn-1){endX=x;endY=yc;}
+        }
+      }else{
+        // Fallback: simple ascending line suggesting upward trend
+        const steps=60,drawn=Math.max(2,Math.floor(steps*lp));
+        for(let i=0;i<drawn;i++){
+          const xf=i/(steps-1);
+          const x=lLeft+xf*lW;
+          // gentle S-curve upward from bottom-left to upper-right with slight noise
+          const base=lBot-lH*(0.15+xf*0.55);
+          const wave=Math.sin(xf*Math.PI*3)*lH*0.08;
+          const yc=Math.max(lTop+1,Math.min(lBot-1,base+wave));
+          i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);
+          if(i===drawn-1){endX=x;endY=yc;}
+        }
+      }
+      sc.stroke();sc.shadowBlur=0;
+      // Arrow + label when fully drawn
+      if(lp>=0.98){
+        const arrowY=Math.max(lTop+14,endY-2);
+        sc.fillStyle=BLUE;sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';
+        sc.shadowColor=BLUE;sc.shadowBlur=6;
+        sc.beginPath();sc.moveTo(endX,arrowY+8);sc.lineTo(endX,arrowY+1);sc.stroke();
+        sc.beginPath();sc.moveTo(endX-4,arrowY+5);sc.lineTo(endX,arrowY-1);sc.lineTo(endX+4,arrowY+5);sc.closePath();sc.fill();
+        sc.shadowBlur=0;
+        sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,arrowY-3);
+      }
+    }
+    sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';sc.fillText('52W PATTERN',lLeft,lBot+12);
+    sc.restore();
+  }
   const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
   const names=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Catalyst Dated','Levels & Macro','Vol + Short'];
   const startY=200,rowH=32;
