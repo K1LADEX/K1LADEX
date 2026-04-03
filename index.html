@@ -257,7 +257,17 @@ function scoreFromLiveData(ticker,d){
   const col=rec==='BUY'?'#1a8a3a':rec==='HOLD'?'#886600':'#cc4400';
   const now=new Date();
   const scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  return{name:d.name||ticker,score,s,i,g,n,a,l,plus,surge:d.surgeFormatted||'—',short:d.shortPctFormatted||'N/A',float:d.floatFormatted||'N/A',revenue:d.revenueFormatted||'N/A',earnings:d.nextEarnings||'TBD',rec,verdict,col,price:d.price,change:d.change,scanTime};
+  return{name:d.name||ticker,score,s,i,g,n,a,l,plus,surge:d.surgeFormatted||'—',short:d.shortPctFormatted||'N/A',float:d.floatFormatted||'N/A',revenue:d.revenueFormatted||'N/A',earnings:d.nextEarnings||'TBD',rec,verdict,col,price:d.price,change:d.change,scanTime,
+    surgeVal:surge,week52Low:d.week52Low||null,week52High:d.week52High||null,
+    currentPrice:d.currentPrice||null,ma50:d.ma50||null,newLow30d:!!d.newLow30d,
+    iGate52H:!!(d.week52High&&d.currentPrice>=d.week52High*0.70),
+    iGate50MA:!!(d.ma50&&d.currentPrice>d.ma50),
+    iGateNo30d:!d.newLow30d,
+    revenueGrowth:(d.revenueGrowth!==null&&d.revenueGrowth!==undefined)?d.revenueGrowth:null,
+    hasCash:!!(d.totalCash&&d.totalCash>0),
+    nFlags:d.nFlags||[],nStrikes:strikes,
+    shortPct:d.shortPct||null,floatShares:d.floatShares||null,
+    highShort:highShort,tightFloat:tightFloat,megaFloat:megaFloat};
 }
 
 // ── FALLBACK SCORES ──────────────────────────────────────────
@@ -544,53 +554,309 @@ function generateReport(ticker,data){
   const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'pt',format:'letter'});
   const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight(),M=54,CW=pw-M*2;
   const dateStr=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  const recCol=data.rec==='BUY'?[26,138,58]:data.rec==='HOLD'?[136,102,0]:[204,68,0];
-  const scoreCol=data.col==='#1a8a3a'?[26,138,58]:data.col==='#886600'?[136,102,0]:[204,68,0];
-  function hdr(n){doc.setFillColor(8,14,26);doc.rect(0,0,pw,ph,'F');doc.setFillColor(8,14,26);doc.rect(0,0,pw,52,'F');doc.setFillColor(100,200,255);doc.rect(0,52,pw,3,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('K1LADEX',M,34);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(100,200,255);doc.text('INTELLIGENCE FRAMEWORK',M,45);doc.setTextColor(180,200,220);doc.setFontSize(8);doc.text(ticker+' · '+dateStr,pw-M,34,{align:'right'});doc.text('Page '+n,pw-M,45,{align:'right'});}
-  function ftr(){doc.setFillColor(8,14,26);doc.rect(0,ph-36,pw,36,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);doc.text('K1LADEX',M,ph-18);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(100,200,255);doc.text("Finally know what you're doing.  ·  k1ladex.com",M+52,ph-18);doc.setTextColor(100,120,140);doc.text('For informational purposes only. Not financial advice.',pw-M,ph-18,{align:'right'});}
-  function sec(y,title,sub){doc.setFillColor(13,23,38);doc.rect(M,y,CW,26,'F');doc.setDrawColor(...scoreCol);doc.setLineWidth(2);doc.line(M,y,M,y+26);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(255,255,255);doc.text(title,M+10,y+17);if(sub){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(100,200,255);doc.text(sub,pw-M,y+17,{align:'right'});}return y+38;}
-  function sBar(x,y,w,h,val,max,col){doc.setFillColor(20,30,50);doc.rect(x,y,w,h,'F');const f=(val/max)*w;if(f>0){doc.setFillColor(...col);doc.rect(x,y,f,h,'F');}}
-  doc.setFillColor(8,14,26);doc.rect(0,0,pw,ph,'F');doc.setFillColor(100,200,255);doc.rect(0,ph*0.42,pw,3,'F');
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(42);doc.text('K1LADEX',pw/2,ph*0.22,{align:'center'});
-  doc.setFontSize(10);doc.setTextColor(100,200,255);doc.setFont('helvetica','normal');doc.text('INTELLIGENCE FRAMEWORK',pw/2,ph*0.22+26,{align:'center'});
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(72);doc.text(ticker,pw/2,ph*0.48,{align:'center'});
-  doc.setFontSize(16);doc.setFont('helvetica','normal');doc.setTextColor(180,200,220);doc.text(data.name,pw/2,ph*0.48+30,{align:'center'});
-  doc.setFontSize(22);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(data.price||'—',pw/2-30,ph*0.48+72,{align:'right'});
-  doc.setTextColor(...((data.change&&data.change.startsWith('-'))?[255,100,80]:[100,200,255]));doc.text(data.change||'',pw/2-22,ph*0.48+72,{align:'left'});
-  doc.setFillColor(...recCol);doc.rect(pw/2-80,ph*0.62,160,42,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(20);doc.text(data.rec,pw/2,ph*0.62+28,{align:'center'});
-  doc.setTextColor(...scoreCol.map(v=>Math.min(v+80,255)));doc.setFontSize(14);doc.text('K1LADEX SIGNAL SCORE: '+data.score+'/10',pw/2,ph*0.62+70,{align:'center'});
-  doc.setTextColor(100,130,160);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text('Scan Date: '+dateStr,pw/2,ph*0.62+92,{align:'center'});
-  doc.setTextColor(100,200,255);doc.setFontSize(11);doc.setFont('helvetica','italic');doc.text("Finally know what you're doing.",pw/2,ph*0.88,{align:'center'});ftr();
-  doc.addPage();hdr(2);ftr();let y=80;y=sec(y,'K1LADEX SIGNAL+ SCORECARD',ticker+' · '+data.rec+' · '+data.score+'/10');
-  doc.setFont('helvetica','bold');doc.setFontSize(60);doc.setTextColor(...scoreCol);doc.text(String(data.score),M,y+72);
-  doc.setFont('helvetica','normal');doc.setFontSize(20);doc.setTextColor(100,120,140);doc.text('/10',M+70,y+72);
-  doc.setFont('helvetica','italic');doc.setFontSize(11);doc.setTextColor(...recCol);doc.text('Recommendation: '+data.rec,M+110,y+52);
-  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,120,140);doc.text(data.verdict,M+110,y+68);y+=96;
+  // ── PALETTE: white paper, blue + dark ink ─────────────────
+  const W=[255,255,255],INK=[20,28,48],INK2=[85,100,125];
+  const B=[0,108,200],BLT=[230,241,254],RUL=[205,218,232],NV=[8,32,80];
+  const recCol=data.rec==='BUY'?[0,128,60]:data.rec==='HOLD'?[155,108,0]:[172,48,0];
+  function cpCol(v){return v>=1.5?B:v>=1.0?[155,108,0]:[172,48,0];}
+  // ── LAYOUT HELPERS ────────────────────────────────────────
+  function hdr(n){
+    doc.setFillColor(...W);doc.rect(0,0,pw,ph,'F');
+    doc.setFillColor(...NV);doc.rect(0,0,pw,52,'F');
+    doc.setFillColor(...B);doc.rect(0,52,pw,3,'F');
+    doc.setTextColor(...W);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('K1LADEX',M,34);
+    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(155,205,255);doc.text('INTELLIGENCE FRAMEWORK',M,45);
+    doc.setTextColor(185,210,240);doc.setFontSize(8);doc.text(ticker+' · '+dateStr,pw-M,34,{align:'right'});
+    doc.text('Page '+n+' of 12',pw-M,45,{align:'right'});
+  }
+  function ftr(){
+    doc.setFillColor(...NV);doc.rect(0,ph-36,pw,36,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...W);doc.text('K1LADEX',M,ph-18);
+    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(155,205,255);doc.text("Finally know what you're doing.  ·  k1ladex.com",M+52,ph-18);
+    doc.setTextColor(110,145,180);doc.text('For informational purposes only. Not financial advice.',pw-M,ph-18,{align:'right'});
+  }
+  function sec(y,title,sub){
+    doc.setFillColor(...BLT);doc.rect(M,y,CW,26,'F');
+    doc.setDrawColor(...B);doc.setLineWidth(2.5);doc.line(M,y,M,y+26);
+    doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...INK);doc.text(title,M+10,y+17);
+    if(sub){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...B);doc.text(sub,pw-M,y+17,{align:'right'});}
+    return y+38;
+  }
+  function sBar(x,y,w,h,val,max,col){
+    doc.setFillColor(...RUL);doc.rect(x,y,w,h,'F');
+    const f=(val/max)*w;if(f>0){doc.setFillColor(...col);doc.rect(x,y,f,h,'F');}
+  }
+  function rule(y){doc.setDrawColor(...RUL);doc.setLineWidth(0.4);doc.line(M,y,M+CW,y);}
+  function dataRow(l1,v1,l2,v2,ry,even){
+    doc.setFillColor(...(even?[244,248,254]:[251,252,255]));doc.rect(M,ry,CW,34,'F');
+    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...INK2);
+    doc.text(l1,M+8,ry+12);if(l2)doc.text(l2,M+CW/2+8,ry+12);
+    doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...INK);
+    doc.text(String(v1),M+8,ry+26);if(v2!=null)doc.text(String(v2),M+CW/2+8,ry+26);
+    rule(ry+34);if(l2){doc.setDrawColor(...RUL);doc.setLineWidth(0.4);doc.line(M+CW/2,ry,M+CW/2,ry+34);}
+  }
+
+  // ── PAGE 1: COVER ─────────────────────────────────────────
+  doc.setFillColor(...W);doc.rect(0,0,pw,ph,'F');
+  doc.setFillColor(...NV);doc.rect(0,0,pw,ph*0.20,'F');
+  doc.setFillColor(...B);doc.rect(0,ph*0.20,pw,3,'F');
+  doc.setTextColor(...W);doc.setFont('helvetica','bold');doc.setFontSize(36);doc.text('K1LADEX',pw/2,ph*0.11,{align:'center'});
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(155,205,255);doc.text('INTELLIGENCE FRAMEWORK',pw/2,ph*0.11+20,{align:'center'});
+  doc.setFont('helvetica','bold');doc.setFontSize(80);doc.setTextColor(...INK);doc.text(ticker,pw/2,ph*0.47,{align:'center'});
+  doc.setFont('helvetica','normal');doc.setFontSize(14);doc.setTextColor(...INK2);doc.text(data.name,pw/2,ph*0.47+26,{align:'center'});
+  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(...INK);doc.text(data.price||'—',pw/2-14,ph*0.47+58,{align:'right'});
+  const chgUp=!(data.change&&data.change.startsWith('-'));
+  doc.setTextColor(...(chgUp?[0,128,60]:[172,48,0]));doc.text(data.change||'',pw/2-6,ph*0.47+58,{align:'left'});
+  doc.setFillColor(...B);doc.rect(pw/2-90,ph*0.56,180,2,'F');
+  doc.setFillColor(...recCol);doc.rect(pw/2-72,ph*0.60,144,42,'F');
+  doc.setTextColor(...W);doc.setFont('helvetica','bold');doc.setFontSize(20);doc.text(data.rec,pw/2,ph*0.60+28,{align:'center'});
+  doc.setTextColor(...B);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text('K1LADEX SIGNAL SCORE: '+data.score+'/10',pw/2,ph*0.60+58,{align:'center'});
+  doc.setTextColor(...INK2);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text('Scan Date: '+dateStr,pw/2,ph*0.60+74,{align:'center'});
+  doc.setTextColor(...B);doc.setFontSize(10);doc.setFont('helvetica','italic');doc.text("Finally know what you're doing.",pw/2,ph*0.88,{align:'center'});
+  ftr();
+
+  // ── PAGE 2: SIGNAL+ SCORECARD ─────────────────────────────
+  doc.addPage();hdr(2);ftr();let y=80;
+  y=sec(y,'K1LADEX SIGNAL+ SCORECARD',ticker+' · '+data.rec+' · '+data.score+'/10');
+  doc.setFont('helvetica','bold');doc.setFontSize(58);doc.setTextColor(...B);doc.text(String(data.score),M,y+68);
+  doc.setFont('helvetica','normal');doc.setFontSize(20);doc.setTextColor(...INK2);doc.text('/10',M+72,y+68);
+  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...recCol);doc.text('Recommendation: '+data.rec,M+110,y+46);
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...INK2);doc.text(data.verdict,M+110,y+62);y+=90;
   const lbls=['S','I','G','N','A','L','+'],vls=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
   const fN=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Approaching Catalyst','Levels & Macro','Volume + Short Pressure'];
   lbls.forEach((lbl,i)=>{
-    const col=vls[i]>=1.5?[100,200,255]:vls[i]>=1.0?[136,102,0]:[204,68,0],rh=46;
-    doc.setFillColor(...(i%2===0?[13,23,38]:[8,14,26]));doc.rect(M,y,CW,rh,'F');doc.setFillColor(...col);doc.rect(M,y,4,rh,'F');
-    doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(...col);doc.text(lbl,M+14,y+30);
-    doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text(fN[i],M+34,y+18);
-    sBar(pw-M-120,y+10,100,14,vls[i],1.5,col);doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(...col);doc.text(vls[i].toFixed(1),pw-M,y+30,{align:'right'});
-    doc.setDrawColor(20,40,60);doc.setLineWidth(0.3);doc.line(M,y+rh,M+CW,y+rh);y+=rh;
+    const col=cpCol(vls[i]),rh=44;
+    doc.setFillColor(...(i%2===0?[244,248,254]:[251,252,255]));doc.rect(M,y,CW,rh,'F');
+    doc.setFillColor(...col);doc.rect(M,y,3,rh,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(...col);doc.text(lbl,M+12,y+28);
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...INK);doc.text(fN[i],M+32,y+16);
+    const sl=vls[i]>=1.5?'CONFIRMED':vls[i]>=1.0?'PARTIAL':'FAILED';
+    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...col);doc.text(sl,M+32,y+30);
+    sBar(pw-M-132,y+13,112,14,vls[i],1.5,col);
+    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(...col);doc.text(vls[i].toFixed(1),pw-M,y+30,{align:'right'});
+    rule(y+rh);y+=rh;
   });
-  y+=16;y=sec(y,'KEY DATA');
-  [['Current Price',data.price||'—','Short Interest',data.short],['52W Surge',data.surge,'Float',data.float],['Revenue',data.revenue,'Next Earnings',data.earnings]].forEach(([l1,v1,l2,v2],i)=>{
-    const ry=y+i*34;doc.setFillColor(...(i%2===0?[13,23,38]:[8,14,26]));doc.rect(M,ry,CW,34,'F');
-    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(100,120,140);doc.text(l1,M+8,ry+12);doc.text(l2,M+CW/2+8,ry+12);
-    doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text(String(v1),M+8,ry+25);doc.text(String(v2),M+CW/2+8,ry+25);
-    doc.setDrawColor(20,40,60);doc.setLineWidth(0.3);doc.line(M,ry+34,M+CW,ry+34);doc.line(M+CW/2,ry,M+CW/2,ry+34);
+  y+=14;y=sec(y,'KEY DATA');
+  [['Current Price',data.price||'—','Short Interest',data.short],
+   ['52W Surge',data.surge,'Float',data.float],
+   ['Revenue (TTM)',data.revenue,'Next Earnings',data.earnings]
+  ].forEach(([l1,v1,l2,v2],i)=>dataRow(l1,v1,l2,v2,y+i*34,i%2===0));
+
+  // ── CHECKPOINT PROSE (data-driven) ────────────────────────
+  function cpProse(letter,val,d){
+    const t=ticker,nn=x=>(x!==null&&x!==undefined)?x:null;
+    if(letter==='S'){
+      const sv=nn(d.surgeVal),lo=nn(d.week52Low),cp2=nn(d.currentPrice);
+      const det=sv!=null&&lo!=null&&cp2!=null
+        ?'\n\n52-week low: $'+lo.toFixed(2)+'\nCurrent price: $'+cp2.toFixed(2)+'\nMeasured surge: '+sv.toFixed(0)+'% from the low.'
+        :'\n\nRecorded 52-week surge: '+d.surge+'.';
+      if(val>=1.5)return t+' has cleared the S checkpoint with a confirmed surge of '+d.surge+' from its 52-week low — well above the 200% minimum threshold.'+det+'\n\nThe initial launch phase is complete. A name that has not surged 200%+ has not yet been validated by the market. '+t+' has been. The geometric prerequisite for re-entry is satisfied.';
+      if(val>=0.75)return t+' has moved '+d.surge+' from its 52-week low — meaningful, but short of the 200% minimum for full S activation.'+det+'\n\nMarket interest is present. The geometric threshold is not yet independently satisfied. A partial score of 0.75 is assigned. Monitor for continuation toward 200%.';
+      return t+'\'s 52-week move of '+d.surge+' does not clear the 200% threshold.'+det+'\n\nThis checkpoint is binary. No other score can compensate for its absence. The name has not completed the initial launch phase that SIGNAL+ requires before re-entry is considered.';
+    }
+    if(letter==='I'){
+      const g1=d.iGate52H!=null?d.iGate52H:(val>=1.0);
+      const g2=d.iGate50MA!=null?d.iGate50MA:(val>=1.0);
+      const g3=d.iGateNo30d!=null?d.iGateNo30d:(val>=1.5);
+      const cp2=nn(d.currentPrice),h52=nn(d.week52High),ma=nn(d.ma50);
+      const passed=[g1,g2,g3].filter(Boolean).length;
+      let g1t='Gate 1 — Within 30% of 52-week high: '+(g1?'PASS':'FAIL');
+      if(h52&&cp2)g1t+=' (price $'+cp2.toFixed(2)+', threshold $'+(h52*0.70).toFixed(2)+', high $'+h52.toFixed(2)+')';
+      let g2t='Gate 2 — Above 50-day moving average: '+(g2?'PASS':'FAIL');
+      if(ma&&cp2)g2t+=' (price $'+cp2.toFixed(2)+', MA $'+ma.toFixed(2)+')';
+      const g3t='Gate 3 — No new 30-day lows: '+(g3?'PASS':'FAIL');
+      const gText='\n\n'+g1t+'\n'+g2t+'\n'+g3t+'\n\n'+passed+' of 3 gates satisfied.';
+      if(val>=1.5)return t+' is in confirmed consolidation, clearing all three I checkpoint gates.'+gText+'\n\nThis is the geometric rest zone SIGNAL+ requires: holding above the moving average, coiling near highs, no 30-day breakdown. Re-entry setups form here. The pattern is intact.';
+      if(val>=0.75)return t+' is partially consolidating, passing '+passed+' of 3 gates.'+gText+'\n\nBase-building is visible but the tight coiling structure required for a clean signal has not fully formed. Do not enter while a gate is failing. Monitor for resolution.';
+      return t+' has failed the consolidation checkpoint, passing only '+passed+' of 3 gates.'+gText+'\n\nThe stock is not in a constructive rest pattern. No re-entry should be considered. The structure must establish and hold before this gate can pass.';
+    }
+    if(letter==='G'){
+      const rg=nn(d.revenueGrowth),hc=d.hasCash;
+      let det='\n\nRevenue (TTM): '+d.revenue+'.';
+      if(rg!==null)det+='\nRevenue growth (YoY): '+(rg*100).toFixed(1)+'%.';
+      if(hc!=null)det+='\nCash position: '+(hc?'Confirmed positive.':'Not confirmed positive.');
+      if(val>=1.5)return t+' clears the G checkpoint with confirmed revenue of '+d.revenue+', growth above the 5% YoY threshold, and positive cash positioning.'+det+'\n\nThe business is not pre-revenue speculation. Revenue is real, growing, and supported by cash. Fundamentals are working in favor of the technical thesis, not against it.';
+      if(val>=1.0)return t+' shows positive revenue of '+d.revenue+' with measurable growth — but below the 5% threshold or without full cash confirmation.'+det+'\n\nReal top-line numbers are present, removing the most dangerous category of speculative risk. Growth is directionally correct. G scores 1.0: a passing grade with limited conviction, not a disqualifier.';
+      return t+' is pre-revenue or generating negative growth.'+det+'\n\nThe G checkpoint does not fully activate without consistently growing top-line revenue. A floor of 0.5 is assigned — the checkpoint is acknowledged but not confirmed. Fundamental risk profile is elevated.';
+    }
+    if(letter==='N'){
+      const flags=d.nFlags||[],strikes=d.nStrikes!=null?d.nStrikes:(val===0?2:0);
+      let det='\n\nActive legal strike count: '+strikes+(strikes>=2?' — SMCI RULE TRIGGERED.':'.');
+      det+=flags.length>0?'\n\nFlags identified:\n'+flags.map((f,i)=>'  '+(i+1)+'. '+f).join('\n'):'\n\n'+(val>=1.5?'No flags on record. Regulatory file is clean.':'Flag detail not enumerated for this scan.');
+      if(val>=1.5)return 'No disqualifying legal or regulatory flags have been identified for '+t+'. The N checkpoint verifies the company is not subject to the SMCI Rule, which permanently disqualifies any name carrying 2+ active legal strikes.'+det+'\n\n'+t+' passes cleanly. A clean N reading does not certify zero risk — it confirms no disqualifying strikes exist in the scan record.';
+      return t+' has triggered the K1LADEX SMCI Rule.'+det+'\n\nThis is a full disqualification, not a deduction. Names with active legal exposure carry tail risks that pattern recognition cannot price. A PASS is locked in regardless of all other checkpoint scores. The name is removed from consideration until all active strikes are fully and verifiably resolved.';
+    }
+    if(letter==='A'){
+      const ea=d.earnings;
+      let daysText='';
+      if(ea&&ea!=='TBD'){const ed=new Date(ea);if(!isNaN(ed)){const diff=Math.ceil((ed-new Date())/86400000);daysText=diff>0?' That is '+diff+' calendar days from the scan date.':diff===0?' That is today.':' Note: that date has passed — verify the current earnings calendar.';}}
+      if(val>=1.5)return t+' has a confirmed upcoming catalyst on the calendar: next earnings scheduled for '+ea+'.'+daysText+'\n\nCatalysts are the ignition events that convert consolidation into directional movement. A known, datable event forces institutional repositioning and creates the price discovery conditions SIGNAL+ is designed to front-run. Checkpoint fully confirmed. The question is not whether the catalyst exists — it does — but whether the other six checkpoints are sufficiently aligned to act ahead of it.';
+      return 'No confirmed upcoming catalyst has been identified for '+t+'. Earnings on record: '+ea+'.'+daysText+'\n\nThe A checkpoint requires a specific, datable event capable of forcing price discovery. Without one, price movement must come from market structure alone — lower urgency, lower conviction. A scores zero until a catalyst is confirmed. Check the company\'s IR calendar and SEC filings.';
+    }
+    if(letter==='L'){
+      const cp2=nn(d.currentPrice),lo=nn(d.week52Low),hi=nn(d.week52High),ma=nn(d.ma50);
+      let det='';
+      if(cp2&&lo){
+        const dist=((cp2-lo)/lo*100),stop=lo*1.02,stopPct=(cp2-stop)/cp2*100;
+        det='\n\nCurrent price: $'+cp2.toFixed(2)+'\n52-week low (support floor): $'+lo.toFixed(2)+'\nDistance from low: '+dist.toFixed(1)+'%\nSuggested stop reference: $'+stop.toFixed(2)+' (2% above 52W low, ~'+stopPct.toFixed(1)+'% downside from current)';
+        if(hi)det+='\n52-week high: $'+hi.toFixed(2)+' ('+((hi-cp2)/hi*100).toFixed(1)+'% above current)';
+        if(ma)det+='\n50-day MA: $'+ma.toFixed(2)+' — price is '+(cp2>ma?'+'+((cp2-ma)/ma*100).toFixed(1)+'% above':((cp2-ma)/ma*100).toFixed(1)+'% below');
+      }else{det='\n\nCurrent price: '+(d.price||'—')+'\n52-week surge: '+d.surge;}
+      if(val>=1.5)return t+' is trading more than 25% above its 52-week low, confirming constructive macro positioning.'+det+'\n\nThe 52-week low is the primary technical support reference. A stop placed just above this level — shown above — captures the geometric thesis with clearly defined risk. L checkpoint fully confirmed.';
+      if(val>=1.0)return t+' is trading between 5–25% above its 52-week low — a neutral but acceptable macro position.'+det+'\n\nThe stock has recovered from the floor but has not achieved decisive separation. L scores 1.0: technically passing, not maximum conviction. Position sizing should reflect the neutral reading. A move beyond 25% distance would upgrade this checkpoint.';
+      return t+' is trading within 5% of its 52-week low — a structurally weak price position.'+det+'\n\nThe stock is hugging its floor, compressing risk/reward. A stop near the 52-week low leaves almost no tolerance on a name that has already established that level as significant support. L scores 0.5. Wait for decisive separation before reconsidering entry.';
+    }
+    if(letter==='+'){
+      const sp=nn(d.shortPct),fs=nn(d.floatShares);
+      const hs=d.highShort!=null?d.highShort:(sp&&sp>0.10);
+      const tf=d.tightFloat!=null?d.tightFloat:(fs&&fs<30000000);
+      const mf=d.megaFloat!=null?d.megaFloat:(fs&&fs>100000000);
+      const fsStr=fs?Math.round(fs/1e5)/10+'M shares':'N/A';
+      let det='\n\nShort interest: '+d.short+(sp?' ('+((sp)*100).toFixed(1)+'% of float)':'')+
+        '\nFloat: '+d.float+(fs?' ('+fsStr+')':'')+
+        '\nHigh short >10%: '+(hs?'YES':'NO')+
+        '\nTight float <30M shares: '+(tf?'YES':'NO')+
+        '\nMega float >100M (suppressive): '+(mf?'YES':'NO')+
+        '\nSqueeze overlay: '+(val>=1.5?'FULL — both conditions confirmed':val>=0.75?'PARTIAL — one condition confirmed':'ABSENT');
+      if(val>=1.5)return t+' exhibits both elevated short interest ('+d.short+') and a tight float ('+d.float+') — the highest-conviction + checkpoint configuration.'+det+'\n\nA compressed float limits available supply. Elevated short interest means those short positions must eventually be covered — into a rising price on limited shares. These two forces combine to create the squeeze overlay: mechanical amplification of any catalyst-driven move. Both conditions are confirmed.';
+      if(val>=0.75){
+        if(hs&&!tf)return t+' carries elevated short interest of '+d.short+' — above the 10% threshold for partial + activation.'+det+'\n\nThe float ('+d.float+') does not qualify as tight. However, significant short exposure creates real squeeze potential on any upward catalyst. Partial + score of 0.75. One ignition event away from a forced unwind.';
+        return t+' has a tight float of '+d.float+', creating supply compression without elevated short interest ('+d.short+').'+det+'\n\nLimited share supply means modest demand increases produce outsized price moves. The squeeze overlay is partial — short interest component absent — but float-driven scarcity is confirmed. Partial + score of 0.75.';
+      }
+      return 'Neither elevated short interest nor a tight float are confirmed for '+t+'.'+det+'\n\n'+(mf?'The mega float ('+d.float+') is actively suppressive — large share supply absorbs demand without generating squeeze conditions. ':'')+'The + amplifier is absent. '+t+' may qualify on other checkpoints, but the squeeze overlay — a core K1LADEX edge — is not present in this setup.';
+    }
+    return '';
+  }
+
+  // ── PAGES 3–9: ONE PER CHECKPOINT ─────────────────────────
+  const cpDefs=[
+    {letter:'S',name:'Surge 200%+',val:data.s,
+     dp:[['52-Week Surge',data.surge],['Current Price',data.price||'—'],['52W Low',data.week52Low?'$'+data.week52Low.toFixed(2):'N/A']]},
+    {letter:'I',name:'In Consolidation',val:data.i,
+     dp:[['50-Day MA',data.ma50?'$'+data.ma50.toFixed(2):'N/A'],['52W High',data.week52High?'$'+data.week52High.toFixed(2):'N/A'],['30-Day Lows',data.newLow30d?'MAKING NEW LOWS':'NONE — CLEAN']]},
+    {letter:'G',name:'Growth Confirmed',val:data.g,
+     dp:[['Revenue (TTM)',data.revenue],['Growth YoY',data.revenueGrowth!=null?(data.revenueGrowth*100).toFixed(1)+'%':'N/A'],['Cash Confirmed',data.hasCash!=null?(data.hasCash?'YES':'NO'):'N/A']]},
+    {letter:'N',name:'No Red Flags',val:data.n,
+     dp:[['Strike Count',data.nStrikes!=null?String(data.nStrikes):'0'],['SMCI Rule',data.nStrikes>=2?'TRIGGERED':'CLEAR'],['Status',data.n>=1.5?'CLEAN — NO FLAGS':'DISQUALIFIED']]},
+    {letter:'A',name:'Approaching Catalyst',val:data.a,
+     dp:[['Next Earnings',data.earnings],['Catalyst Status',data.a>=1.5?'CONFIRMED':'NONE ON RECORD']]},
+    {letter:'L',name:'Levels & Macro',val:data.l,
+     dp:[['Current Price',data.price||'—'],['52W Low (Support)',data.week52Low?'$'+data.week52Low.toFixed(2):'N/A'],['Stop Reference',data.week52Low?'$'+(data.week52Low*1.02).toFixed(2)+' (+2% above low)':'N/A']]},
+    {letter:'+',name:'Volume + Short Pressure',val:data.plus,
+     dp:[['Short Interest',data.short],['Float',data.float],['Squeeze Overlay',data.plus>=1.5?'FULL':data.plus>=0.75?'PARTIAL':'ABSENT']]},
+  ];
+  cpDefs.forEach((cp,idx)=>{
+    doc.addPage();hdr(idx+3);ftr();
+    const col=cpCol(cp.val);
+    const statusLabel=cp.val>=1.5?'CONFIRMED':cp.val>=1.0?'PARTIAL':'FAILED';
+    y=80;
+    // ghost watermark letter
+    doc.setFont('helvetica','bold');doc.setFontSize(240);doc.setTextColor(238,244,252);doc.text(cp.letter,pw+10,ph-44,{align:'right'});
+    y=sec(y,'CHECKPOINT '+cp.letter+' — '+cp.name.toUpperCase(),'Score: '+cp.val.toFixed(1)+' / 1.5');
+    // status badge
+    doc.setFillColor(...col);doc.rect(M,y,CW,34,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(...W);doc.text(statusLabel,pw/2,y+23,{align:'center'});
+    y+=44;
+    // score bar
+    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...INK2);doc.text('CHECKPOINT SCORE',M,y+12);
+    sBar(M+128,y+1,CW-198,15,cp.val,1.5,col);
+    doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(...col);doc.text(cp.val.toFixed(1)+' / 1.5',pw-M,y+13,{align:'right'});
+    y+=30;rule(y);y+=16;
+    // analysis
+    y=sec(y,'ANALYSIS');
+    doc.setFont('helvetica','normal');doc.setFontSize(9.5);doc.setTextColor(...INK);
+    const pLines=doc.splitTextToSize(cpProse(cp.letter,cp.val,data),CW);
+    doc.text(pLines,M,y);y+=pLines.length*13.5+16;
+    // supporting data
+    y=sec(y,'SUPPORTING DATA');
+    cp.dp.forEach(([lbl,val2],i)=>{
+      const ry=y+i*34;
+      doc.setFillColor(...(i%2===0?[244,248,254]:[251,252,255]));doc.rect(M,ry,CW,34,'F');
+      doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...INK2);doc.text(lbl,M+10,ry+13);
+      doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...INK);doc.text(String(val2),M+10,ry+27);
+      rule(ry+34);
+    });
   });
-  doc.addPage();hdr(3);ftr();y=80;y=sec(y,'ABOUT K1LADEX');
-  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(180,200,220);
-  const abt=doc.splitTextToSize('K1LADEX is a proprietary investment intelligence framework that uses AI-amplified pattern recognition to find geometric market opportunities that institutional money misses, governed by behavioral discipline built from real losses and real wins, by a real person who paid attention.',CW);doc.text(abt,M,y);y+=abt.length*14+24;
-  y=sec(y,'DISCLAIMER');doc.setFillColor(30,10,10);
-  const disc=doc.splitTextToSize('This report is for informational and educational purposes only. It does not constitute financial advice. K1LADEX is not a registered investment advisor. Past performance is not indicative of future results. All investments involve risk. Consult a licensed financial professional before making investment decisions.',CW-20);
-  const dH=disc.length*12+20;doc.rect(M,y,CW,dH,'F');doc.setDrawColor(204,68,0);doc.setLineWidth(1);doc.line(M,y,M,y+dH);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(200,120,100);doc.text(disc,M+12,y+12);y+=dH+24;
-  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(255,255,255);doc.text("Finally know what you're doing.",pw/2,y,{align:'center'});
-  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,200,255);doc.text('k1ladex.com',pw/2,y+18,{align:'center'});
+
+  // ── PAGE 10: FULL VERDICT ─────────────────────────────────
+  doc.addPage();hdr(10);ftr();y=80;
+  y=sec(y,'FULL VERDICT',ticker+' · '+dateStr);
+  doc.setFillColor(...recCol);doc.rect(M,y,CW,58,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(28);doc.setTextColor(...W);doc.text(data.rec,M+16,y+38);
+  doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(230,242,255);doc.text('K1LADEX SIGNAL SCORE: '+data.score+' / 10',pw-M,y+22,{align:'right'});
+  doc.setFontSize(9);doc.setTextColor(210,226,245);doc.text(data.verdict,pw-M,y+40,{align:'right'});
+  y+=68;
+  const sw=CW/7;
+  lbls.forEach((lbl,i)=>{
+    const col=cpCol(vls[i]),sx=M+i*sw;
+    doc.setFillColor(...(i%2===0?[244,248,254]:[251,252,255]));doc.rect(sx,y,sw,50,'F');
+    doc.setFillColor(...col);doc.rect(sx,y,sw,3,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(...col);doc.text(lbl,sx+sw/2,y+23,{align:'center'});
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...INK2);doc.text(vls[i].toFixed(1),sx+sw/2,y+41,{align:'center'});
+    doc.setDrawColor(...RUL);doc.setLineWidth(0.3);doc.line(sx+sw,y,sx+sw,y+50);
+  });
+  y+=62;rule(y);y+=16;
+  y=sec(y,'OVERALL ASSESSMENT');
+  let vp='';
+  if(data.rec==='BUY')vp=ticker+' has achieved a K1LADEX SIGNAL+ score of '+data.score+'/10 — a BUY recommendation. Every critical checkpoint has been evaluated and the setup satisfies the geometric and fundamental requirements of the framework. Surge confirmed at '+data.surge+'. Consolidation intact. Revenue of '+data.revenue+' growing. Regulatory record clean. Catalyst on the calendar for '+data.earnings+'. Price levels constructive. Squeeze dynamics present (short interest: '+data.short+', float: '+data.float+'). This is the configuration the framework was built to find. Position sizing, entry level, and stop discipline remain the trader\'s responsibility.';
+  else if(data.rec==='HOLD')vp=ticker+' has scored '+data.score+'/10 — a HOLD. The setup shows real promise but has not cleared every checkpoint at the threshold required for maximum conviction. One or more gates are scoring partial, limiting the overall signal. The name is worth watching with discipline. Review the failing gate on the checkpoint pages. If partial readings resolve in the bull direction, this upgrades to a BUY on the next scan. Do not chase. Wait for confirmation.';
+  else vp=ticker+' has scored '+data.score+'/10 — a PASS. The SIGNAL+ framework requires a minimum threshold across all seven checkpoints before a name is actionable. This scan identified one or more critical failures that disqualify the setup at this time. Passing is discipline. The K1LADEX edge is built on selectivity — not every scan needs to be a trade. Review the checkpoint pages for specific failure points and what must change before this name is reconsidered.';
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...INK);
+  const vpL=doc.splitTextToSize(vp,CW);doc.text(vpL,M,y);y+=vpL.length*14+18;
+  y=sec(y,'KEY METRICS SUMMARY');
+  [['Current Price',data.price||'—','Short Interest',data.short],
+   ['52W Surge',data.surge,'Float',data.float],
+   ['Revenue (TTM)',data.revenue,'Next Earnings',data.earnings]
+  ].forEach(([l1,v1,l2,v2],i)=>dataRow(l1,v1,l2,v2,y+i*34,i%2===0));
+
+  // ── PAGE 11: DISCLAIMER ───────────────────────────────────
+  doc.addPage();hdr(11);ftr();y=80;
+  y=sec(y,'LEGAL DISCLAIMER & RISK DISCLOSURE');
+  [['NOT FINANCIAL ADVICE','This report is generated by the K1LADEX SIGNAL+ Intelligence Framework and is provided for informational and educational purposes only. Nothing in this report constitutes financial, investment, legal, or tax advice. K1LADEX is not a registered investment advisor, broker-dealer, or financial institution of any kind. No fiduciary relationship exists between K1LADEX and any reader of this report.'],
+   ['RISK OF LOSS','All investments carry risk. Equity securities — particularly small-cap and micro-cap names that frequently appear in K1LADEX scans — are subject to extreme volatility, low liquidity, wide bid-ask spreads, and the potential for total loss of invested capital. Past performance of any pattern, strategy, or ticker is not indicative of future results.'],
+   ['NO GUARANTEE','The K1LADEX SIGNAL+ score is a proprietary pattern-matching output. It does not guarantee price appreciation. A BUY recommendation does not mean the stock will go up. A PASS does not mean it will go down. The framework identifies geometric setups — it does not predict outcomes, and outcomes regularly diverge from setups.'],
+   ['YOUR RESPONSIBILITY','You are solely responsible for your own investment decisions. Before investing in any security, conduct your own due diligence and, where appropriate, consult a licensed financial professional. Never invest money you cannot afford to lose. Never size a position beyond your personal risk tolerance.'],
+   ['DATA ACCURACY','Data is sourced from third-party providers including Finnhub and Finviz. K1LADEX makes no representation as to the accuracy, completeness, or timeliness of that data. Errors in underlying data may produce incorrect scores or recommendations. Always independently verify data before acting on any output from this system.'],
+  ].forEach(([title,text])=>{
+    const lines=doc.splitTextToSize(text,CW-20);
+    const bh=lines.length*11+30;
+    doc.setFillColor(252,246,246);doc.rect(M,y,CW,bh,'F');
+    doc.setDrawColor(172,48,0);doc.setLineWidth(1.5);doc.line(M,y,M,y+bh);
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(172,48,0);doc.text(title,M+12,y+14);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80,40,40);doc.text(lines,M+12,y+26);
+    y+=bh+10;
+  });
+
+  // ── PAGE 12: ABOUT / INFO / CONTACT ───────────────────────
+  doc.addPage();hdr(12);ftr();y=80;
+  y=sec(y,'ABOUT K1LADEX');
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...INK);
+  const abt=doc.splitTextToSize('K1LADEX is a proprietary investment intelligence framework built on a single premise: geometric patterns, behavioral discipline, and a ruthless filter system can identify setups that institutional money misses — before they move.\n\nThe SIGNAL+ framework was developed from real trading experience: real losses, real wins, and real attention paid to why both happened. It is not a black-box algorithm. It is a structured decision system that forces every scan through seven specific gates before a recommendation is issued. If a name cannot clear all seven, it does not qualify. That filter is the entire edge.',CW);
+  doc.text(abt,M,y);y+=abt.length*14+18;
+  y=sec(y,'THE SIGNAL+ FRAMEWORK — QUICK REFERENCE');
+  [['S','Surge 200%+','Has the stock already proven itself with a minimum 200% move from its 52-week low?'],
+   ['I','In Consolidation','Is price resting above its MA, near highs, not making new 30-day lows?'],
+   ['G','Growth Confirmed','Is there real, growing revenue behind this name — or pre-revenue speculation?'],
+   ['N','No Red Flags','No active legal or regulatory disqualifiers under the SMCI Rule (2+ strikes)?'],
+   ['A','Approaching Catalyst','Is there a confirmed, dated upcoming event that could force price discovery?'],
+   ['L','Levels & Macro','Is price positioned constructively relative to its 52-week range and MAs?'],
+   ['+','Vol + Short Pressure','Do float compression and short interest create a squeeze overlay?'],
+  ].forEach(([lbl,name,desc],i)=>{
+    const ry=y+i*40;
+    doc.setFillColor(...(i%2===0?[244,248,254]:[251,252,255]));doc.rect(M,ry,CW,40,'F');
+    doc.setFillColor(...B);doc.rect(M,ry,3,40,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(...B);doc.text(lbl,M+12,ry+26);
+    doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(...INK);doc.text(name,M+32,ry+13);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...INK2);
+    doc.text(doc.splitTextToSize(desc,CW-46),M+32,ry+25);
+    rule(ry+40);
+  });
+  y+=7*40+18;y=sec(y,'CONTACT & INFO');
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...INK2);doc.text('Website:',M,y+14);
+  doc.setTextColor(...B);doc.text('k1ladex.com',M+58,y+14);
+  doc.setTextColor(...INK2);doc.setFontSize(8);doc.text('Report generated '+dateStr+(data.scanTime?' · '+data.scanTime:''),M,y+30);
+
+  // ── OUTPUT ────────────────────────────────────────────────
   const dateSlug=new Date().toISOString().slice(0,10);const fname=ticker+'_'+dateSlug+'.pdf';
   try{const blob=doc.output('blob');const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();}catch(e){doc.save(fname);}
 }
