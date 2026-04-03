@@ -591,7 +591,8 @@ function generateReport(ticker,data){
   const dH=disc.length*12+20;doc.rect(M,y,CW,dH,'F');doc.setDrawColor(204,68,0);doc.setLineWidth(1);doc.line(M,y,M,y+dH);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(200,120,100);doc.text(disc,M+12,y+12);y+=dH+24;
   doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(255,255,255);doc.text("Finally know what you're doing.",pw/2,y,{align:'center'});
   doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,200,255);doc.text('k1ladex.com',pw/2,y+18,{align:'center'});
-  try{const blob=doc.output('blob');window.open(URL.createObjectURL(blob),'_blank');}catch(e){doc.save('K1LADEX_'+ticker+'_Report.pdf');}
+  const dateSlug=new Date().toISOString().slice(0,10);const fname=ticker+'_'+dateSlug+'.pdf';
+  try{const blob=doc.output('blob');const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();}catch(e){doc.save(fname);}
 }
 
 document.getElementById('reportBtn').addEventListener('click',function(){if(!currentData)return;try{generateReport(currentTicker,currentData);}catch(e){alert('PDF error: '+e.message);}});
