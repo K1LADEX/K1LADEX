@@ -682,7 +682,8 @@ function generateReport(ticker,data){
     if(letter==='N'){
       const flags=d.nFlags||[],strikes=d.nStrikes!=null?d.nStrikes:(val===0?2:0);
       let det='\n\nActive legal strike count: '+strikes+(strikes>=2?' — SMCI RULE TRIGGERED.':'.');
-      det+=flags.length>0?'\n\nFlags identified:\n'+flags.map((f,i)=>'  '+(i+1)+'. '+f).join('\n'):'\n\n'+(val>=1.5?'No flags on record. Regulatory file is clean.':'Flag detail not enumerated for this scan.');
+      const realFlags=flags.filter(f=>strikes>0||(!f.toLowerCase().includes('unavailable')&&!f.toLowerCase().includes('legal scan')));
+      det+=realFlags.length>0?'\n\nFlags identified:\n'+realFlags.map((f,i)=>'  '+(i+1)+'. '+f).join('\n'):'\n\nNo flags identified. Regulatory record is clean.';
       if(val>=1.5)return 'No disqualifying legal or regulatory flags have been identified for '+t+'. The N checkpoint verifies the company is not subject to the SMCI Rule, which permanently disqualifies any name carrying 2+ active legal strikes.'+det+'\n\n'+t+' passes cleanly. A clean N reading does not certify zero risk — it confirms no disqualifying strikes exist in the scan record.';
       return t+' has triggered the K1LADEX SMCI Rule.'+det+'\n\nThis is a full disqualification, not a deduction. Names with active legal exposure carry tail risks that pattern recognition cannot price. A PASS is locked in regardless of all other checkpoint scores. The name is removed from consideration until all active strikes are fully and verifiably resolved.';
     }
@@ -697,8 +698,8 @@ function generateReport(ticker,data){
       const cp2=nn(d.currentPrice),lo=nn(d.week52Low),hi=nn(d.week52High),ma=nn(d.ma50);
       let det='';
       if(cp2&&lo){
-        const dist=((cp2-lo)/lo*100),stop=lo*1.02,stopPct=(cp2-stop)/cp2*100;
-        det='\n\nCurrent price: $'+cp2.toFixed(2)+'\n52-week low (support floor): $'+lo.toFixed(2)+'\nDistance from low: '+dist.toFixed(1)+'%\nSuggested stop reference: $'+stop.toFixed(2)+' (2% above 52W low, ~'+stopPct.toFixed(1)+'% downside from current)';
+        const dist=((cp2-lo)/lo*100);
+        det='\n\nCurrent price: $'+cp2.toFixed(2)+'\n52-week low (support floor): $'+lo.toFixed(2)+'\nDistance from low: '+dist.toFixed(1)+'%';
         if(hi)det+='\n52-week high: $'+hi.toFixed(2)+' ('+((hi-cp2)/hi*100).toFixed(1)+'% above current)';
         if(ma)det+='\n50-day MA: $'+ma.toFixed(2)+' — price is '+(cp2>ma?'+'+((cp2-ma)/ma*100).toFixed(1)+'% above':((cp2-ma)/ma*100).toFixed(1)+'% below');
       }else{det='\n\nCurrent price: '+(d.price||'—')+'\n52-week surge: '+d.surge;}
@@ -741,14 +742,14 @@ function generateReport(ticker,data){
     {letter:'A',name:'Approaching Catalyst',val:data.a,
      dp:[['Next Earnings',data.earnings],['Catalyst Status',data.a>=1.5?'CONFIRMED':'NONE ON RECORD']]},
     {letter:'L',name:'Levels & Macro',val:data.l,
-     dp:[['Current Price',data.price||'—'],['52W Low (Support)',data.week52Low?'$'+data.week52Low.toFixed(2):'N/A'],['Stop Reference',data.week52Low?'$'+(data.week52Low*1.02).toFixed(2)+' (+2% above low)':'N/A']]},
+     dp:[['Current Price',data.price||'—'],['52W Low (Support)',data.week52Low?'$'+data.week52Low.toFixed(2):'N/A'],['Distance from Low',data.week52Low&&data.currentPrice?((data.currentPrice-data.week52Low)/data.week52Low*100).toFixed(1)+'%':'N/A']]},
     {letter:'+',name:'Volume + Short Pressure',val:data.plus,
      dp:[['Short Interest',data.short],['Float',data.float],['Squeeze Overlay',data.plus>=1.5?'FULL':data.plus>=0.75?'PARTIAL':'ABSENT']]},
   ];
   cpDefs.forEach((cp,idx)=>{
     doc.addPage();hdr(idx+3);ftr();
     const col=cpCol(cp.val);
-    const statusLabel=cp.val>=1.5?'CONFIRMED':cp.val>=1.0?'PARTIAL':'FAILED';
+    const statusLabel=cp.val>=1.5?'CONFIRMED':cp.val>0?'PARTIAL':'FAILED';
     y=80;
     // ghost watermark letter
     doc.setFont('helvetica','bold');doc.setFontSize(240);doc.setTextColor(238,244,252);doc.text(cp.letter,pw+10,ph-44,{align:'right'});
