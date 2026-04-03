@@ -88,7 +88,7 @@ body{background:#080e1a;display:flex;align-items:center;justify-content:center;m
       <button class="go-btn" id="goBtn">→</button>
     </div>
     <div class="free-label" id="freeLabel">3 FREE SCANS REMAINING</div>
-    <div class="price-row"><span class="price-pill">$6.99 / month — unlimited scans</span></div>
+    <div class="price-row"><span class="price-pill">$9.99 / month — unlimited scans</span></div>
   </div>
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-ticker" id="loadingTicker">—</div>
@@ -446,7 +446,7 @@ let scansUsed=0;
 try{scansUsed=parseInt(localStorage.getItem('k1ladex_scans')||'0');}catch(e){}
 function updateScanLabel(){
   const r=Math.max(0,FREE_SCANS-scansUsed);
-  document.getElementById('freeLabel').textContent=r>0?r+' FREE SCAN'+(r===1?'':'S')+' REMAINING':'FREE SCANS USED — $6.99/mo for unlimited';
+  document.getElementById('freeLabel').textContent=r>0?r+' FREE SCAN'+(r===1?'':'S')+' REMAINING':'FREE SCANS USED — $9.99/mo for unlimited';
   document.getElementById('ctaShare').textContent='Share this score · '+r+' free scan'+(r===1?'':'s')+' remaining';
 }
 function showPaywall(){document.getElementById('paywallOverlay').classList.add('visible');}
@@ -703,7 +703,7 @@ function generateReport(ticker,data){
         if(hi)det+='\n52-week high: $'+hi.toFixed(2)+' ('+((hi-cp2)/hi*100).toFixed(1)+'% above current)';
         if(ma)det+='\n50-day MA: $'+ma.toFixed(2)+' — price is '+(cp2>ma?'+'+((cp2-ma)/ma*100).toFixed(1)+'% above':((cp2-ma)/ma*100).toFixed(1)+'% below');
       }else{det='\n\nCurrent price: '+(d.price||'—')+'\n52-week surge: '+d.surge;}
-      if(val>=1.5)return t+' is trading more than 25% above its 52-week low, confirming constructive macro positioning.'+det+'\n\nThe 52-week low is the primary technical support reference. A stop placed just above this level — shown above — captures the geometric thesis with clearly defined risk. L checkpoint fully confirmed.';
+      if(val>=1.5)return t+' is trading more than 25% above its 52-week low, confirming constructive macro positioning.'+det+'\n\nThe 52-week low is the primary technical support reference. L checkpoint fully confirmed.';
       if(val>=1.0)return t+' is trading between 5–25% above its 52-week low — a neutral but acceptable macro position.'+det+'\n\nThe stock has recovered from the floor but has not achieved decisive separation. L scores 1.0: technically passing, not maximum conviction. Position sizing should reflect the neutral reading. A move beyond 25% distance would upgrade this checkpoint.';
       return t+' is trading within 5% of its 52-week low — a structurally weak price position.'+det+'\n\nThe stock is hugging its floor, compressing risk/reward. A stop near the 52-week low leaves almost no tolerance on a name that has already established that level as significant support. L scores 0.5. Wait for decisive separation before reconsidering entry.';
     }
