@@ -88,7 +88,6 @@ body{background:#080e1a;display:flex;align-items:center;justify-content:center;m
       <button class="go-btn" id="goBtn">→</button>
     </div>
     <div class="free-label" id="freeLabel">3 FREE SCANS REMAINING</div>
-    <div class="price-row"><span class="price-pill">$9.99 / month — unlimited scans</span></div>
   </div>
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-ticker" id="loadingTicker">—</div>
@@ -99,7 +98,7 @@ body{background:#080e1a;display:flex;align-items:center;justify-content:center;m
   <div class="score-overlay" id="scoreOverlay">
     <canvas class="score-canvas" id="sc" width="360" height="640"></canvas>
     <button class="back-btn" id="backBtn">← BACK</button>
-    <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">JOIN THE WAITLIST</button></div>
+    <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">Subscribe — $9.99 / month</button></div>
     <button class="cta-report" id="reportBtn">⬇ Download PDF Report</button>
     <div class="cta-share" id="ctaShare">Share this score · 3 free scans remaining</div>
   </div>
@@ -111,7 +110,7 @@ body{background:#080e1a;display:flex;align-items:center;justify-content:center;m
       <div class="paywall-msg">You've used your 3 free scans.</div>
       <div class="paywall-tagline">Finally know what you're doing.</div>
       <div class="paywall-divider"></div>
-      <button class="paywall-btn-primary" id="paywallSubscribeBtn">JOIN THE WAITLIST</button>
+      <button class="paywall-btn-primary" id="paywallSubscribeBtn">Subscribe — $9.99 / month</button>
       <div style="font-size:10px;color:rgba(100,200,255,0.4);margin-top:8px;letter-spacing:1px;">Be first when we launch. Free.</div>
       <button class="paywall-close" id="paywallCloseBtn">✕</button>
     </div>
@@ -540,11 +539,11 @@ document.getElementById('backBtn').addEventListener('click',goBack);
 document.getElementById('backBtn').addEventListener('touchend',function(e){e.preventDefault();goBack();},{passive:false});
 document.getElementById('btcCloseBtn').addEventListener('click',function(){document.getElementById('btcOverlay').classList.remove('visible');document.getElementById('tickerInput').value='';setTimeout(function(){document.getElementById('tickerInput').focus();},300);});
 
-const WAITLIST='mailto:k1ladexintelligence@gmail.com?subject=K1LADEX%20Waitlist&body=I%20want%20early%20access%20to%20K1LADEX%20Intelligence.';
-document.getElementById('subscribeBtn').addEventListener('click',function(){window.open(WAITLIST,'_blank');});
-document.getElementById('subscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(WAITLIST,'_blank');},{passive:false});
-document.getElementById('paywallSubscribeBtn').addEventListener('click',function(){window.open(WAITLIST,'_blank');});
-document.getElementById('paywallSubscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(WAITLIST,'_blank');},{passive:false});
+const STRIPE='https://buy.stripe.com/eVqdRb1PY8t3cRae4vcMM04';
+document.getElementById('subscribeBtn').addEventListener('click',function(){window.open(STRIPE,'_blank');});
+document.getElementById('subscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(STRIPE,'_blank');},{passive:false});
+document.getElementById('paywallSubscribeBtn').addEventListener('click',function(){window.open(STRIPE,'_blank');});
+document.getElementById('paywallSubscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(STRIPE,'_blank');},{passive:false});
 function closePaywall(){document.getElementById('paywallOverlay').classList.remove('visible');}
 document.getElementById('paywallCloseBtn').addEventListener('click',closePaywall);
 document.getElementById('paywallCloseBtn').addEventListener('touchend',function(e){e.preventDefault();closePaywall();},{passive:false});
