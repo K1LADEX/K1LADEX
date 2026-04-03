@@ -111,7 +111,6 @@ body{background:#080e1a;display:flex;align-items:center;justify-content:center;m
       <div class="paywall-tagline">Finally know what you're doing.</div>
       <div class="paywall-divider"></div>
       <button class="paywall-btn-primary" id="paywallSubscribeBtn">Subscribe — $9.99 / month</button>
-      <div style="font-size:10px;color:rgba(100,200,255,0.4);margin-top:8px;letter-spacing:1px;">Be first when we launch. Free.</div>
       <button class="paywall-close" id="paywallCloseBtn">✕</button>
     </div>
   </div>
@@ -158,7 +157,7 @@ try {
   function pr(t,s,e){return Math.max(0,Math.min(1,(t-s)/(e-s)));}
   function aiLoop(ts){
     if(!st)st=ts;var t=(ts-st)/1000;
-    if(t>=T6){ctx.clearRect(0,0,CW,CH);canvas.style.opacity='0';setTimeout(function(){canvas.style.height='0';canvas.style.margin='0';},350);document.getElementById('revealWrap').style.opacity='1';return;}
+    if(t>=T6){ctx.clearRect(0,0,CW,CH);canvas.style.opacity='0';setTimeout(function(){canvas.style.height='0';canvas.style.margin='0';var rw=document.getElementById('revealWrap');rw.style.overflow='hidden';var h=rw.offsetHeight;rw.style.transition='height 0.35s ease,margin 0.35s ease,opacity 0.35s ease';rw.style.height=h+'px';rw.offsetHeight;rw.style.height='0';rw.style.marginBottom='0';rw.style.opacity='0';},350);return;}
     ctx.clearRect(0,0,CW,CH);var fade=t>=T5?1-pr(t,T5,T6):1;var holdAI2=t>=T3&&t<T4;var pulse=holdAI2?(0.5+0.5*Math.sin((t-T3)*14)):0;
     ctx.shadowColor='#64c8ff';ctx.shadowBlur=holdAI2?(5+pulse*14):2;ctx.fillStyle=BRIGHT;ctx.globalAlpha=fade;
     for(var i=0;i<P.length;i++){var p=P[i],px,py;
@@ -172,7 +171,7 @@ try {
   animRaf=requestAnimationFrame(aiLoop);
 }catch(err){
   var c=document.getElementById('ai2c');c.style.height='0';c.style.margin='0';
-  document.getElementById('revealWrap').style.opacity='1';
+  var rw=document.getElementById('revealWrap');rw.style.height='0';rw.style.overflow='hidden';rw.style.opacity='0';rw.style.marginBottom='0';
 }
 
 // ── WORKER ENDPOINTS ─────────────────────────────────────────
@@ -445,7 +444,9 @@ let scansUsed=0;
 try{scansUsed=parseInt(localStorage.getItem('k1ladex_scans')||'0');}catch(e){}
 function updateScanLabel(){
   const r=Math.max(0,FREE_SCANS-scansUsed);
-  document.getElementById('freeLabel').textContent=r>0?r+' FREE SCAN'+(r===1?'':'S')+' REMAINING':'FREE SCANS USED — $9.99/mo for unlimited';
+  var fl=document.getElementById('freeLabel');
+  if(r>0){fl.textContent=r+' FREE SCAN'+(r===1?'':'S')+' REMAINING';}
+  else{fl.innerHTML='<span style="font-size:15px;font-weight:700;display:block;letter-spacing:1px;">FREE SCANS USED</span><span style="font-size:10px;display:block;margin-top:3px;letter-spacing:2px;">$9.99/MO FOR UNLIMITED</span>';}
   document.getElementById('ctaShare').textContent='Share this score · '+r+' free scan'+(r===1?'':'s')+' remaining';
 }
 function showPaywall(){document.getElementById('paywallOverlay').classList.add('visible');}
