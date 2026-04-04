@@ -81,7 +81,7 @@ body{background:#080e1a;display:flex;align-items:center;justify-content:center;m
   document.getElementById('k1-input').addEventListener('keydown',function(e){if(e.key==='Enter')k1check();});
   function k1check(){
     const v=document.getElementById('k1-input').value.toUpperCase().trim();
-    if(v==='LAZYGATE'||v==='DAD'){sessionStorage.setItem('k1access','true');document.getElementById('k1-gate').style.display='none';}
+    if(v==='LAZYGATE'||v==='DAD'||v==='DEX'){sessionStorage.setItem('k1access','true');document.getElementById('k1-gate').style.display='none';}
     else{document.getElementById('k1-error').textContent='INVALID ACCESS CODE';}
   }
 </script><div class="screen" id="screen">
