@@ -1,876 +1,510 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="K1LADEX">
-<meta name="theme-color" content="#080e1a">
-<title>K1LADEX — AI² Intelligence</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;-webkit-overflow-scrolling:touch;}
-body{background:#080e1a;display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:-webkit-fill-available;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
-.screen{width:100vw;height:100vh;height:-webkit-fill-available;max-width:480px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.bg-grid{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(100,200,255,0.04) 39px,rgba(100,200,255,0.04) 40px);}
-.border-ring{position:absolute;top:12px;bottom:12px;left:16px;right:16px;border:1px solid rgba(100,200,255,0.12);border-radius:20px;pointer-events:none;}
-.logo-wrap{text-align:center;margin-bottom:4px;}
-.logo-text{font-size:46px;font-weight:700;color:#fff;letter-spacing:1px;}
-.logo-sub{font-size:12px;font-weight:600;color:#64c8ff;letter-spacing:3.5px;margin-top:5px;}
-#ai2c{display:block;width:300px;height:86px;margin:2px auto;transition:height 0.4s ease,margin 0.4s ease,opacity 0.3s ease;}
-.reveal-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;opacity:1;margin-bottom:18px;}
-.tagline{font-size:17px;font-weight:400;color:rgba(255,255,255,0.8);text-align:center;}
-.arrow-label{font-size:13px;font-weight:600;color:#64c8ff;letter-spacing:0.5px;}
-.input-area{display:flex;flex-direction:column;align-items:center;}
-.ticker-input-wrap{display:flex;align-items:center;gap:10px;}
-.ticker-input{background:rgba(100,200,255,0.06);border:2px solid #64c8ff;border-radius:8px;padding:12px 18px;font-size:28px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#fff;width:160px;text-align:center;text-transform:uppercase;letter-spacing:4px;outline:none;}
-.ticker-input::placeholder{color:rgba(100,200,255,0.3);font-size:18px;letter-spacing:2px;}
-.go-btn{background:#64c8ff;border:none;border-radius:8px;padding:12px 20px;font-size:18px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#080e1a;cursor:pointer;transition:background 0.2s;}
-.go-btn:hover{background:#4ab8f0;}
-.free-label{font-size:11px;color:rgba(100,200,255,0.5);letter-spacing:2px;margin-top:8px;text-transform:uppercase;text-align:center;}
-.price-row{display:flex;align-items:center;justify-content:center;margin-top:6px;}
-.price-pill{font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(100,200,255,0.06);border:1px solid rgba(100,200,255,0.25);border-radius:20px;padding:4px 10px;letter-spacing:0.5px;}
-.score-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.5s;z-index:20;overflow:hidden;}
-.score-overlay.visible{opacity:1;pointer-events:all;}
-.score-canvas{width:100%;height:100%;position:absolute;top:0;left:0;}
-.back-btn{position:absolute;top:10px;right:10px;background:rgba(100,200,255,0.08);border:1px solid rgba(100,200,255,0.2);border-radius:20px;padding:4px 10px;font-size:10px;letter-spacing:1px;color:rgba(100,200,255,0.6);cursor:pointer;text-transform:uppercase;z-index:30;}
-.cta-row{position:absolute;bottom:68px;left:0;width:100%;display:flex;gap:8px;padding:0 16px;z-index:30;}
-.cta-subscribe{flex:1;background:#64c8ff;border:none;border-radius:8px;padding:11px 8px;font-size:11px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#080e1a;cursor:pointer;letter-spacing:0.5px;}
-.cta-share{position:absolute;bottom:20px;width:100%;text-align:center;font-size:9px;color:rgba(100,200,255,0.4);letter-spacing:1px;z-index:30;pointer-events:none;}
-.cta-report{position:absolute;bottom:46px;left:16px;right:16px;background:transparent;border:none;padding:0;font-size:10px;font-weight:500;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#64c8ff;cursor:pointer;letter-spacing:1px;text-align:center;text-decoration:underline;opacity:0;z-index:30;}
-.loading-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.3s;z-index:25;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#080e1a;}
-.loading-overlay.visible{opacity:1;pointer-events:all;}
-.loading-ticker{font-size:38px;font-weight:700;color:#fff;letter-spacing:4px;margin-bottom:6px;}
-.loading-sub{font-size:12px;color:rgba(100,200,255,0.6);margin-bottom:28px;letter-spacing:1px;}
-.loading-dots{display:flex;gap:10px;}
-.loading-dot{width:10px;height:10px;border-radius:50%;background:#64c8ff;animation:pulse 1.2s ease-in-out infinite;}
-.loading-dot:nth-child(2){animation-delay:0.2s;}
-.loading-dot:nth-child(3){animation-delay:0.4s;}
-@keyframes pulse{0%,100%{opacity:0.25;transform:scale(0.8);}50%{opacity:1;transform:scale(1.2);}}
-.loading-label{font-size:10px;color:rgba(100,200,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-top:16px;}
-.paywall-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,7,13,0.95);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:50;}
-.paywall-overlay.visible{opacity:1;pointer-events:all;}
-.paywall-box{background:#0d1726;border:1px solid rgba(100,200,255,0.2);border-radius:16px;padding:32px 28px 28px;width:300px;text-align:center;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
-.paywall-logo{font-size:28px;font-weight:700;color:#fff;letter-spacing:1px;}
-.paywall-sub{font-size:10px;color:#64c8ff;letter-spacing:3px;margin-top:4px;}
-.paywall-divider{height:1px;background:rgba(100,200,255,0.1);margin:16px 0;}
-.paywall-msg{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;}
-.paywall-tagline{font-size:13px;color:rgba(255,255,255,0.5);font-style:italic;margin-bottom:4px;}
-.paywall-btn-primary{width:100%;background:#64c8ff;border:none;border-radius:10px;padding:14px;font-size:13px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#080e1a;cursor:pointer;letter-spacing:0.5px;margin-bottom:10px;}
-.paywall-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:16px;color:rgba(100,200,255,0.5);cursor:pointer;padding:4px 8px;}
-.btc-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#080e1a;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:60;}
-.btc-overlay.visible{opacity:1;pointer-events:all;}
-.btc-box{border:2px solid #f5c400;border-radius:16px;padding:40px 32px;width:300px;text-align:center;box-shadow:0 0 40px rgba(245,196,0,0.15);}
-.btc-crown{font-size:48px;margin-bottom:12px;}
-.btc-logo{font-size:28px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:4px;}
-.btc-sub{font-size:10px;color:#f5c400;letter-spacing:3px;margin-bottom:24px;}
-.btc-msg{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6;font-style:italic;}
-.btc-close{margin-top:24px;background:none;border:1px solid rgba(245,196,0,0.4);border-radius:20px;padding:6px 20px;font-size:10px;color:#f5c400;cursor:pointer;letter-spacing:2px;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>K1LADEX — Investment Intelligence</title>
+  <meta name="description" content="Professional-grade investment intelligence. Built for the retail investor who pays attention." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #080b0f;
+      --surface:   #0e1318;
+      --border:    #1c2530;
+      --accent:    #00e5ff;
+      --accent-dim:#0097a7;
+      --gold:      #f5c842;
+      --text:      #e8edf2;
+      --muted:     #6b7f91;
+      --danger:    #ff4d4d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section { padding: 80px 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 11, 15, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #33eaff; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: left;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      padding: 16px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: #33eaff; transform: translateY(-1px); }
+
+    .btn-secondary {
+      display: inline-block;
+      background: transparent;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      padding: 16px 32px;
+      border-radius: 8px;
+      border: 1px solid var(--gold);
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-secondary:hover { background: rgba(245,200,66,0.08); transform: translateY(-1px); }
+
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* ── SECTION LABELS ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── CHECKPOINTS ── */
+    .checkpoints {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 28px 0;
+    }
+
+    .checkpoint {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+
+    .checkpoint.accent { border-color: var(--accent); color: var(--accent); }
+
+    /* ── QUOTE ── */
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 28px 0;
+      background: var(--surface);
+      border-radius: 0 8px 8px 0;
+    }
+    blockquote p {
+      color: var(--text);
+      font-style: italic;
+      font-size: 1.05rem;
+      margin: 0;
+    }
+
+    /* ── RECEIPTS ── */
+    .receipt-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .receipt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .receipt-card .ticker {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
+
+    .receipt-card .return {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .receipt-card .detail {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .receipt-stamp {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      border-radius: 4px;
+      padding: 3px 8px;
+      margin-top: 4px;
+      width: fit-content;
+    }
+
+    .receipt-stamp.gold {
+      background: var(--gold);
+    }
+
+    .receipts-footnote {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── PRICING ── */
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-top: 28px;
+    }
+
+    .price-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .price-amount {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .price-period {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .price-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold);
+      border-radius: 4px;
+      padding: 3px 8px;
+      margin-bottom: 20px;
+    }
+
+    .price-features {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .price-features li {
+      font-size: 14px;
+      color: var(--muted);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .price-features li:last-child { border-bottom: none; }
+
+    .price-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .price-urgency {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 16px;
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .footer-tagline {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 440px;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .footer-contact {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-contact a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer-contact a:hover { text-decoration: underline; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 40px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin: 24px 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (min-width: 600px) {
+      .receipt-cards { flex-direction: row; }
+      .receipt-card { flex: 1; }
+    }
+  </style>
 </head>
 <body>
-<div class="screen" id="screen">
-  <div class="bg-grid"></div>
-  <div class="border-ring"></div>
-  <div class="logo-wrap">
-    <div class="logo-text">K1LADEX</div>
-    <div class="logo-sub">INTELLIGENCE FRAMEWORK</div>
-  </div>
-  <canvas id="ai2c" width="300" height="86"></canvas>
-  <div class="reveal-wrap" id="revealWrap">
-    <div class="tagline">Finally know what you're doing.</div>
-    <div class="arrow-label">▼ Try a stock below</div>
-  </div>
-  <div class="input-area">
-    <div class="ticker-input-wrap">
-      <input class="ticker-input" id="tickerInput" placeholder="AAPL" maxlength="5" autocomplete="off" spellcheck="false"/>
-      <button class="go-btn" id="goBtn">→</button>
+
+  <!-- NAV -->
+  <nav>
+    <a class="logo" href="#">K1LADEX</a>
+    <a class="nav-cta" href="https://app.k1ladex.com">Run a free scan</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Investment Intelligence</p>
+      <h1>The market reads the headline.<br><span>K1LADEX reads the footnotes.</span></h1>
+      <p class="hero-sub">Professional-grade investment intelligence. Built for the retail investor who pays attention.</p>
+      <div class="hero-cta-group">
+        <a class="btn-primary" href="https://app.k1ladex.com">Run your first scan free</a>
+      </div>
     </div>
-    <div class="free-label" id="freeLabel">3 FREE SCANS REMAINING</div>
-  </div>
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-ticker" id="loadingTicker">—</div>
-    <div class="loading-sub" id="loadingSub">Running SIGNAL+ scan...</div>
-    <div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
-    <div class="loading-label">K1LADEX AI² scanning</div>
-  </div>
-  <div class="score-overlay" id="scoreOverlay">
-    <canvas class="score-canvas" id="sc" width="360" height="640"></canvas>
-    <button class="back-btn" id="backBtn">← BACK</button>
-    <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">Subscribe — $9.99 / month</button></div>
-    <button class="cta-report" id="reportBtn">⬇ Download PDF Report</button>
-    <div class="cta-share" id="ctaShare">Share this score · 3 free scans remaining</div>
-  </div>
-  <div class="paywall-overlay" id="paywallOverlay">
-    <div class="paywall-box">
-      <div class="paywall-logo">K1LADEX</div>
-      <div class="paywall-sub">INTELLIGENCE FRAMEWORK</div>
-      <div class="paywall-divider"></div>
-      <div class="paywall-msg">You've used your 3 free scans.</div>
-      <div class="paywall-tagline">Finally know what you're doing.</div>
-      <div class="paywall-divider"></div>
-      <button class="paywall-btn-primary" id="paywallSubscribeBtn">Subscribe — $9.99 / month</button>
-      <button class="paywall-close" id="paywallCloseBtn">✕</button>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="container">
+      <p class="section-label">How It Works</p>
+      <h2>Seven checkpoints. One verdict.</h2>
+      <div class="divider"></div>
+      <p>Type any ticker. K1LADEX runs it through 7 checkpoints — every scan returns a score, a verdict, and a reason. No opinions. No hype. Just the number.</p>
+      <div class="checkpoints">
+        <span class="checkpoint accent">Surge</span>
+        <span class="checkpoint">Consolidation</span>
+        <span class="checkpoint">Growth</span>
+        <span class="checkpoint">Red Flags</span>
+        <span class="checkpoint">Catalyst</span>
+        <span class="checkpoint">Levels</span>
+        <span class="checkpoint">Volume</span>
+      </div>
     </div>
-  </div>
-  <div class="btc-overlay" id="btcOverlay">
-    <div class="btc-box">
-      <div class="btc-crown">👑</div>
-      <div class="btc-logo">K1LADEX</div>
-      <div class="btc-sub">INTELLIGENCE FRAMEWORK</div>
-      <div class="btc-msg">Warren Buffett doesn't play with coins. Either does K1LADEX.</div>
-      <button class="btc-close" id="btcCloseBtn">BACK TO STOCKS</button>
+  </section>
+
+  <!-- WHY K1LADEX -->
+  <section>
+    <div class="container">
+      <p class="section-label">Why K1LADEX</p>
+      <h2>The terminal was never built for you.</h2>
+      <div class="divider"></div>
+      <p>Wall Street has Bloomberg terminals. Hedge funds have quant teams. K1LADEX was built for the investor at a kitchen table who pays attention and wants a framework that holds them accountable to it.</p>
+      <blockquote>
+        <p>Intelligence without discipline is just watching the number.</p>
+      </blockquote>
     </div>
-  </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-const HN="'Helvetica Neue',Helvetica,Arial,sans-serif";
+  </section>
 
-// ── AI² PIXEL ANIMATION ──────────────────────────────────────
-try {
-  const canvas=document.getElementById('ai2c');
-  const ctx=canvas.getContext('2d');
-  const CW=canvas.width,CH=canvas.height;
-  const BRIGHT='#64c8ff';
-  function makeWordCloud(texts,step){
-    const off=document.createElement('canvas');off.width=CW;off.height=CH;
-    const oc=off.getContext('2d');
-    texts.forEach(function(t){oc.fillStyle='#fff';oc.font='bold '+t.sz+'px Helvetica,Arial,sans-serif';oc.textAlign='center';oc.textBaseline='middle';oc.fillText(t.t,t.x,t.y);});
-    const d=oc.getImageData(0,0,CW,CH).data;const pts=[];
-    for(var y=0;y<CH;y+=step)for(var x=0;x<CW;x+=step)if(d[(y*CW+x)*4]>80)pts.push({x:x,y:y});
-    return pts;
-  }
-  const wCloud=makeWordCloud([{t:'Augmented',x:CW/2,y:CH*0.20,sz:11},{t:'Investor',x:CW/2,y:CH*0.50,sz:11},{t:'Intelligence',x:CW/2,y:CH*0.80,sz:11}],3);
-  const aCloud=makeWordCloud([{t:'AI',x:CW/2-12,y:CH/2+4,sz:46},{t:'²',x:CW/2+28,y:CH/2-16,sz:24}],3);
-  const N=Math.min(wCloud.length,aCloud.length,220);
-  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=a[i];a[i]=a[j];a[j]=tmp;}return a;}
-  shuffle(wCloud);shuffle(aCloud);
-  var P=[];
-  for(var i=0;i<N;i++){P.push({ox:(Math.random()-0.5)*CW*3+CW/2,oy:(Math.random()-0.5)*CH*3+CH/2,wx:wCloud[i].x,wy:wCloud[i].y,ax:aCloud[i].x,ay:aCloud[i].y,ex:(Math.random()-0.5)*CW*5+CW/2,ey:(Math.random()-0.5)*CH*5+CH/2,sz:1.2+Math.random()*0.8});}
-  var T0=0,T1=0.40,T2=0.62,T3=1.05,T4=1.40,T5=1.70,T6=1.95;
-  var st=null,animRaf=null;
-  function eo(t){return 1-Math.pow(1-t,3);}
-  function eio(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
-  function lerp(a,b,t){return a+(b-a)*t;}
-  function pr(t,s,e){return Math.max(0,Math.min(1,(t-s)/(e-s)));}
-  function aiLoop(ts){
-    if(!st)st=ts;var t=(ts-st)/1000;
-    if(t>=T6){ctx.clearRect(0,0,CW,CH);canvas.style.opacity='0';setTimeout(function(){canvas.style.height='0';canvas.style.margin='0';var rw=document.getElementById('revealWrap');rw.style.overflow='hidden';var h=rw.offsetHeight;rw.style.transition='height 0.35s ease,margin 0.35s ease,opacity 0.35s ease';rw.style.height=h+'px';rw.offsetHeight;rw.style.height='0';rw.style.marginBottom='0';rw.style.opacity='0';},350);return;}
-    ctx.clearRect(0,0,CW,CH);var fade=t>=T5?1-pr(t,T5,T6):1;var holdAI2=t>=T3&&t<T4;var pulse=holdAI2?(0.5+0.5*Math.sin((t-T3)*14)):0;
-    ctx.shadowColor='#64c8ff';ctx.shadowBlur=holdAI2?(5+pulse*14):2;ctx.fillStyle=BRIGHT;ctx.globalAlpha=fade;
-    for(var i=0;i<P.length;i++){var p=P[i],px,py;
-      if(t<T1){var g=eo(pr(t,T0,T1));px=lerp(p.ox,p.wx,g);py=lerp(p.oy,p.wy,g);}
-      else if(t<T2){px=p.wx;py=p.wy;}
-      else if(t<T3){var g2=eio(pr(t,T2,T3));px=lerp(p.wx,p.ax,g2);py=lerp(p.wy,p.ay,g2);}
-      else if(t<T4){px=p.ax;py=p.ay;}
-      else{var g3=eo(pr(t,T4,T5));px=lerp(p.ax,p.ex,g3);py=lerp(p.ay,p.ey,g3);}
-      var sz=p.sz*(holdAI2?2.2:1.3);ctx.fillRect(px-sz/2,py-sz/2,sz,sz);}
-    ctx.shadowBlur=0;ctx.globalAlpha=1;animRaf=requestAnimationFrame(aiLoop);}
-  animRaf=requestAnimationFrame(aiLoop);
-}catch(err){
-  var c=document.getElementById('ai2c');c.style.height='0';c.style.margin='0';
-  var rw=document.getElementById('revealWrap');rw.style.height='0';rw.style.overflow='hidden';rw.style.opacity='0';rw.style.marginBottom='0';
-}
+  <!-- THE RECEIPTS -->
+  <section>
+    <div class="container">
+      <p class="section-label">The Receipts Are Real</p>
+      <h2>Called before the move. Filed before the crowd.</h2>
+      <div class="divider"></div>
+      <div class="receipt-cards">
+        <div class="receipt-card">
+          <span class="ticker">GSAT</span>
+          <span class="return">+210%</span>
+          <span style="font-size:11px;color:var(--muted);display:block;margin-top:2px;">Split-adjusted</span>
+          <p class="detail">Scouted June 2021. Winner Ladder executed March 2026.</p>
+          <span class="receipt-stamp">Confirmed</span>
+        </div>
+        <div class="receipt-card">
+          <span class="ticker">ONDS</span>
+          <span class="return">Crown Candidate</span>
+          <p class="detail">Scouted October 2025. Thesis intact.</p>
+          <span class="receipt-stamp gold">Active</span>
+        </div>
+      </div>
+      <p class="receipts-footnote">Every call scored, timestamped, and filed before the move.</p>
+    </div>
+  </section>
 
-// ── WORKER ENDPOINTS ─────────────────────────────────────────
-const WORKER_BASE='https://k1ladex-prices.robertasloss.workers.dev';
+  <!-- THE DEAL -->
+  <section>
+    <div class="container">
+      <p class="section-label">The Deal</p>
+      <h2>Free to try. Founding rate grandfathered forever.</h2>
+      <div class="divider"></div>
+      <p>The system finds opportunities before the crowd arrives. So does the price.</p>
+      <div class="pricing-card">
+        <div class="price-line">
+          <span class="price-amount">$9.99</span>
+          <span class="price-period">/ month</span>
+        </div>
+        <span class="price-badge">Founding Member Rate</span>
+        <ul class="price-features">
+          <li>Unlimited scans across any ticker</li>
+          <li>Full 7-checkpoint scoring system</li>
+          <li>Score, verdict, and reason on every scan</li>
+          <li>Rate grandfathered forever — price goes up</li>
+          <li>Early access doesn't last</li>
+        </ul>
+        <a class="btn-secondary" href="https://buy.stripe.com/eVqdRb1PY8t3cRae4vcMM04">Get founding member access</a>
+        <p class="price-urgency">Price goes up. Early access doesn't last.</p>
+      </div>
+    </div>
+  </section>
 
-async function fetchScan(ticker){
-  const ctrl=new AbortController();
-  const timer=setTimeout(()=>ctrl.abort(),18000);
-  try{
-    const resp=await fetch(WORKER_BASE+'/scan?ticker='+ticker,{signal:ctrl.signal});
-    clearTimeout(timer);
-    if(!resp.ok)return null;
-    const data=await resp.json();
-    if(data.error||!data.currentPrice)return null;
-    return data;
-  }catch(e){clearTimeout(timer);return null;}
-}
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p class="footer-logo">K1LADEX</p>
+      <p class="footer-tagline">K1LADEX didn't come from Wall Street. That's not a weakness. That's exactly why it works.</p>
+      <p class="footer-contact">Questions? <a href="mailto:K1LADEX@k1ladex.com">K1LADEX@k1ladex.com</a></p>
+    </div>
+  </footer>
 
-async function fetchLivePrice(ticker){
-  try{
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),7000);
-    const resp=await fetch(WORKER_BASE+'/?ticker='+ticker,{signal:ctrl.signal});
-    clearTimeout(timer);
-    if(!resp.ok)return null;
-    const json=await resp.json();
-    const r=json&&json.chart&&json.chart.result&&json.chart.result[0];
-    if(!r)return null;
-    const price=r.meta.regularMarketPrice;
-    if(!price)return null;
-    const prev=r.meta.chartPreviousClose||r.meta.previousClose;
-    const chg=prev?((price-prev)/prev*100):0;
-    const raw=r.meta.longName||r.meta.shortName||ticker;
-    const name=raw.replace(/,?\s*(Inc\.?|Corp\.?|Ltd\.?|LLC\.?|PLC\.?)$/gi,'').trim();
-    return{name,price:'$'+price.toFixed(2),change:(chg>=0?'+':'')+chg.toFixed(2)+'%'};
-  }catch(e){return null;}
-}
-
-// ── LIVE SCORING ENGINE ──────────────────────────────────────
-function scoreFromLiveData(ticker,d){
-  const surge=d.surgeVal||0;
-  const s=surge>=200?1.5:surge>=100?0.75:0;
-  let iGates=0;
-  if(d.week52High&&d.currentPrice>=d.week52High*0.70)iGates++;
-  if(d.ma50&&d.currentPrice>d.ma50)iGates++;
-  if(!d.newLow30d)iGates++;
-  const i=iGates>=2?1.5:iGates===1?0.75:0;
-  let g=0.5;
-  if(d.totalRevenue&&d.revenueGrowth!==null&&d.revenueGrowth!==undefined){
-    if(d.revenueGrowth>0.05&&d.totalCash>0)g=1.5;
-    else if(d.revenueGrowth>0)g=1.0;
-    else g=0.5;
-  }
-  let n=typeof d.nScore==='number'?d.nScore:1.5;
-  const strikes=d.nStrikes||0;
-  if(strikes>=2)n=0;
-  const a=d.nextEarnings?1.5:0;
-  let l=1.0;
-  if(d.currentPrice&&d.week52Low){
-    const dist=(d.currentPrice-d.week52Low)/d.week52Low;
-    if(dist<0.05)l=0.5;
-    else if(dist>0.25)l=1.5;
-    else l=1.0;
-  }
-  let plus=0;
-  const highShort=d.shortPct&&d.shortPct>0.10;
-  const tightFloat=d.floatShares&&d.floatShares<30000000;
-  const megaFloat=d.floatShares&&d.floatShares>100000000;
-  if(highShort&&tightFloat)plus=1.5;
-  else if(highShort||tightFloat)plus=0.75;
-  else plus=0;
-  if(megaFloat&&!highShort)plus=0;
-  const raw=s+i+g+n+a+l+plus;
-  const score=Math.round(Math.min(10,raw)*10)/10;
-  let rec=score>=9?'BUY':score>=7?'HOLD':'PASS';
-  if(strikes>=2)rec='PASS';
-  let verdict;
-  if(strikes>=2){verdict='SMCI RULE — 2+ LEGAL STRIKES';}
-  else if(d.nFlags&&d.nFlags.length>0&&n<1.5){verdict=d.nFlags[0].substring(0,38).toUpperCase();}
-  else{verdict=score>=9?'MAXIMUM CONVICTION':score>=7?'WATCHLIST CANDIDATE':score>=5?'MONITOR ONLY':'FAILED SIGNAL+ — PASS';}
-  const col=rec==='BUY'?'#1a8a3a':rec==='HOLD'?'#886600':'#cc4400';
-  const now=new Date();
-  const scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  return{name:d.name||ticker,score,s,i,g,n,a,l,plus,surge:d.surgeFormatted||'—',short:d.shortPctFormatted||'N/A',float:d.floatFormatted||'N/A',revenue:d.revenueFormatted||'N/A',earnings:d.nextEarnings||'TBD',rec,verdict,col,price:d.price,change:d.change,scanTime,
-    surgeVal:surge,week52Low:d.week52Low||null,week52High:d.week52High||null,
-    currentPrice:d.currentPrice||null,ma50:d.ma50||null,newLow30d:!!d.newLow30d,
-    iGate52H:!!(d.week52High&&d.currentPrice>=d.week52High*0.70),
-    iGate50MA:!!(d.ma50&&d.currentPrice>d.ma50),
-    iGateNo30d:!d.newLow30d,
-    revenueGrowth:(d.revenueGrowth!==null&&d.revenueGrowth!==undefined)?d.revenueGrowth:null,
-    hasCash:!!(d.totalCash&&d.totalCash>0),
-    nFlags:d.nFlags||[],nStrikes:strikes,
-    shortPct:d.shortPct||null,floatShares:d.floatShares||null,
-    highShort:highShort,tightFloat:tightFloat,megaFloat:megaFloat};
-}
-
-// ── FALLBACK SCORES ──────────────────────────────────────────
-const FALLBACK_SCORES={
-  'ONDS':{name:'Ondas Holdings',score:9,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.0,plus:1.0,surge:'+248%',short:'35%',float:'8.2M',revenue:'$38-41M guided',earnings:'May 14, 2026',rec:'BUY',verdict:'CROWN CANDIDATE',col:'#1a8a3a'},
-  'GSAT':{name:'Globalstar',score:8.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:1.0,surge:'+272%',short:'12%',float:'1.2B',revenue:'$280-305M guided',earnings:'Apr 30, 2026',rec:'HOLD',verdict:'APPLE CONSTELLATION CATALYST',col:'#1a8a3a'},
-  'LWLG':{name:'Lightwave Logic',score:5.75,s:1.5,i:1.0,g:0.5,n:0.75,a:1.0,l:1.0,plus:0.0,surge:'+816%',short:'6%',float:'131M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'HOLD',verdict:'CEO SELLING FLAG — DO NOT ADD',col:'#886600'},
-  'IBRX':{name:'ImmunityBio',score:7.0,s:1.5,i:1.0,g:1.0,n:1.0,a:1.5,l:1.0,plus:0.0,surge:'+303%',short:'18%',float:'15M',revenue:'$118M TTM',earnings:'May 8, 2026',rec:'HOLD',verdict:'FDA CATALYST WATCH',col:'#886600'},
-  'DNN':{name:'Denison Mines',score:7.0,s:1.0,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+116%',short:'4%',float:'620M',revenue:'Pre-revenue',earnings:'May 11, 2026',rec:'HOLD',verdict:'URANIUM — PHOENIX ISR UNDERWAY',col:'#886600'},
-  'PL':{name:'Planet Labs',score:9.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.5,plus:0.5,surge:'+380%',short:'28%',float:'14M',revenue:'$240M TTM',earnings:'Jun 4, 2026',rec:'BUY',verdict:'DEFENSE INTELLIGENCE — LEVI STRAUSS',col:'#1a8a3a'},
-  'TSEM':{name:'Tower Semiconductor',score:9.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.5,plus:1.0,surge:'+285%',short:'3%',float:'160M',revenue:'$1.4B TTM',earnings:'Apr 28, 2026',rec:'BUY',verdict:'SILICON PHOTONICS FOUNDRY',col:'#1a8a3a'},
-  'RCAT':{name:'Red Cat Holdings',score:8.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+460%',short:'22%',float:'28M',revenue:'$38-41M guided',earnings:'Jun 12, 2026',rec:'HOLD',verdict:'RE-SCORE WHEN LEGAL CLEARS',col:'#886600'},
-  'GLNG':{name:'Golar LNG',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+180%',short:'8%',float:'95M',revenue:'$580M TTM',earnings:'May 20, 2026',rec:'HOLD',verdict:'FLOATING LNG — ENTRY $42-46',col:'#1a8a3a'},
-  'ERAS':{name:'Erasca',score:8.0,s:1.5,i:1.5,g:1.0,n:1.5,a:1.5,l:1.0,plus:0.0,surge:'+290%',short:'15%',float:'120M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'BUY',verdict:'PRECISION ONCOLOGY — PHASE 1',col:'#1a8a3a'},
-  'NVDA':{name:'Nvidia',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+620%',short:'1.1%',float:'2.4B',revenue:'$130B TTM',earnings:'May 28, 2026',rec:'HOLD',verdict:'AI KING — WATCH EARNINGS',col:'#1a8a3a'},
-  'CODA':{name:'Coda Octopus',score:8.25,s:1.5,i:1.5,g:1.5,n:1.5,a:1.25,l:1.0,plus:0.0,surge:'+310%',short:'12%',float:'15M',revenue:'$25M TTM',earnings:'Jun 17, 2026',rec:'BUY',verdict:'UNDERWATER DEFENSE INFRASTRUCTURE',col:'#1a8a3a'},
-  'SMCI':{name:'Super Micro Computer',score:4.5,s:1.5,i:0.0,g:1.0,n:0.0,a:0.5,l:1.0,plus:0.5,surge:'+280%',short:'14%',float:'580M',revenue:'$14B TTM',earnings:'May 6, 2026',rec:'PASS',verdict:'ACCOUNTING FLAGS — SMCI RULE',col:'#cc4400'},
-  'GME':{name:'GameStop',score:3.0,s:1.0,i:0.0,g:0.0,n:1.0,a:0.5,l:0.5,plus:0.0,surge:'+65%',short:'12%',float:'305M',revenue:'$1.1B TTM',earnings:'Mar 26, 2026',rec:'PASS',verdict:'NO THESIS — MEME ONLY',col:'#cc4400'},
-  'NKLA':{name:'Nikola',score:1.5,s:0.0,i:0.0,g:0.0,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'18%',float:'320M',revenue:'$48M TTM',earnings:'May 2026',rec:'PASS',verdict:'FRAUD HISTORY — AUTOMATIC FAIL',col:'#cc0000'},
-  'PLTR':{name:'Palantir Technologies',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+520%',short:'3.4%',float:'2.1B',revenue:'$2.8B TTM',earnings:'May 5, 2026',rec:'HOLD',verdict:'DEFENSE AI PLATFORM',col:'#1a8a3a'},
-  'NOW':{name:'ServiceNow',score:3,s:0.0,i:0.0,g:1.5,n:0.0,a:1.5,l:0.0,plus:0.0,surge:'+5%',short:'0.9%',float:'1.05B',revenue:'$13.28B TTM',earnings:'Apr 22, 2026',rec:'PASS',verdict:'SMCI RULE — 2+ DOJ ITEMS',col:'#cc4400'},
-  'DPRO':{name:'Draganfly',score:5.5,s:1.0,i:1.0,g:0.5,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+180%',short:'98%',float:'12M',revenue:'$4M TTM',earnings:'May 28, 2026',rec:'WATCH',verdict:'SHAKEDOWN SCOUT — 98% SHORT',col:'#886600'},
-  'SPY':{name:'SPDR S&P 500 ETF',score:6.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+180%',short:'0.2%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'BROAD MARKET INDEX',col:'#886600'},
-};
-
-// ── SCORE CANVAS ─────────────────────────────────────────────
-const SW=360,SH=640;
-const GREEN='#1a8a3a',BLUE='#64c8ff',INK='#ffffff',INK_MID='rgba(255,255,255,0.85)',INK_DIM='rgba(255,255,255,0.45)';
-const BG_TOP='#080e1a',BG_BOT='#0d1726',RULE='rgba(100,200,255,0.04)';
-const sc_el=document.getElementById('sc');
-const sc=sc_el.getContext('2d');
-let scoreRaf=null,scoreStart=null;
-
-function scRR(x,y,w,h,r){sc.beginPath();sc.moveTo(x+r,y);sc.lineTo(x+w-r,y);sc.quadraticCurveTo(x+w,y,x+w,y+r);sc.lineTo(x+w,y+h-r);sc.quadraticCurveTo(x+w,y+h,x+w-r,y+h);sc.lineTo(x+r,y+h);sc.quadraticCurveTo(x,y+h,x,y+h-r);sc.lineTo(x,y+r);sc.quadraticCurveTo(x,y,x+r,y);sc.closePath();}
-function surgeY(xf){if(xf<0.12)return 0.82+xf*0.08;if(xf<0.25)return 0.83-(xf-0.12)*0.35;if(xf<0.36)return 0.78-(xf-0.25)*0.15;if(xf<0.41)return 0.77+(xf-0.36)*0.4;if(xf<0.54)return 0.79-(xf-0.41)*1.6;if(xf<0.64)return 0.58-(xf-0.54)*2.6;if(xf<0.71)return 0.32-(xf-0.64)*0.8;if(xf<0.78)return 0.26+(xf-0.71)*0.28;if(xf<0.86)return 0.28-(xf-0.78)*0.4;return 0.25-(xf-0.86)*0.15;}
-
-function drawScoreScreen(ticker,data,t){
-  const eop=(s,e)=>Math.max(0,Math.min(1,(t-s)/(e-s)));
-  const eeo=(v)=>1-Math.pow(1-v,3);
-  const g=sc.createLinearGradient(0,0,0,SH);g.addColorStop(0,BG_TOP);g.addColorStop(1,BG_BOT);
-  sc.fillStyle=g;sc.fillRect(0,0,SW,SH);
-  sc.strokeStyle=RULE;sc.lineWidth=0.5;
-  for(let y=0;y<SH;y+=40){sc.beginPath();sc.moveTo(0,y);sc.lineTo(SW,y);sc.stroke();}
-  const ringA=eeo(eop(0,0.3));
-  if(ringA>0){sc.save();sc.globalAlpha=ringA*0.15;sc.strokeStyle=BLUE;sc.lineWidth=1;sc.beginPath();sc.roundRect(12,10,SW-24,SH-20,16);sc.stroke();sc.restore();}
-  const h1=eeo(eop(0,0.4));
-  sc.save();sc.globalAlpha=h1;
-  sc.fillStyle=INK;sc.font=`700 34px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(ticker.toUpperCase(),22,46);
-  sc.fillStyle=INK_DIM;sc.font=`400 12px ${HN}`;sc.fillText(data.name,22,66);
-  const priceCol=data.change&&data.change.startsWith('-')?'#ff6b6b':BLUE;
-  sc.fillStyle=priceCol;sc.font=`700 16px ${HN}`;sc.textAlign='right';sc.fillText(data.price||'',SW-22,46);
-  sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.fillText(data.price?data.change:'See Robinhood for price',SW-22,66);
-  sc.restore();
-  const recA=eeo(eop(0.2,0.7));
-  if(recA>0){sc.save();sc.globalAlpha=recA;
-    const recCol=data.rec==='BUY'?'#1a8a3a':data.rec==='HOLD'?'#886600':'#cc4400';
-    const recBg=data.rec==='BUY'?'rgba(26,138,58,0.15)':data.rec==='HOLD'?'rgba(136,102,0,0.15)':'rgba(204,68,0,0.15)';
-    sc.fillStyle=recBg;scRR(22,82,SW-44,38,8);sc.fill();sc.strokeStyle=recCol;sc.lineWidth=1.5;scRR(22,82,SW-44,38,8);sc.stroke();
-    sc.fillStyle=recCol;sc.font=`700 18px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(data.rec,36,101);
-    if(data.rec==='PASS'){const rW=sc.measureText('PASS').width,sP=eeo(eop(0.5,1.1));if(sP>0){sc.strokeStyle='#e63030';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#e63030';sc.shadowBlur=6;sc.globalAlpha=recA*sP;sc.beginPath();sc.moveTo(34,101);sc.lineTo(34+rW*sP,101);sc.stroke();sc.shadowBlur=0;}}
-    if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
-    sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);sc.restore();}
-  const lineA=eeo(eop(0.4,1.2));
-  if(lineA>0){
-    sc.save();sc.globalAlpha=lineA;
-    const lTop=130,lBot=178,lLeft=22,lRight=SW-22,lW=SW-44,lH=lBot-lTop;
-    sc.fillStyle='rgba(100,200,255,0.04)';sc.fillRect(lLeft,lTop,lW,lH);
-    const lp=eeo(eop(0.5,1.8));
-    const candles=data.candles&&data.candles.length>2?data.candles:null;
-    const isDown=data.score<7;
-    const lineCol=isDown?'#cc4400':BLUE;
-    let endX=lRight,endY=lTop+lH*0.5;
-    if(lp>0){
-      sc.strokeStyle=lineCol;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=lineCol;sc.shadowBlur=4;sc.beginPath();
-      if(candles){
-        const pts=candles.length;
-        const drawn=Math.max(2,Math.min(Math.floor((pts-1)*lp)+1,pts));
-        const minP=Math.min(...candles),maxP=Math.max(...candles),rng=maxP-minP||1;
-        for(let i=0;i<drawn;i++){
-          const x=lLeft+(i/(pts-1))*lW;
-          const y=lBot-((candles[i]-minP)/rng)*lH;
-          const yc=Math.max(lTop+1,Math.min(lBot-1,y));
-          i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);
-          if(i===drawn-1){endX=x;endY=yc;}
-        }
-      }else{
-        const steps=60,drawn=Math.max(2,Math.floor(steps*lp));
-        for(let i=0;i<drawn;i++){
-          const xf=i/(steps-1);
-          const x=lLeft+xf*lW;
-          let base;
-          if(isDown){base=lTop+lH*(0.15+xf*0.62);}
-          else{base=lBot-lH*(0.15+xf*0.55);}
-          const wave=Math.sin(xf*Math.PI*3)*lH*0.07;
-          const yc=Math.max(lTop+1,Math.min(lBot-1,base+wave));
-          i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);
-          if(i===drawn-1){endX=x;endY=yc;}
-        }
-      }
-      sc.stroke();sc.shadowBlur=0;
-      if(lp>=0.98){
-        if(isDown){
-          const arrowY=Math.min(lBot-14,endY+2);
-          sc.fillStyle=lineCol;sc.strokeStyle=lineCol;sc.lineWidth=1.5;sc.lineCap='round';
-          sc.shadowColor=lineCol;sc.shadowBlur=6;
-          sc.beginPath();sc.moveTo(endX,arrowY-8);sc.lineTo(endX,arrowY-1);sc.stroke();
-          sc.beginPath();sc.moveTo(endX-4,arrowY-5);sc.lineTo(endX,arrowY+1);sc.lineTo(endX+4,arrowY-5);sc.closePath();sc.fill();
-          sc.shadowBlur=0;
-          sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='top';sc.fillText(data.surge,endX,arrowY+3);
-        }else{
-          const arrowY=Math.max(lTop+14,endY-2);
-          sc.fillStyle=lineCol;sc.strokeStyle=lineCol;sc.lineWidth=1.5;sc.lineCap='round';
-          sc.shadowColor=lineCol;sc.shadowBlur=6;
-          sc.beginPath();sc.moveTo(endX,arrowY+8);sc.lineTo(endX,arrowY+1);sc.stroke();
-          sc.beginPath();sc.moveTo(endX-4,arrowY+5);sc.lineTo(endX,arrowY-1);sc.lineTo(endX+4,arrowY+5);sc.closePath();sc.fill();
-          sc.shadowBlur=0;
-          sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,arrowY-3);
-        }
-      }
-    }
-    sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
-    sc.fillText('52W Low → Current',lLeft,lBot+12);
-    sc.restore();
-  }
-  const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
-  const names=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Catalyst Dated','Levels & Macro','Vol + Short'];
-  const startY=200,rowH=32;
-  labels.forEach((lbl,i)=>{
-    const rowA=eeo(eop(0.6+i*0.1,1.0+i*0.1));if(rowA<=0)return;
-    sc.save();sc.globalAlpha=rowA;const y=startY+i*rowH,val=vals[i];
-    const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
-    sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(lbl,22,y);
-    sc.fillStyle=INK_MID;sc.font=`400 11px ${HN}`;sc.fillText(names[i],40,y);
-    const bW=52,bX=SW-82,bF=bW*(val/1.5);sc.fillStyle='rgba(255,255,255,0.06)';scRR(bX,y-6,bW,12,3);sc.fill();if(bF>0){sc.fillStyle=col;scRR(bX,y-6,bF,12,3);sc.fill();}
-    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-20,y);
-    if(val>=1.0){const ck=eeo(eop(0.8+i*0.08,1.1+i*0.08));if(ck>0){sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.lineJoin='round';sc.globalAlpha=rowA*ck;sc.beginPath();sc.moveTo(30,y-3);sc.lineTo(33,y+1);sc.lineTo(38,y-5);sc.stroke();}}
-    sc.restore();
-  });
-  const divY=startY+7*rowH+4;
-  sc.save();sc.globalAlpha=eeo(eop(1.6,2.0))*0.15;sc.strokeStyle=BLUE;sc.lineWidth=0.7;sc.beginPath();sc.moveTo(20,divY);sc.lineTo(SW-20,divY);sc.stroke();sc.restore();
-  const scoreA=eeo(eop(1.7,2.2));
-  if(scoreA>0){
-    sc.save();sc.globalAlpha=scoreA;const sy2=divY+22;
-    sc.fillStyle=data.col;sc.font=`700 44px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.shadowColor=data.col;sc.shadowBlur=14*scoreA;sc.fillText(data.score,22,sy2);
-    const snW=sc.measureText(String(data.score)).width;sc.shadowBlur=0;
-    sc.fillStyle=INK_DIM;sc.font=`400 18px ${HN}`;sc.fillText('/10',22+snW+4,sy2+4);
-    [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
-      const dy=(sy2-18)+i*20;
-      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText(label,130,dy);
-      sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.fillText(val,130,dy+12);
-      if(label==='Short Interest'&&val==='N/A'){
-        sc.fillStyle='rgba(100,200,255,0.5)';sc.font=`400 8px ${HN}`;sc.textAlign='left';
-        sc.fillText('← coming soon',170,dy+12);
-      }
-    });
-    if(data.scanTime){sc.fillStyle='rgba(100,200,255,0.35)';sc.font=`400 9px ${HN}`;sc.textAlign='center';sc.fillText('Scanned '+data.scanTime,SW/2,SH-32);}
-    sc.restore();
-  }
-  const circleA=eeo(eop(2.1,3.2));
-  if(circleA>0){const sy2=divY+22,cx=42,cy=sy2,rx=40,ry=32,prog=Math.min(circleA,1);sc.save();sc.strokeStyle='#f5c400';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#f5c400';sc.shadowBlur=10*prog;sc.globalAlpha=prog*0.95;sc.beginPath();const steps=120,drawn=Math.floor(steps*prog);for(let i=0;i<=drawn;i++){const angle=(i/steps)*Math.PI*2.15-Math.PI*0.65;if(i===0)sc.moveTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);else sc.lineTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);}sc.stroke();sc.shadowBlur=0;sc.restore();}
-  const ctaA=eeo(eop(2.4,3.0));
-  document.getElementById('ctaRow').style.opacity=ctaA>0?ctaA:0;
-  document.getElementById('reportBtn').style.opacity=ctaA>0?ctaA:0;
-  document.getElementById('ctaShare').style.opacity=ctaA>0?ctaA:0;
-}
-
-function runScoreAnimation(ticker,data){
-  scoreStart=null;if(scoreRaf)cancelAnimationFrame(scoreRaf);
-  function loop(ts){if(!scoreStart)scoreStart=ts;const t=(ts-scoreStart)/1000;drawScoreScreen(ticker,data,t);if(t<4.5)scoreRaf=requestAnimationFrame(loop);else{drawScoreScreen(ticker,data,4.5);}}
-  scoreRaf=requestAnimationFrame(loop);
-}
-
-// ── SCAN COUNTER ─────────────────────────────────────────────
-const FREE_SCANS=3;
-let scansUsed=0;
-try{scansUsed=parseInt(localStorage.getItem('k1ladex_scans')||'0');}catch(e){}
-function updateScanLabel(){
-  const r=Math.max(0,FREE_SCANS-scansUsed);
-  var fl=document.getElementById('freeLabel');
-  if(r>0){fl.textContent=r+' FREE SCAN'+(r===1?'':'S')+' REMAINING';}
-  else{fl.innerHTML='<span style="font-size:15px;font-weight:700;display:block;letter-spacing:1px;">FREE SCANS USED</span><span style="font-size:10px;display:block;margin-top:3px;letter-spacing:2px;">$9.99/MO FOR UNLIMITED</span>';}
-  document.getElementById('ctaShare').textContent='Share this score · '+r+' free scan'+(r===1?'':'s')+' remaining';
-}
-function showPaywall(){document.getElementById('paywallOverlay').classList.add('visible');}
-let currentTicker='',currentData=null;
-
-// ── LOADING STAGES ────────────────────────────────────────────
-const LOAD_STAGES=['Fetching live data...','Calculating SIGNAL+...','Running legal scan...','Building score...'];
-let loadStageTimer=null;
-function startLoadingStages(){
-  let stage=0;
-  document.getElementById('loadingSub').textContent=LOAD_STAGES[0];
-  loadStageTimer=setInterval(function(){stage=Math.min(stage+1,LOAD_STAGES.length-1);document.getElementById('loadingSub').textContent=LOAD_STAGES[stage];},3500);
-}
-function stopLoadingStages(){if(loadStageTimer){clearInterval(loadStageTimer);loadStageTimer=null;}}
-
-// ── GO BUTTON ────────────────────────────────────────────────
-document.getElementById('goBtn').addEventListener('click',async function(){
-  const ticker=document.getElementById('tickerInput').value.trim().toUpperCase();
-  if(!ticker)return;
-
-  // BTC Easter egg
-  if(ticker==='BTC'){document.getElementById('btcOverlay').classList.add('visible');document.getElementById('tickerInput').value='';return;}
-
-  // MVIS — permanent monument override
-  if(ticker==='MVIS'){
-    scansUsed++;
-    try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}
-    updateScanLabel();
-    const mvisData={name:'MicroVision',score:2.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'8%',float:'180M',revenue:'$7M TTM',earnings:'May 15, 2026',rec:'PASS',verdict:'MONUMENT — NOT A POSITION',col:'#cc0000',price:'',change:''};
-    const now=new Date();
-    mvisData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-    document.getElementById('loadingTicker').textContent='MVIS';
-    document.getElementById('loadingOverlay').classList.add('visible');
-    startLoadingStages();
-    try{const lp=await fetchLivePrice('MVIS');if(lp){mvisData.price=lp.price;mvisData.change=lp.change;}}catch(e){}
-    await new Promise(resolve=>setTimeout(resolve,3000));
-    stopLoadingStages();
-    currentTicker='MVIS';currentData=mvisData;
-    document.getElementById('loadingOverlay').classList.remove('visible');
-    document.getElementById('scoreOverlay').classList.add('visible');
-    runScoreAnimation('MVIS',mvisData);
-    document.getElementById('tickerInput').value='';
-    return;
-  }
-
-  // Reset code
-  if(ticker==='KLDX'){scansUsed=0;try{localStorage.setItem('k1ladex_scans','0');}catch(e){}updateScanLabel();document.getElementById('tickerInput').value='';return;}
-
-  if(scansUsed>=FREE_SCANS){showPaywall();return;}
-  scansUsed++;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
-  document.getElementById('loadingTicker').textContent=ticker;
-  document.getElementById('loadingOverlay').classList.add('visible');
-  startLoadingStages();
-  let scoreData=null;
-  try{const liveData=await fetchScan(ticker);if(liveData){scoreData=scoreFromLiveData(ticker,liveData);}}catch(e){}
-  await new Promise(resolve=>setTimeout(resolve,3000));
-  stopLoadingStages();
-  if(!scoreData){
-    if(FALLBACK_SCORES[ticker]){
-      scoreData=Object.assign({},FALLBACK_SCORES[ticker]);
-      const now=new Date();
-      scoreData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-      try{const lp=await fetchLivePrice(ticker);if(lp){scoreData.price=lp.price;scoreData.change=lp.change;}}catch(e){}
-    }else{
-      document.getElementById('loadingOverlay').classList.remove('visible');
-      scansUsed--;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
-      alert(ticker+'\n\nNo data returned. Check the ticker symbol and try again.');
-      document.getElementById('tickerInput').value='';return;
-    }
-  }
-  currentTicker=ticker;currentData=scoreData;
-  document.getElementById('loadingOverlay').classList.remove('visible');
-  document.getElementById('scoreOverlay').classList.add('visible');
-  runScoreAnimation(ticker,scoreData);
-});
-
-document.getElementById('tickerInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('goBtn').click();});
-
-function goBack(){
-  document.getElementById('scoreOverlay').classList.remove('visible');
-  document.getElementById('loadingOverlay').classList.remove('visible');
-  document.getElementById('ctaRow').style.opacity=0;
-  document.getElementById('reportBtn').style.opacity=0;
-  document.getElementById('ctaShare').style.opacity=0;
-  if(scoreRaf)cancelAnimationFrame(scoreRaf);
-  stopLoadingStages();
-  document.getElementById('tickerInput').value='';
-  setTimeout(function(){document.getElementById('tickerInput').focus();},300);
-}
-document.getElementById('backBtn').addEventListener('click',goBack);
-document.getElementById('backBtn').addEventListener('touchend',function(e){e.preventDefault();goBack();},{passive:false});
-document.getElementById('btcCloseBtn').addEventListener('click',function(){document.getElementById('btcOverlay').classList.remove('visible');document.getElementById('tickerInput').value='';setTimeout(function(){document.getElementById('tickerInput').focus();},300);});
-
-const STRIPE='https://buy.stripe.com/eVqdRb1PY8t3cRae4vcMM04';
-document.getElementById('subscribeBtn').addEventListener('click',function(){window.open(STRIPE,'_blank');});
-document.getElementById('subscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(STRIPE,'_blank');},{passive:false});
-document.getElementById('paywallSubscribeBtn').addEventListener('click',function(){window.open(STRIPE,'_blank');});
-document.getElementById('paywallSubscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(STRIPE,'_blank');},{passive:false});
-function closePaywall(){document.getElementById('paywallOverlay').classList.remove('visible');}
-document.getElementById('paywallCloseBtn').addEventListener('click',closePaywall);
-document.getElementById('paywallCloseBtn').addEventListener('touchend',function(e){e.preventDefault();closePaywall();},{passive:false});
-
-// ── PDF ──────────────────────────────────────────────────────
-function generateReport(ticker,data){
-  const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'pt',format:'letter'});
-  const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight(),M=54,CW=pw-M*2;
-  const dateStr=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  // ── PALETTE: white paper, blue + dark ink ─────────────────
-  const W=[255,255,255],INK=[20,28,48],INK2=[85,100,125];
-  const B=[0,108,200],BLT=[230,241,254],RUL=[205,218,232],NV=[8,32,80];
-  const recCol=data.rec==='BUY'?[0,128,60]:data.rec==='HOLD'?[155,108,0]:[172,48,0];
-  function cpCol(v){return v>=1.5?B:v>=1.0?[155,108,0]:[172,48,0];}
-  // ── LAYOUT HELPERS ────────────────────────────────────────
-  function hdr(n){
-    doc.setFillColor(...W);doc.rect(0,0,pw,ph,'F');
-    doc.setFillColor(...NV);doc.rect(0,0,pw,52,'F');
-    doc.setFillColor(...B);doc.rect(0,52,pw,3,'F');
-    doc.setTextColor(...W);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('K1LADEX',M,34);
-    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(155,205,255);doc.text('INTELLIGENCE FRAMEWORK',M,45);
-    doc.setTextColor(185,210,240);doc.setFontSize(8);doc.text(ticker+' · '+dateStr,pw-M,34,{align:'right'});
-    doc.text('Page '+n+' of 12',pw-M,45,{align:'right'});
-  }
-  function ftr(){
-    doc.setFillColor(...NV);doc.rect(0,ph-36,pw,36,'F');
-    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...W);doc.text('K1LADEX',M,ph-18);
-    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(155,205,255);doc.text("Finally know what you're doing.  ·  k1ladex.com",M+52,ph-18);
-    doc.setTextColor(110,145,180);doc.text('For informational purposes only. Not financial advice.',pw-M,ph-18,{align:'right'});
-  }
-  function sec(y,title,sub){
-    doc.setFillColor(...BLT);doc.rect(M,y,CW,26,'F');
-    doc.setDrawColor(...B);doc.setLineWidth(2.5);doc.line(M,y,M,y+26);
-    doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...INK);doc.text(title,M+10,y+17);
-    if(sub){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...B);doc.text(sub,pw-M,y+17,{align:'right'});}
-    return y+38;
-  }
-  function sBar(x,y,w,h,val,max,col){
-    doc.setFillColor(...RUL);doc.rect(x,y,w,h,'F');
-    const f=(val/max)*w;if(f>0){doc.setFillColor(...col);doc.rect(x,y,f,h,'F');}
-  }
-  function rule(y){doc.setDrawColor(...RUL);doc.setLineWidth(0.4);doc.line(M,y,M+CW,y);}
-  function dataRow(l1,v1,l2,v2,ry,even){
-    doc.setFillColor(...(even?[244,248,254]:[251,252,255]));doc.rect(M,ry,CW,34,'F');
-    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...INK2);
-    doc.text(l1,M+8,ry+12);if(l2)doc.text(l2,M+CW/2+8,ry+12);
-    doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...INK);
-    doc.text(String(v1),M+8,ry+26);if(v2!=null)doc.text(String(v2),M+CW/2+8,ry+26);
-    rule(ry+34);if(l2){doc.setDrawColor(...RUL);doc.setLineWidth(0.4);doc.line(M+CW/2,ry,M+CW/2,ry+34);}
-  }
-
-  // ── PAGE 1: COVER ─────────────────────────────────────────
-  doc.setFillColor(...W);doc.rect(0,0,pw,ph,'F');
-  doc.setFillColor(...NV);doc.rect(0,0,pw,ph*0.20,'F');
-  doc.setFillColor(...B);doc.rect(0,ph*0.20,pw,3,'F');
-  doc.setTextColor(...W);doc.setFont('helvetica','bold');doc.setFontSize(36);doc.text('K1LADEX',pw/2,ph*0.11,{align:'center'});
-  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(155,205,255);doc.text('INTELLIGENCE FRAMEWORK',pw/2,ph*0.11+20,{align:'center'});
-  doc.setFont('helvetica','bold');doc.setFontSize(80);doc.setTextColor(...INK);doc.text(ticker,pw/2,ph*0.47,{align:'center'});
-  doc.setFont('helvetica','normal');doc.setFontSize(14);doc.setTextColor(...INK2);doc.text(data.name,pw/2,ph*0.47+26,{align:'center'});
-  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(...INK);doc.text(data.price||'—',pw/2-14,ph*0.47+58,{align:'right'});
-  const chgUp=!(data.change&&data.change.startsWith('-'));
-  doc.setTextColor(...(chgUp?[0,128,60]:[172,48,0]));doc.text(data.change||'',pw/2-6,ph*0.47+58,{align:'left'});
-  doc.setFillColor(...B);doc.rect(pw/2-90,ph*0.56,180,2,'F');
-  doc.setFillColor(...recCol);doc.rect(pw/2-72,ph*0.60,144,42,'F');
-  doc.setTextColor(...W);doc.setFont('helvetica','bold');doc.setFontSize(20);doc.text(data.rec,pw/2,ph*0.60+28,{align:'center'});
-  doc.setTextColor(...B);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text('K1LADEX SIGNAL SCORE: '+data.score+'/10',pw/2,ph*0.60+58,{align:'center'});
-  doc.setTextColor(...INK2);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text('Scan Date: '+dateStr,pw/2,ph*0.60+74,{align:'center'});
-  doc.setTextColor(...B);doc.setFontSize(10);doc.setFont('helvetica','italic');doc.text("Finally know what you're doing.",pw/2,ph*0.88,{align:'center'});
-  ftr();
-
-  // ── PAGE 2: SIGNAL+ SCORECARD ─────────────────────────────
-  doc.addPage();hdr(2);ftr();let y=80;
-  y=sec(y,'K1LADEX SIGNAL+ SCORECARD',ticker+' · '+data.rec+' · '+data.score+'/10');
-  doc.setFont('helvetica','bold');doc.setFontSize(58);doc.setTextColor(...B);doc.text(String(data.score),M,y+68);
-  doc.setFont('helvetica','normal');doc.setFontSize(20);doc.setTextColor(...INK2);doc.text('/10',M+72,y+68);
-  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...recCol);doc.text('Recommendation: '+data.rec,M+110,y+46);
-  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...INK2);doc.text(data.verdict,M+110,y+62);y+=90;
-  const lbls=['S','I','G','N','A','L','+'],vls=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
-  const fN=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Approaching Catalyst','Levels & Macro','Volume + Short Pressure'];
-  lbls.forEach((lbl,i)=>{
-    const col=cpCol(vls[i]),rh=44;
-    doc.setFillColor(...(i%2===0?[244,248,254]:[251,252,255]));doc.rect(M,y,CW,rh,'F');
-    doc.setFillColor(...col);doc.rect(M,y,3,rh,'F');
-    doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(...col);doc.text(lbl,M+12,y+28);
-    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...INK);doc.text(fN[i],M+32,y+16);
-    const sl=vls[i]>=1.5?'CONFIRMED':vls[i]>=1.0?'PARTIAL':'FAILED';
-    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...col);doc.text(sl,M+32,y+30);
-    sBar(pw-M-132,y+13,112,14,vls[i],1.5,col);
-    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(...col);doc.text(vls[i].toFixed(1),pw-M,y+30,{align:'right'});
-    rule(y+rh);y+=rh;
-  });
-  y+=14;y=sec(y,'KEY DATA');
-  [['Current Price',data.price||'—','Short Interest',data.short],
-   ['52W Surge',data.surge,'Float',data.float],
-   ['Revenue (TTM)',data.revenue,'Next Earnings',data.earnings]
-  ].forEach(([l1,v1,l2,v2],i)=>dataRow(l1,v1,l2,v2,y+i*34,i%2===0));
-
-  // ── CHECKPOINT PROSE (data-driven) ────────────────────────
-  function cpProse(letter,val,d){
-    const t=ticker,nn=x=>(x!==null&&x!==undefined)?x:null;
-    if(letter==='S'){
-      const sv=nn(d.surgeVal),lo=nn(d.week52Low),cp2=nn(d.currentPrice);
-      const det=sv!=null&&lo!=null&&cp2!=null
-        ?'\n\n52-week low: $'+lo.toFixed(2)+'\nCurrent price: $'+cp2.toFixed(2)+'\nMeasured surge: '+sv.toFixed(0)+'% from the low.'
-        :'\n\nRecorded 52-week surge: '+d.surge+'.';
-      if(val>=1.5)return t+' has cleared the S checkpoint with a confirmed surge of '+d.surge+' from its 52-week low — well above the 200% minimum threshold.'+det+'\n\nThe initial launch phase is complete. A name that has not surged 200%+ has not yet been validated by the market. '+t+' has been. The geometric prerequisite for re-entry is satisfied.';
-      if(val>=0.75)return t+' has moved '+d.surge+' from its 52-week low — meaningful, but short of the 200% minimum for full S activation.'+det+'\n\nMarket interest is present. The geometric threshold is not yet independently satisfied. A partial score of 0.75 is assigned. Monitor for continuation toward 200%.';
-      return t+'\'s 52-week move of '+d.surge+' does not clear the 200% threshold.'+det+'\n\nThis checkpoint is binary. No other score can compensate for its absence. The name has not completed the initial launch phase that SIGNAL+ requires before re-entry is considered.';
-    }
-    if(letter==='I'){
-      const g1=d.iGate52H!=null?d.iGate52H:(val>=1.0);
-      const g2=d.iGate50MA!=null?d.iGate50MA:(val>=1.0);
-      const g3=d.iGateNo30d!=null?d.iGateNo30d:(val>=1.5);
-      const cp2=nn(d.currentPrice),h52=nn(d.week52High),ma=nn(d.ma50);
-      const passed=[g1,g2,g3].filter(Boolean).length;
-      let g1t='Gate 1 — Within 30% of 52-week high: '+(g1?'PASS':'FAIL');
-      if(h52&&cp2)g1t+=' (price $'+cp2.toFixed(2)+', threshold $'+(h52*0.70).toFixed(2)+', high $'+h52.toFixed(2)+')';
-      let g2t='Gate 2 — Above 50-day moving average: '+(g2?'PASS':'FAIL');
-      if(ma&&cp2)g2t+=' (price $'+cp2.toFixed(2)+', MA $'+ma.toFixed(2)+')';
-      const g3t='Gate 3 — No new 30-day lows: '+(g3?'PASS':'FAIL');
-      const gText='\n\n'+g1t+'\n'+g2t+'\n'+g3t+'\n\n'+passed+' of 3 gates satisfied.';
-      if(val>=1.5)return t+' is in confirmed consolidation, clearing all three I checkpoint gates.'+gText+'\n\nThis is the geometric rest zone SIGNAL+ requires: holding above the moving average, coiling near highs, no 30-day breakdown. Re-entry setups form here. The pattern is intact.';
-      if(val>=0.75)return t+' is partially consolidating, passing '+passed+' of 3 gates.'+gText+'\n\nBase-building is visible but the tight coiling structure required for a clean signal has not fully formed. Do not enter while a gate is failing. Monitor for resolution.';
-      return t+' has failed the consolidation checkpoint, passing only '+passed+' of 3 gates.'+gText+'\n\nThe stock is not in a constructive rest pattern. No re-entry should be considered. The structure must establish and hold before this gate can pass.';
-    }
-    if(letter==='G'){
-      const rg=nn(d.revenueGrowth),hc=d.hasCash;
-      let det='\n\nRevenue (TTM): '+d.revenue+'.';
-      if(rg!==null)det+='\nRevenue growth (YoY): '+(rg*100).toFixed(1)+'%.';
-      if(hc!=null)det+='\nCash position: '+(hc?'Confirmed positive.':'Not confirmed positive.');
-      if(val>=1.5)return t+' clears the G checkpoint with confirmed revenue of '+d.revenue+', growth above the 5% YoY threshold, and positive cash positioning.'+det+'\n\nThe business is not pre-revenue speculation. Revenue is real, growing, and supported by cash. Fundamentals are working in favor of the technical thesis, not against it.';
-      if(val>=1.0)return t+' shows positive revenue of '+d.revenue+' with measurable growth — but below the 5% threshold or without full cash confirmation.'+det+'\n\nReal top-line numbers are present, removing the most dangerous category of speculative risk. Growth is directionally correct. G scores 1.0: a passing grade with limited conviction, not a disqualifier.';
-      return t+' is pre-revenue or generating negative growth.'+det+'\n\nThe G checkpoint does not fully activate without consistently growing top-line revenue. A floor of 0.5 is assigned — the checkpoint is acknowledged but not confirmed. Fundamental risk profile is elevated.';
-    }
-    if(letter==='N'){
-      const flags=d.nFlags||[],strikes=d.nStrikes!=null?d.nStrikes:(val===0?2:0);
-      let det='\n\nActive legal strike count: '+strikes+(strikes>=2?' — SMCI RULE TRIGGERED.':'.');
-      const realFlags=flags.filter(f=>strikes>0||(!f.toLowerCase().includes('unavailable')&&!f.toLowerCase().includes('legal scan')));
-      det+=realFlags.length>0?'\n\nFlags identified:\n'+realFlags.map((f,i)=>'  '+(i+1)+'. '+f).join('\n'):'\n\nNo flags identified. Regulatory record is clean.';
-      if(val>=1.5)return 'No disqualifying legal or regulatory flags have been identified for '+t+'. The N checkpoint verifies the company is not subject to the SMCI Rule, which permanently disqualifies any name carrying 2+ active legal strikes.'+det+'\n\n'+t+' passes cleanly. A clean N reading does not certify zero risk — it confirms no disqualifying strikes exist in the scan record.';
-      return t+' has triggered the K1LADEX SMCI Rule.'+det+'\n\nThis is a full disqualification, not a deduction. Names with active legal exposure carry tail risks that pattern recognition cannot price. A PASS is locked in regardless of all other checkpoint scores. The name is removed from consideration until all active strikes are fully and verifiably resolved.';
-    }
-    if(letter==='A'){
-      const ea=d.earnings;
-      let daysText='';
-      if(ea&&ea!=='TBD'){const ed=new Date(ea);if(!isNaN(ed)){const diff=Math.ceil((ed-new Date())/86400000);daysText=diff>0?' That is '+diff+' calendar days from the scan date.':diff===0?' That is today.':' Note: that date has passed — verify the current earnings calendar.';}}
-      if(val>=1.5)return t+' has a confirmed upcoming catalyst on the calendar: next earnings scheduled for '+ea+'.'+daysText+'\n\nCatalysts are the ignition events that convert consolidation into directional movement. A known, datable event forces institutional repositioning and creates the price discovery conditions SIGNAL+ is designed to front-run. Checkpoint fully confirmed. The question is not whether the catalyst exists — it does — but whether the other six checkpoints are sufficiently aligned to act ahead of it.';
-      return 'No confirmed upcoming catalyst has been identified for '+t+'. Earnings on record: '+ea+'.'+daysText+'\n\nThe A checkpoint requires a specific, datable event capable of forcing price discovery. Without one, price movement must come from market structure alone — lower urgency, lower conviction. A scores zero until a catalyst is confirmed. Check the company\'s IR calendar and SEC filings.';
-    }
-    if(letter==='L'){
-      const cp2=nn(d.currentPrice),lo=nn(d.week52Low),hi=nn(d.week52High),ma=nn(d.ma50);
-      let det='';
-      if(cp2&&lo){
-        const dist=((cp2-lo)/lo*100);
-        det='\n\nCurrent price: $'+cp2.toFixed(2)+'\n52-week low (support floor): $'+lo.toFixed(2)+'\nDistance from low: '+dist.toFixed(1)+'%';
-        if(hi)det+='\n52-week high: $'+hi.toFixed(2)+' ('+((hi-cp2)/hi*100).toFixed(1)+'% above current)';
-        if(ma)det+='\n50-day MA: $'+ma.toFixed(2)+' — price is '+(cp2>ma?'+'+((cp2-ma)/ma*100).toFixed(1)+'% above':((cp2-ma)/ma*100).toFixed(1)+'% below');
-      }else{det='\n\nCurrent price: '+(d.price||'—')+'\n52-week surge: '+d.surge;}
-      if(val>=1.5)return t+' is trading more than 25% above its 52-week low, confirming constructive macro positioning.'+det+'\n\nThe 52-week low is the primary technical support reference. L checkpoint fully confirmed.';
-      if(val>=1.0)return t+' is trading between 5–25% above its 52-week low — a neutral but acceptable macro position.'+det+'\n\nThe stock has recovered from the floor but has not achieved decisive separation. L scores 1.0: technically passing, not maximum conviction. Position sizing should reflect the neutral reading. A move beyond 25% distance would upgrade this checkpoint.';
-      return t+' is trading within 5% of its 52-week low — a structurally weak price position.'+det+'\n\nThe stock is hugging its floor, compressing risk/reward. A stop near the 52-week low leaves almost no tolerance on a name that has already established that level as significant support. L scores 0.5. Wait for decisive separation before reconsidering entry.';
-    }
-    if(letter==='+'){
-      const sp=nn(d.shortPct),fs=nn(d.floatShares);
-      const hs=d.highShort!=null?d.highShort:(sp&&sp>0.10);
-      const tf=d.tightFloat!=null?d.tightFloat:(fs&&fs<30000000);
-      const mf=d.megaFloat!=null?d.megaFloat:(fs&&fs>100000000);
-      const fsStr=fs?Math.round(fs/1e5)/10+'M shares':'N/A';
-      let det='\n\nShort interest: '+d.short+(sp?' ('+((sp)*100).toFixed(1)+'% of float)':'')+
-        '\nFloat: '+d.float+(fs?' ('+fsStr+')':'')+
-        '\nHigh short >10%: '+(hs?'YES':'NO')+
-        '\nTight float <30M shares: '+(tf?'YES':'NO')+
-        '\nMega float >100M (suppressive): '+(mf?'YES':'NO')+
-        '\nSqueeze overlay: '+(val>=1.5?'FULL — both conditions confirmed':val>=0.75?'PARTIAL — one condition confirmed':'ABSENT');
-      if(val>=1.5)return t+' exhibits both elevated short interest ('+d.short+') and a tight float ('+d.float+') — the highest-conviction + checkpoint configuration.'+det+'\n\nA compressed float limits available supply. Elevated short interest means those short positions must eventually be covered — into a rising price on limited shares. These two forces combine to create the squeeze overlay: mechanical amplification of any catalyst-driven move. Both conditions are confirmed.';
-      if(val>=0.75){
-        if(hs&&!tf)return t+' carries elevated short interest of '+d.short+' — above the 10% threshold for partial + activation.'+det+'\n\nThe float ('+d.float+') does not qualify as tight. However, significant short exposure creates real squeeze potential on any upward catalyst. Partial + score of 0.75. One ignition event away from a forced unwind.';
-        return t+' has a tight float of '+d.float+', creating supply compression without elevated short interest ('+d.short+').'+det+'\n\nLimited share supply means modest demand increases produce outsized price moves. The squeeze overlay is partial — short interest component absent — but float-driven scarcity is confirmed. Partial + score of 0.75.';
-      }
-      return 'Neither elevated short interest nor a tight float are confirmed for '+t+'.'+det+'\n\n'+(mf?'The mega float ('+d.float+') is actively suppressive — large share supply absorbs demand without generating squeeze conditions. ':'')+'The + amplifier is absent. '+t+' may qualify on other checkpoints, but the squeeze overlay — a core K1LADEX edge — is not present in this setup.';
-    }
-    return '';
-  }
-
-  // ── PAGES 3–9: ONE PER CHECKPOINT ─────────────────────────
-  const cpDefs=[
-    {letter:'S',name:'Surge 200%+',val:data.s,
-     dp:[['52-Week Surge',data.surge],['Current Price',data.price||'—'],['52W Low',data.week52Low?'$'+data.week52Low.toFixed(2):'N/A']]},
-    {letter:'I',name:'In Consolidation',val:data.i,
-     dp:[['50-Day MA',data.ma50?'$'+data.ma50.toFixed(2):'N/A'],['52W High',data.week52High?'$'+data.week52High.toFixed(2):'N/A'],['30-Day Lows',data.newLow30d?'MAKING NEW LOWS':'NONE — CLEAN']]},
-    {letter:'G',name:'Growth Confirmed',val:data.g,
-     dp:[['Revenue (TTM)',data.revenue],['Growth YoY',data.revenueGrowth!=null?(data.revenueGrowth*100).toFixed(1)+'%':'N/A'],['Cash Confirmed',data.hasCash!=null?(data.hasCash?'YES':'NO'):'N/A']]},
-    {letter:'N',name:'No Red Flags',val:data.n,
-     dp:[['Strike Count',data.nStrikes!=null?String(data.nStrikes):'0'],['SMCI Rule',data.nStrikes>=2?'TRIGGERED':'CLEAR'],['Status',data.n>=1.5?'CLEAN — NO FLAGS':'DISQUALIFIED']]},
-    {letter:'A',name:'Approaching Catalyst',val:data.a,
-     dp:[['Next Earnings',data.earnings],['Catalyst Status',data.a>=1.5?'CONFIRMED':'NONE ON RECORD']]},
-    {letter:'L',name:'Levels & Macro',val:data.l,
-     dp:[['Current Price',data.price||'—'],['52W Low (Support)',data.week52Low?'$'+data.week52Low.toFixed(2):'N/A'],['Distance from Low',data.week52Low&&data.currentPrice?((data.currentPrice-data.week52Low)/data.week52Low*100).toFixed(1)+'%':'N/A']]},
-    {letter:'+',name:'Volume + Short Pressure',val:data.plus,
-     dp:[['Short Interest',data.short],['Float',data.float],['Squeeze Overlay',data.plus>=1.5?'FULL':data.plus>=0.75?'PARTIAL':'ABSENT']]},
-  ];
-  cpDefs.forEach((cp,idx)=>{
-    doc.addPage();hdr(idx+3);ftr();
-    const col=cpCol(cp.val);
-    const statusLabel=cp.val>=1.5?'CONFIRMED':cp.val>0?'PARTIAL':'FAILED';
-    y=80;
-    // ghost watermark letter
-    doc.setFont('helvetica','bold');doc.setFontSize(240);doc.setTextColor(238,244,252);doc.text(cp.letter,pw+10,ph-44,{align:'right'});
-    y=sec(y,'CHECKPOINT '+cp.letter+' — '+cp.name.toUpperCase(),'Score: '+cp.val.toFixed(1)+' / 1.5');
-    // status badge
-    doc.setFillColor(...col);doc.rect(M,y,CW,34,'F');
-    doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(...W);doc.text(statusLabel,pw/2,y+23,{align:'center'});
-    y+=44;
-    // score bar
-    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...INK2);doc.text('CHECKPOINT SCORE',M,y+12);
-    sBar(M+128,y+1,CW-198,15,cp.val,1.5,col);
-    doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(...col);doc.text(cp.val.toFixed(1)+' / 1.5',pw-M,y+13,{align:'right'});
-    y+=30;rule(y);y+=16;
-    // analysis
-    y=sec(y,'ANALYSIS');
-    doc.setFont('helvetica','normal');doc.setFontSize(9.5);doc.setTextColor(...INK);
-    const pLines=doc.splitTextToSize(cpProse(cp.letter,cp.val,data),CW);
-    doc.text(pLines,M,y);y+=pLines.length*13.5+16;
-    // supporting data
-    y=sec(y,'SUPPORTING DATA');
-    cp.dp.forEach(([lbl,val2],i)=>{
-      const ry=y+i*34;
-      doc.setFillColor(...(i%2===0?[244,248,254]:[251,252,255]));doc.rect(M,ry,CW,34,'F');
-      doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...INK2);doc.text(lbl,M+10,ry+13);
-      doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...INK);doc.text(String(val2),M+10,ry+27);
-      rule(ry+34);
-    });
-  });
-
-  // ── PAGE 10: FULL VERDICT ─────────────────────────────────
-  doc.addPage();hdr(10);ftr();y=80;
-  y=sec(y,'FULL VERDICT',ticker+' · '+dateStr);
-  doc.setFillColor(...recCol);doc.rect(M,y,CW,58,'F');
-  doc.setFont('helvetica','bold');doc.setFontSize(28);doc.setTextColor(...W);doc.text(data.rec,M+16,y+38);
-  doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(230,242,255);doc.text('K1LADEX SIGNAL SCORE: '+data.score+' / 10',pw-M,y+22,{align:'right'});
-  doc.setFontSize(9);doc.setTextColor(210,226,245);doc.text(data.verdict,pw-M,y+40,{align:'right'});
-  y+=68;
-  const sw=CW/7;
-  lbls.forEach((lbl,i)=>{
-    const col=cpCol(vls[i]),sx=M+i*sw;
-    doc.setFillColor(...(i%2===0?[244,248,254]:[251,252,255]));doc.rect(sx,y,sw,50,'F');
-    doc.setFillColor(...col);doc.rect(sx,y,sw,3,'F');
-    doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(...col);doc.text(lbl,sx+sw/2,y+23,{align:'center'});
-    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...INK2);doc.text(vls[i].toFixed(1),sx+sw/2,y+41,{align:'center'});
-    doc.setDrawColor(...RUL);doc.setLineWidth(0.3);doc.line(sx+sw,y,sx+sw,y+50);
-  });
-  y+=62;rule(y);y+=16;
-  y=sec(y,'OVERALL ASSESSMENT');
-  let vp='';
-  if(data.rec==='BUY')vp=ticker+' has achieved a K1LADEX SIGNAL+ score of '+data.score+'/10 — a BUY recommendation. Every critical checkpoint has been evaluated and the setup satisfies the geometric and fundamental requirements of the framework. Surge confirmed at '+data.surge+'. Consolidation intact. Revenue of '+data.revenue+' growing. Regulatory record clean. Catalyst on the calendar for '+data.earnings+'. Price levels constructive. Squeeze dynamics present (short interest: '+data.short+', float: '+data.float+'). This is the configuration the framework was built to find. Position sizing, entry level, and stop discipline remain the trader\'s responsibility.';
-  else if(data.rec==='HOLD')vp=ticker+' has scored '+data.score+'/10 — a HOLD. The setup shows real promise but has not cleared every checkpoint at the threshold required for maximum conviction. One or more gates are scoring partial, limiting the overall signal. The name is worth watching with discipline. Review the failing gate on the checkpoint pages. If partial readings resolve in the bull direction, this upgrades to a BUY on the next scan. Do not chase. Wait for confirmation.';
-  else vp=ticker+' has scored '+data.score+'/10 — a PASS. The SIGNAL+ framework requires a minimum threshold across all seven checkpoints before a name is actionable. This scan identified one or more critical failures that disqualify the setup at this time. Passing is discipline. The K1LADEX edge is built on selectivity — not every scan needs to be a trade. Review the checkpoint pages for specific failure points and what must change before this name is reconsidered.';
-  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...INK);
-  const vpL=doc.splitTextToSize(vp,CW);doc.text(vpL,M,y);y+=vpL.length*14+18;
-  y=sec(y,'KEY METRICS SUMMARY');
-  [['Current Price',data.price||'—','Short Interest',data.short],
-   ['52W Surge',data.surge,'Float',data.float],
-   ['Revenue (TTM)',data.revenue,'Next Earnings',data.earnings]
-  ].forEach(([l1,v1,l2,v2],i)=>dataRow(l1,v1,l2,v2,y+i*34,i%2===0));
-
-  // ── PAGE 11: DISCLAIMER ───────────────────────────────────
-  doc.addPage();hdr(11);ftr();y=80;
-  y=sec(y,'LEGAL DISCLAIMER & RISK DISCLOSURE');
-  [['NOT FINANCIAL ADVICE','This report is generated by the K1LADEX SIGNAL+ Intelligence Framework and is provided for informational and educational purposes only. Nothing in this report constitutes financial, investment, legal, or tax advice. K1LADEX is not a registered investment advisor, broker-dealer, or financial institution of any kind. No fiduciary relationship exists between K1LADEX and any reader of this report.'],
-   ['RISK OF LOSS','All investments carry risk. Equity securities — particularly small-cap and micro-cap names that frequently appear in K1LADEX scans — are subject to extreme volatility, low liquidity, wide bid-ask spreads, and the potential for total loss of invested capital. Past performance of any pattern, strategy, or ticker is not indicative of future results.'],
-   ['NO GUARANTEE','The K1LADEX SIGNAL+ score is a proprietary pattern-matching output. It does not guarantee price appreciation. A BUY recommendation does not mean the stock will go up. A PASS does not mean it will go down. The framework identifies geometric setups — it does not predict outcomes, and outcomes regularly diverge from setups.'],
-   ['YOUR RESPONSIBILITY','You are solely responsible for your own investment decisions. Before investing in any security, conduct your own due diligence and, where appropriate, consult a licensed financial professional. Never invest money you cannot afford to lose. Never size a position beyond your personal risk tolerance.'],
-   ['DATA ACCURACY','Data is sourced from third-party providers including Finnhub and Finviz. K1LADEX makes no representation as to the accuracy, completeness, or timeliness of that data. Errors in underlying data may produce incorrect scores or recommendations. Always independently verify data before acting on any output from this system.'],
-  ].forEach(([title,text])=>{
-    const lines=doc.splitTextToSize(text,CW-20);
-    const bh=lines.length*11+30;
-    doc.setFillColor(252,246,246);doc.rect(M,y,CW,bh,'F');
-    doc.setDrawColor(172,48,0);doc.setLineWidth(1.5);doc.line(M,y,M,y+bh);
-    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(172,48,0);doc.text(title,M+12,y+14);
-    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80,40,40);doc.text(lines,M+12,y+26);
-    y+=bh+10;
-  });
-
-  // ── PAGE 12: ABOUT / INFO / CONTACT ───────────────────────
-  doc.addPage();hdr(12);ftr();y=80;
-  y=sec(y,'ABOUT K1LADEX');
-  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...INK);
-  const abt=doc.splitTextToSize('K1LADEX is a proprietary investment intelligence framework built on a single premise: geometric patterns, behavioral discipline, and a ruthless filter system can identify setups that institutional money misses — before they move.\n\nThe SIGNAL+ framework was developed from real trading experience: real losses, real wins, and real attention paid to why both happened. It is not a black-box algorithm. It is a structured decision system that forces every scan through seven specific gates before a recommendation is issued. If a name cannot clear all seven, it does not qualify. That filter is the entire edge.',CW);
-  doc.text(abt,M,y);y+=abt.length*14+18;
-  y=sec(y,'THE SIGNAL+ FRAMEWORK — QUICK REFERENCE');
-  [['S','Surge 200%+','Has the stock already proven itself with a minimum 200% move from its 52-week low?'],
-   ['I','In Consolidation','Is price resting above its MA, near highs, not making new 30-day lows?'],
-   ['G','Growth Confirmed','Is there real, growing revenue behind this name — or pre-revenue speculation?'],
-   ['N','No Red Flags','No active legal or regulatory disqualifiers under the SMCI Rule (2+ strikes)?'],
-   ['A','Approaching Catalyst','Is there a confirmed, dated upcoming event that could force price discovery?'],
-   ['L','Levels & Macro','Is price positioned constructively relative to its 52-week range and MAs?'],
-   ['+','Vol + Short Pressure','Do float compression and short interest create a squeeze overlay?'],
-  ].forEach(([lbl,name,desc],i)=>{
-    const ry=y+i*40;
-    doc.setFillColor(...(i%2===0?[244,248,254]:[251,252,255]));doc.rect(M,ry,CW,40,'F');
-    doc.setFillColor(...B);doc.rect(M,ry,3,40,'F');
-    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(...B);doc.text(lbl,M+12,ry+26);
-    doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(...INK);doc.text(name,M+32,ry+13);
-    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...INK2);
-    doc.text(doc.splitTextToSize(desc,CW-46),M+32,ry+25);
-    rule(ry+40);
-  });
-  y+=7*40+18;y=sec(y,'CONTACT & INFO');
-  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...INK2);doc.text('Website:',M,y+14);
-  doc.setTextColor(...B);doc.text('k1ladex.com',M+58,y+14);
-  doc.setTextColor(...INK2);doc.setFontSize(8);doc.text('Report generated '+dateStr+(data.scanTime?' · '+data.scanTime:''),M,y+30);
-
-  // ── OUTPUT ────────────────────────────────────────────────
-  const dateSlug=new Date().toISOString().slice(0,10);const fname=ticker+'_'+dateSlug+'.pdf';
-  try{const blob=doc.output('blob');const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();}catch(e){doc.save(fname);}
-}
-
-document.getElementById('reportBtn').addEventListener('click',function(){if(!currentData)return;try{generateReport(currentTicker,currentData);}catch(e){alert('PDF error: '+e.message);}});
-document.getElementById('reportBtn').addEventListener('touchend',function(e){e.preventDefault();if(!currentData)return;try{generateReport(currentTicker,currentData);}catch(e){alert('PDF error: '+e.message);}},{passive:false});
-
-window.addEventListener('load',function(){
-  document.getElementById('ctaRow').style.opacity=0;
-  document.getElementById('reportBtn').style.opacity=0;
-  document.getElementById('ctaShare').style.opacity=0;
-  updateScanLabel();
-});
-</script>
 </body>
 </html>
