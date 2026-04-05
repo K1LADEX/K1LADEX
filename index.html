@@ -274,6 +274,7 @@ function scoreFromLiveData(ticker,d){
   let rec=score>=9?'BUY':score>=7?'HOLD':'PASS';
   if(strikes>=2)rec='PASS';
   let verdict;
+  if(d.checkpointZero){verdict='CHECKPOINT ZERO KILL — REVERSE SPLIT';}
   if(strikes>=2){verdict='SMCI RULE — 2+ LEGAL STRIKES';}
   else if(d.nFlags&&d.nFlags.length>0&&n<1.5){verdict=d.nFlags[0].substring(0,38).toUpperCase();}
   else{verdict=score>=9?'MAXIMUM CONVICTION':score>=7?'WATCHLIST CANDIDATE':score>=5?'MONITOR ONLY':'FAILED SIGNAL+ — PASS';}
