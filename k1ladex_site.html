@@ -36,7 +36,8 @@ body{background:linear-gradient(180deg,#edf4fb 0%,#daeaf6 100%);display:flex;ali
 .back-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.75);border:1px solid #dde;border-radius:20px;padding:4px 10px;font-size:10px;letter-spacing:1px;color:#8aaabb;cursor:pointer;text-transform:uppercase;z-index:30;}
 .cta-row{position:absolute;bottom:68px;left:0;width:100%;display:flex;gap:8px;padding:0 16px;z-index:30;}
 .cta-subscribe{flex:1;background:#1a8a3a;border:none;border-radius:8px;padding:11px 8px;font-size:11px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#fff;cursor:pointer;letter-spacing:0.5px;}
-.cta-share{position:absolute;bottom:20px;width:100%;text-align:center;font-size:9px;color:#8aacbb;letter-spacing:1px;z-index:30;pointer-events:none;}
+.cta-share{position:absolute;bottom:10px;width:100%;text-align:center;font-size:9px;color:#8aacbb;letter-spacing:1px;z-index:30;pointer-events:none;}
+.scan-date{position:absolute;bottom:26px;width:100%;text-align:center;font-size:9px;color:#8aacbb;letter-spacing:1px;z-index:30;pointer-events:none;opacity:0;}
 .cta-report{position:absolute;bottom:46px;left:16px;right:16px;background:transparent;border:none;padding:0;font-size:10px;font-weight:500;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#4a8a6a;cursor:pointer;letter-spacing:1px;text-align:center;text-decoration:underline;opacity:0;z-index:30;}
 .loading-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.3s;z-index:25;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(to bottom,#edf4fb,#daeaf6);}
 .loading-overlay.visible{opacity:1;pointer-events:all;}
@@ -58,6 +59,21 @@ body{background:linear-gradient(180deg,#edf4fb 0%,#daeaf6 100%);display:flex;ali
 .paywall-tagline{font-size:13px;color:#4a6888;font-style:italic;margin-bottom:4px;}
 .paywall-btn-primary{width:100%;background:#1a8a3a;border:none;border-radius:10px;padding:14px;font-size:13px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#fff;cursor:pointer;letter-spacing:0.5px;margin-bottom:10px;}
 .paywall-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:16px;color:#4a6888;cursor:pointer;padding:4px 8px;}
+.auth-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;background:linear-gradient(180deg,#edf4fb 0%,#daeaf6 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s;}
+.auth-overlay.hidden{opacity:0;pointer-events:none;}
+.auth-logo{font-size:38px;font-weight:700;color:#0a1628;letter-spacing:1px;margin-bottom:4px;}
+.auth-sub{font-size:10px;color:#1a8a3a;letter-spacing:3px;margin-bottom:32px;}
+.auth-input{background:rgba(255,255,255,0.9);border:2px solid #1a8a3a;border-radius:8px;padding:12px 18px;font-size:22px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0a1628;width:200px;text-align:center;text-transform:uppercase;letter-spacing:4px;outline:none;display:block;margin-bottom:12px;}
+.auth-input::placeholder{color:#aac;font-size:14px;letter-spacing:2px;}
+.auth-btn{background:#1a8a3a;border:none;border-radius:8px;padding:13px 0;font-size:14px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#fff;cursor:pointer;width:200px;letter-spacing:1px;margin-bottom:10px;}
+.auth-error{font-size:11px;color:#cc4400;letter-spacing:1px;min-height:16px;text-align:center;}
+.welcome-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:190;background:linear-gradient(180deg,#edf4fb 0%,#daeaf6 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s;}
+.welcome-overlay.visible{opacity:1;pointer-events:all;}
+.welcome-logo{font-size:42px;font-weight:700;color:#0a1628;letter-spacing:1px;margin-bottom:6px;}
+.welcome-tag{font-size:10px;color:#1a8a3a;letter-spacing:3.5px;margin-bottom:24px;}
+.welcome-msg{font-size:18px;font-weight:600;color:#163058;letter-spacing:1px;margin-bottom:6px;}
+.welcome-sub{font-size:12px;color:#4a6888;letter-spacing:0.5px;}
+.home-btn{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.75);border:1px solid #dde;border-radius:20px;padding:4px 10px;font-size:10px;letter-spacing:1px;color:#8aaabb;cursor:pointer;text-transform:uppercase;z-index:30;text-decoration:none;display:inline-block;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;}
 </style>
 </head>
 <body>
@@ -91,6 +107,7 @@ body{background:linear-gradient(180deg,#edf4fb 0%,#daeaf6 100%);display:flex;ali
     <button class="back-btn" id="backBtn">← BACK</button>
     <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">JOIN THE WAITLIST</button></div>
     <button class="cta-report" id="reportBtn">⬇ Download PDF Report</button>
+    <div class="scan-date" id="scanDate"></div>
     <div class="cta-share" id="ctaShare">Share this score · 3 free scans remaining</div>
   </div>
   <div class="paywall-overlay" id="paywallOverlay">
@@ -275,69 +292,69 @@ async function fetchLivePrice(ticker) {
 
 // ── SIGNAL+ SCORE DATABASE ──────────────────────────────────
 const SCORES = {
-  'ONDS':{name:'Ondas Holdings',score:9,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.0,plus:1.0,surge:'+248%',short:'35%',float:'8.2M',revenue:'$38-41M guided',earnings:'May 14, 2026',rec:'BUY',verdict:'CROWN CANDIDATE',col:'#1a8a3a'},
-  'GSAT':{name:'Globalstar',score:8.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:1.0,surge:'+162%',short:'12%',float:'1.2B',revenue:'$280-305M guided',earnings:'Apr 30, 2026',rec:'HOLD',verdict:'APPLE CONSTELLATION CATALYST',col:'#1a8a3a'},
-  'LWLG':{name:'Lightwave Logic',score:5.75,s:1.5,i:1.0,g:0.5,n:0.75,a:1.0,l:1.0,plus:0.0,surge:'+245%',short:'6%',float:'131M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'HOLD',verdict:'CEO SELLING FLAG — DO NOT ADD',col:'#886600'},
-  'IBRX':{name:'ImmunityBio',score:7.0,s:1.5,i:1.0,g:1.0,n:1.0,a:1.5,l:1.0,plus:0.0,surge:'+320%',short:'18%',float:'15M',revenue:'$42M TTM',earnings:'May 8, 2026',rec:'HOLD',verdict:'FDA CATALYST WATCH',col:'#886600'},
-  'DNN':{name:'Denison Mines',score:7.0,s:1.0,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+180%',short:'4%',float:'620M',revenue:'Pre-revenue',earnings:'May 11, 2026',rec:'HOLD',verdict:'URANIUM — PHOENIX ISR UNDERWAY',col:'#886600'},
+  'ONDS':{name:'Ondas Holdings',score:9,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.0,plus:1.0,surge:'+248%',short:'35%',float:'8.2M',revenue:'$38-41M guided',earnings:'May 14, 2026',rec:'BUY SIGNAL',verdict:'CROWN CANDIDATE',col:'#1a8a3a'},
+  'GSAT':{name:'Globalstar',score:8.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:1.0,surge:'+162%',short:'12%',float:'1.2B',revenue:'$280-305M guided',earnings:'Apr 30, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'LWLG':{name:'Lightwave Logic',score:5.75,s:1.5,i:1.0,g:0.5,n:0.75,a:1.0,l:1.0,plus:0.0,surge:'+245%',short:'6%',float:'131M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'PASS',verdict:'CEO SELLING FLAG — DO NOT ADD',col:'#cc4400'},
+  'IBRX':{name:'ImmunityBio',score:7.0,s:1.5,i:1.0,g:1.0,n:1.0,a:1.5,l:1.0,plus:0.0,surge:'+320%',short:'18%',float:'15M',revenue:'$42M TTM',earnings:'May 8, 2026',rec:'WATCHLIST',verdict:'FDA CATALYST WATCH',col:'#886600'},
+  'DNN':{name:'Denison Mines',score:7.0,s:1.0,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+180%',short:'4%',float:'620M',revenue:'Pre-revenue',earnings:'May 11, 2026',rec:'WATCHLIST',verdict:'URANIUM — PHOENIX ISR UNDERWAY',col:'#886600'},
   'MVIS':{name:'MicroVision',score:2.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'8%',float:'180M',revenue:'$7M TTM',earnings:'May 15, 2026',rec:'PASS',verdict:'MONUMENT — NOT A POSITION',col:'#cc0000'},
-  'PL':{name:'Planet Labs',score:9.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.5,plus:0.5,surge:'+380%',short:'28%',float:'14M',revenue:'$240M TTM',earnings:'Jun 4, 2026',rec:'BUY',verdict:'DEFENSE INTELLIGENCE — LEVI STRAUSS',col:'#1a8a3a'},
-  'TSEM':{name:'Tower Semiconductor',score:9.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.5,plus:1.0,surge:'+285%',short:'3%',float:'160M',revenue:'$1.4B TTM',earnings:'Apr 28, 2026',rec:'BUY',verdict:'SILICON PHOTONICS FOUNDRY',col:'#1a8a3a'},
-  'RCAT':{name:'Red Cat Holdings',score:8.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+460%',short:'22%',float:'28M',revenue:'$38-41M guided',earnings:'Jun 12, 2026',rec:'HOLD',verdict:'RE-SCORE WHEN LEGAL CLEARS',col:'#886600'},
-  'GLNG':{name:'Golar LNG',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+180%',short:'8%',float:'95M',revenue:'$580M TTM',earnings:'May 20, 2026',rec:'HOLD',verdict:'FLOATING LNG — ENTRY $42-46',col:'#1a8a3a'},
-  'ERAS':{name:'Erasca',score:8.0,s:1.5,i:1.5,g:1.0,n:1.5,a:1.5,l:1.0,plus:0.0,surge:'+290%',short:'15%',float:'120M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'BUY',verdict:'PRECISION ONCOLOGY — PHASE 1',col:'#1a8a3a'},
-  'NVDA':{name:'Nvidia',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+620%',short:'1.1%',float:'2.4B',revenue:'$130B TTM',earnings:'May 28, 2026',rec:'HOLD',verdict:'AI KING — WATCH EARNINGS',col:'#1a8a3a'},
-  'LPTH':{name:'LightPath Technologies',score:7.0,s:1.5,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+240%',short:'5%',float:'32M',revenue:'$55M TTM',earnings:'May 9, 2026',rec:'HOLD',verdict:'INFRARED OPTICS — DEFENSE BACKLOG',col:'#886600'},
-  'ASTS':{name:'AST SpaceMobile',score:5.0,s:1.5,i:1.5,g:0.5,n:0.5,a:1.5,l:1.0,plus:0.5,surge:'+480%',short:'20%',float:'220M',revenue:'$70.9M TTM',earnings:'May 12, 2026',rec:'HOLD',verdict:'RE-SCORE H2 2026',col:'#886600'},
-  'LTRX':{name:'Lantronix',score:7.0,s:1.5,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+210%',short:'4%',float:'28M',revenue:'$64M TTM',earnings:'May 5, 2026',rec:'HOLD',verdict:'EDGE AI — DRONE INFRASTRUCTURE',col:'#886600'},
-  'AAPL':{name:'Apple',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+180%',short:'0.6%',float:'15.2B',revenue:'$124B TTM',earnings:'May 1, 2026',rec:'HOLD',verdict:'SOLID — NO NEAR CATALYST',col:'#886600'},
-  'MSFT':{name:'Microsoft',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+185%',short:'0.5%',float:'7.4B',revenue:'$245B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'SOLID — AI TAILWIND',col:'#886600'},
-  'GOOGL':{name:'Alphabet',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+175%',short:'0.6%',float:'12.1B',revenue:'$350B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'SEARCH + CLOUD THESIS',col:'#886600'},
-  'GOOG':{name:'Alphabet',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+175%',short:'0.6%',float:'12.1B',revenue:'$350B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'SEARCH + CLOUD THESIS',col:'#886600'},
-  'META':{name:'Meta Platforms',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+580%',short:'0.8%',float:'2.5B',revenue:'$164B TTM',earnings:'Apr 23, 2026',rec:'HOLD',verdict:'AI MONETIZATION WATCH',col:'#1a8a3a'},
-  'AMZN':{name:'Amazon',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+220%',short:'0.7%',float:'10.5B',revenue:'$637B TTM',earnings:'May 1, 2026',rec:'HOLD',verdict:'AWS GROWTH WATCH',col:'#886600'},
-  'TSLA':{name:'Tesla',score:5.5,s:1.5,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+210%',short:'3.2%',float:'3.1B',revenue:'$97B TTM',earnings:'Apr 22, 2026',rec:'PASS',verdict:'CAUTION — CONSOLIDATING LOW',col:'#cc4400'},
-  'AMD':{name:'Advanced Micro Devices',score:6.5,s:1.5,i:0.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+340%',short:'2.1%',float:'1.6B',revenue:'$25B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'DOWNTREND — WAIT FOR TURN',col:'#886600'},
-  'AVGO':{name:'Broadcom',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+520%',short:'0.9%',float:'4.6B',revenue:'$52B TTM',earnings:'Jun 5, 2026',rec:'HOLD',verdict:'AI NETWORKING BACKBONE',col:'#1a8a3a'},
-  'PLTR':{name:'Palantir Technologies',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+520%',short:'3.4%',float:'2.1B',revenue:'$2.8B TTM',earnings:'May 5, 2026',rec:'HOLD',verdict:'DEFENSE AI PLATFORM',col:'#1a8a3a'},
+  'PL':{name:'Planet Labs',score:9.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.5,plus:0.5,surge:'+380%',short:'28%',float:'14M',revenue:'$240M TTM',earnings:'Jun 4, 2026',rec:'BUY SIGNAL',verdict:'DEFENSE INTELLIGENCE — LEVI STRAUSS',col:'#1a8a3a'},
+  'TSEM':{name:'Tower Semiconductor',score:9.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.5,plus:1.0,surge:'+285%',short:'3%',float:'160M',revenue:'$1.4B TTM',earnings:'Apr 28, 2026',rec:'BUY SIGNAL',verdict:'SILICON PHOTONICS FOUNDRY',col:'#1a8a3a'},
+  'RCAT':{name:'Red Cat Holdings',score:8.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+460%',short:'22%',float:'28M',revenue:'$38-41M guided',earnings:'Jun 12, 2026',rec:'WATCHLIST',verdict:'RE-SCORE WHEN LEGAL CLEARS',col:'#886600'},
+  'GLNG':{name:'Golar LNG',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+180%',short:'8%',float:'95M',revenue:'$580M TTM',earnings:'May 20, 2026',rec:'WATCHLIST',verdict:'FLOATING LNG — ENTRY $42-46',col:'#886600'},
+  'ERAS':{name:'Erasca',score:8.0,s:1.5,i:1.5,g:1.0,n:1.5,a:1.5,l:1.0,plus:0.0,surge:'+290%',short:'15%',float:'120M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'WATCHLIST',verdict:'PRECISION ONCOLOGY — PHASE 1',col:'#886600'},
+  'NVDA':{name:'Nvidia',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+620%',short:'1.1%',float:'2.4B',revenue:'$130B TTM',earnings:'May 28, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'LPTH':{name:'LightPath Technologies',score:7.0,s:1.5,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+240%',short:'5%',float:'32M',revenue:'$55M TTM',earnings:'May 9, 2026',rec:'WATCHLIST',verdict:'INFRARED OPTICS — DEFENSE BACKLOG',col:'#886600'},
+  'ASTS':{name:'AST SpaceMobile',score:5.0,s:1.5,i:1.5,g:0.5,n:0.5,a:1.5,l:1.0,plus:0.5,surge:'+480%',short:'20%',float:'220M',revenue:'$70.9M TTM',earnings:'May 12, 2026',rec:'PASS',verdict:'RE-SCORE H2 2026',col:'#cc4400'},
+  'LTRX':{name:'Lantronix',score:7.0,s:1.5,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+210%',short:'4%',float:'28M',revenue:'$64M TTM',earnings:'May 5, 2026',rec:'WATCHLIST',verdict:'EDGE AI — DRONE INFRASTRUCTURE',col:'#886600'},
+  'AAPL':{name:'Apple',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+180%',short:'0.6%',float:'15.2B',revenue:'$124B TTM',earnings:'May 1, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'MSFT':{name:'Microsoft',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+185%',short:'0.5%',float:'7.4B',revenue:'$245B TTM',earnings:'Apr 29, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'GOOGL':{name:'Alphabet',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+175%',short:'0.6%',float:'12.1B',revenue:'$350B TTM',earnings:'Apr 29, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'GOOG':{name:'Alphabet',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+175%',short:'0.6%',float:'12.1B',revenue:'$350B TTM',earnings:'Apr 29, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'META':{name:'Meta Platforms',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+580%',short:'0.8%',float:'2.5B',revenue:'$164B TTM',earnings:'Apr 23, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'AMZN':{name:'Amazon',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+220%',short:'0.7%',float:'10.5B',revenue:'$637B TTM',earnings:'May 1, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'TSLA':{name:'Tesla',score:5.5,s:1.5,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+210%',short:'3.2%',float:'3.1B',revenue:'$97B TTM',earnings:'Apr 22, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'AMD':{name:'Advanced Micro Devices',score:6.5,s:1.5,i:0.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+340%',short:'2.1%',float:'1.6B',revenue:'$25B TTM',earnings:'Apr 29, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'AVGO':{name:'Broadcom',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+520%',short:'0.9%',float:'4.6B',revenue:'$52B TTM',earnings:'Jun 5, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'PLTR':{name:'Palantir Technologies',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+520%',short:'3.4%',float:'2.1B',revenue:'$2.8B TTM',earnings:'May 5, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
   'SMCI':{name:'Super Micro Computer',score:4.5,s:1.5,i:0.0,g:1.0,n:0.0,a:0.5,l:1.0,plus:0.5,surge:'+280%',short:'14%',float:'580M',revenue:'$14B TTM',earnings:'May 6, 2026',rec:'PASS',verdict:'ACCOUNTING FLAGS — SMCI RULE',col:'#cc4400'},
-  'LMT':{name:'Lockheed Martin',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+185%',short:'1.4%',float:'240M',revenue:'$67B TTM',earnings:'Apr 22, 2026',rec:'HOLD',verdict:'DEFENSE SPENDING TAILWIND',col:'#886600'},
-  'RTX':{name:'RTX',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+175%',short:'1.2%',float:'1.3B',revenue:'$80B TTM',earnings:'Apr 22, 2026',rec:'HOLD',verdict:'MISSILES + ENGINES — NATO',col:'#886600'},
-  'AXON':{name:'Axon Enterprise',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+520%',short:'2.8%',float:'68M',revenue:'$2B TTM',earnings:'May 6, 2026',rec:'HOLD',verdict:'AI LAW ENFORCEMENT PLATFORM',col:'#1a8a3a'},
-  'TSMC':{name:'Taiwan Semiconductor',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+285%',short:'0.8%',float:'5.2B',revenue:'$90B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'AI CHIP FOUNDRY — GEOPOLITICAL RISK',col:'#1a8a3a'},
-  'TSM':{name:'Taiwan Semiconductor',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+285%',short:'0.8%',float:'5.2B',revenue:'$90B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'AI CHIP FOUNDRY — GEOPOLITICAL RISK',col:'#1a8a3a'},
-  'VKTX':{name:'Viking Therapeutics',score:8.0,s:1.5,i:1.5,g:0.5,n:1.5,a:1.5,l:1.0,plus:0.5,surge:'+680%',short:'22%',float:'92M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'BUY',verdict:'GLP-1 ORAL OBESITY — PHASE 3',col:'#1a8a3a'},
-  'COIN':{name:'Coinbase Global',score:7.0,s:1.5,i:1.0,g:1.0,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+280%',short:'8.4%',float:'240M',revenue:'$6.5B TTM',earnings:'May 6, 2026',rec:'HOLD',verdict:'CRYPTO CYCLE DEPENDENT',col:'#886600'},
-  'HIMS':{name:'Hims & Hers Health',score:7.5,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.0,surge:'+380%',short:'18%',float:'185M',revenue:'$1.5B TTM',earnings:'May 2026',rec:'HOLD',verdict:'GLP-1 TELEHEALTH PLAY',col:'#886600'},
-  'LLY':{name:'Eli Lilly',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+580%',short:'0.6%',float:'950M',revenue:'$54B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'OBESITY DRUG DOMINANCE',col:'#886600'},
+  'LMT':{name:'Lockheed Martin',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+185%',short:'1.4%',float:'240M',revenue:'$67B TTM',earnings:'Apr 22, 2026',rec:'WATCHLIST',verdict:'DEFENSE SPENDING TAILWIND',col:'#886600'},
+  'RTX':{name:'RTX',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+175%',short:'1.2%',float:'1.3B',revenue:'$80B TTM',earnings:'Apr 22, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'AXON':{name:'Axon Enterprise',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+520%',short:'2.8%',float:'68M',revenue:'$2B TTM',earnings:'May 6, 2026',rec:'WATCHLIST',verdict:'AI LAW ENFORCEMENT PLATFORM',col:'#886600'},
+  'TSMC':{name:'Taiwan Semiconductor',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+285%',short:'0.8%',float:'5.2B',revenue:'$90B TTM',earnings:'Apr 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'TSM':{name:'Taiwan Semiconductor',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+285%',short:'0.8%',float:'5.2B',revenue:'$90B TTM',earnings:'Apr 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'VKTX':{name:'Viking Therapeutics',score:8.0,s:1.5,i:1.5,g:0.5,n:1.5,a:1.5,l:1.0,plus:0.5,surge:'+680%',short:'22%',float:'92M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'WATCHLIST',verdict:'GLP-1 ORAL OBESITY — PHASE 3',col:'#886600'},
+  'COIN':{name:'Coinbase Global',score:7.0,s:1.5,i:1.0,g:1.0,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+280%',short:'8.4%',float:'240M',revenue:'$6.5B TTM',earnings:'May 6, 2026',rec:'WATCHLIST',verdict:'CRYPTO CYCLE DEPENDENT',col:'#886600'},
+  'HIMS':{name:'Hims & Hers Health',score:7.5,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.0,surge:'+380%',short:'18%',float:'185M',revenue:'$1.5B TTM',earnings:'May 2026',rec:'WATCHLIST',verdict:'GLP-1 TELEHEALTH PLAY',col:'#886600'},
+  'LLY':{name:'Eli Lilly',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+580%',short:'0.6%',float:'950M',revenue:'$54B TTM',earnings:'Apr 2026',rec:'WATCHLIST',verdict:'OBESITY DRUG DOMINANCE',col:'#886600'},
   'GME':{name:'GameStop',score:3.0,s:1.0,i:0.0,g:0.0,n:1.0,a:0.5,l:0.5,plus:0.0,surge:'+65%',short:'12%',float:'305M',revenue:'$1.1B TTM',earnings:'Mar 26, 2026',rec:'PASS',verdict:'NO THESIS — MEME ONLY',col:'#cc4400'},
   'NKLA':{name:'Nikola',score:1.5,s:0.0,i:0.0,g:0.0,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'18%',float:'320M',revenue:'$48M TTM',earnings:'May 2026',rec:'PASS',verdict:'FRAUD HISTORY — AUTOMATIC FAIL',col:'#cc0000'},
-  'DPRO':{name:'Draganfly',score:5.5,s:1.0,i:1.0,g:0.5,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+180%',short:'98%',float:'12M',revenue:'$4M TTM',earnings:'May 28, 2026',rec:'WATCH',verdict:'SHAKEDOWN SCOUT — 98% SHORT',col:'#886600'},
-  'SPY':{name:'SPDR S&P 500 ETF',score:6.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+180%',short:'0.2%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'BROAD MARKET INDEX',col:'#886600'},
-  'JPM':{name:'JPMorgan Chase',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+185%',short:'0.5%',float:'2.8B',revenue:'$240B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'STRONGEST BANK — MACRO ALIGNED',col:'#886600'},
-  'V':{name:'Visa',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+195%',short:'0.5%',float:'2.1B',revenue:'$36B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'PAYMENTS INFRASTRUCTURE',col:'#886600'},
-  'MA':{name:'Mastercard',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+205%',short:'0.5%',float:'930M',revenue:'$27B TTM',earnings:'Apr 2026',rec:'HOLD',verdict:'PAYMENTS INFRASTRUCTURE',col:'#886600'},
-  'XOM':{name:'ExxonMobil',score:6.5,s:1.0,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+125%',short:'0.8%',float:'4.0B',revenue:'$398B TTM',earnings:'Apr 25, 2026',rec:'HOLD',verdict:'OIL MACRO TAILWIND',col:'#886600'},
-  'LNG':{name:'Cheniere Energy',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+280%',short:'1.8%',float:'220M',revenue:'$18B TTM',earnings:'May 8, 2026',rec:'HOLD',verdict:'LNG INFRASTRUCTURE — MACRO ALIGNED',col:'#886600'},
-  'CCJ':{name:'Cameco',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+285%',short:'2.4%',float:'420M',revenue:'$2.6B TTM',earnings:'May 2, 2026',rec:'HOLD',verdict:'URANIUM SUPPLY THESIS',col:'#886600'},
-  'NOW':{name:'ServiceNow',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+480%',short:'0.9%',float:'200M',revenue:'$10.9B TTM',earnings:'Apr 23, 2026',rec:'HOLD',verdict:'ENTERPRISE AI WORKFLOW',col:'#1a8a3a'},
-  'CRWD':{name:'CrowdStrike',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+380%',short:'1.8%',float:'240M',revenue:'$3.9B TTM',earnings:'Jun 3, 2026',rec:'HOLD',verdict:'AI CYBERSECURITY LEADER',col:'#886600'},
-  'PANW':{name:'Palo Alto Networks',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+320%',short:'1.8%',float:'640M',revenue:'$8.2B TTM',earnings:'May 2026',rec:'HOLD',verdict:'AI CYBERSECURITY PLATFORM',col:'#886600'},
-  'NFLX':{name:'Netflix',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+440%',short:'1.2%',float:'430M',revenue:'$38B TTM',earnings:'Apr 15, 2026',rec:'HOLD',verdict:'SUBSCRIBER GROWTH WATCH',col:'#886600'},
-  'SPOT':{name:'Spotify',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+420%',short:'1.8%',float:'195M',revenue:'$16B TTM',earnings:'Apr 29, 2026',rec:'HOLD',verdict:'AI AUDIO PLATFORM',col:'#886600'},
-  'HOOD':{name:'Robinhood Markets',score:6.5,s:1.5,i:1.0,g:1.0,n:1.0,a:0.5,l:1.0,plus:0.5,surge:'+310%',short:'5.2%',float:'870M',revenue:'$2.9B TTM',earnings:'Apr 30, 2026',rec:'HOLD',verdict:'CRYPTO TAILWIND PRESENT',col:'#886600'},
-  'COST':{name:'Costco',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+195%',short:'0.5%',float:'443M',revenue:'$249B TTM',earnings:'Jun 5, 2026',rec:'HOLD',verdict:'MEMBERSHIP MODEL COMPOUNDING',col:'#886600'},
+  'DPRO':{name:'Draganfly',score:5.5,s:1.0,i:1.0,g:0.5,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+180%',short:'98%',float:'12M',revenue:'$4M TTM',earnings:'May 28, 2026',rec:'PASS',verdict:'SHAKEDOWN SCOUT — 98% SHORT',col:'#cc4400'},
+  'SPY':{name:'SPDR S&P 500 ETF',score:6.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+180%',short:'0.2%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'PASS',verdict:'BROAD MARKET INDEX',col:'#cc4400'},
+  'JPM':{name:'JPMorgan Chase',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+185%',short:'0.5%',float:'2.8B',revenue:'$240B TTM',earnings:'Apr 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'V':{name:'Visa',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+195%',short:'0.5%',float:'2.1B',revenue:'$36B TTM',earnings:'Apr 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'MA':{name:'Mastercard',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+205%',short:'0.5%',float:'930M',revenue:'$27B TTM',earnings:'Apr 2026',rec:'WATCHLIST',verdict:'PAYMENTS INFRASTRUCTURE',col:'#886600'},
+  'XOM':{name:'ExxonMobil',score:6.5,s:1.0,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+125%',short:'0.8%',float:'4.0B',revenue:'$398B TTM',earnings:'Apr 25, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'LNG':{name:'Cheniere Energy',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+280%',short:'1.8%',float:'220M',revenue:'$18B TTM',earnings:'May 8, 2026',rec:'WATCHLIST',verdict:'LNG INFRASTRUCTURE — MACRO ALIGNED',col:'#886600'},
+  'CCJ':{name:'Cameco',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+285%',short:'2.4%',float:'420M',revenue:'$2.6B TTM',earnings:'May 2, 2026',rec:'WATCHLIST',verdict:'URANIUM SUPPLY THESIS',col:'#886600'},
+  'NOW':{name:'ServiceNow',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+480%',short:'0.9%',float:'200M',revenue:'$10.9B TTM',earnings:'Apr 23, 2026',rec:'WATCHLIST',verdict:'ENTERPRISE AI WORKFLOW',col:'#886600'},
+  'CRWD':{name:'CrowdStrike',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+380%',short:'1.8%',float:'240M',revenue:'$3.9B TTM',earnings:'Jun 3, 2026',rec:'WATCHLIST',verdict:'AI CYBERSECURITY LEADER',col:'#886600'},
+  'PANW':{name:'Palo Alto Networks',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+320%',short:'1.8%',float:'640M',revenue:'$8.2B TTM',earnings:'May 2026',rec:'WATCHLIST',verdict:'AI CYBERSECURITY PLATFORM',col:'#886600'},
+  'NFLX':{name:'Netflix',score:7.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+440%',short:'1.2%',float:'430M',revenue:'$38B TTM',earnings:'Apr 15, 2026',rec:'WATCHLIST',verdict:'SUBSCRIBER GROWTH WATCH',col:'#886600'},
+  'SPOT':{name:'Spotify',score:7.5,s:1.5,i:1.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+420%',short:'1.8%',float:'195M',revenue:'$16B TTM',earnings:'Apr 29, 2026',rec:'WATCHLIST',verdict:'AI AUDIO PLATFORM',col:'#886600'},
+  'HOOD':{name:'Robinhood Markets',score:6.5,s:1.5,i:1.0,g:1.0,n:1.0,a:0.5,l:1.0,plus:0.5,surge:'+310%',short:'5.2%',float:'870M',revenue:'$2.9B TTM',earnings:'Apr 30, 2026',rec:'PASS',verdict:'CRYPTO TAILWIND PRESENT',col:'#cc4400'},
+  'COST':{name:'Costco',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+195%',short:'0.5%',float:'443M',revenue:'$249B TTM',earnings:'Jun 5, 2026',rec:'WATCHLIST',verdict:'MEMBERSHIP MODEL COMPOUNDING',col:'#886600'},
   'BA':{name:'Boeing',score:4.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:1.0,plus:1.0,surge:'+45%',short:'2.8%',float:'760M',revenue:'$66B TTM',earnings:'Apr 2026',rec:'PASS',verdict:'SAFETY CRISIS — NO SURGE',col:'#cc4400'},
   'ACHR':{name:'Archer Aviation',score:3.0,s:0.0,i:0.5,g:0.0,n:0.5,a:1.0,l:0.5,plus:0.5,surge:'+42%',short:'18%',float:'280M',revenue:'Pre-revenue',earnings:'May 8, 2026',rec:'PASS',verdict:'FAILED SIGNAL — PRE-REVENUE',col:'#cc4400'},
-  'TMUS':{name:'T-Mobile',score:6.0,s:1.5,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+165%',short:'1.2%',float:'1.2B',revenue:'$81B TTM',earnings:'Apr 24, 2026',rec:'HOLD',verdict:'5G SATELLITE INFRASTRUCTURE',col:'#886600'},
-  'INTC':{name:'Intel',score:4.0,s:0.0,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+18%',short:'2.4%',float:'4.2B',revenue:'$53B TTM',earnings:'Apr 24, 2026',rec:'PASS',verdict:'NO SURGE — RESTRUCTURING RISK',col:'#cc4400'},
-  'BRKB':{name:'Berkshire Hathaway',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.5,surge:'+185%',short:'0.1%',float:'2.1B',revenue:'$364B TTM',earnings:'May 2026',rec:'HOLD',verdict:'BUFFETT INFRASTRUCTURE',col:'#886600'},
-  'QQQ':{name:'Invesco QQQ ETF',score:6.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+210%',short:'0.3%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'TECH BASKET INDEX',col:'#886600'},
-  'CRM':{name:'Salesforce',score:6.5,s:1.0,i:0.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+145%',short:'1.6%',float:'960M',revenue:'$38B TTM',earnings:'May 28, 2026',rec:'HOLD',verdict:'AGENTFORCE — DOWNTREND WATCH',col:'#886600'},
-  'MU':{name:'Micron Technology',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+195%',short:'1.8%',float:'1.1B',revenue:'$25B TTM',earnings:'Mar 27, 2026',rec:'HOLD',verdict:'HBM MEMORY CYCLE WATCH',col:'#886600'},
-  'CODA':{name:'Coda Octopus',score:8.25,s:1.5,i:1.5,g:1.5,n:1.5,a:1.25,l:1.0,plus:0.0,surge:'+310%',short:'12%',float:'15M',revenue:'$25M TTM',earnings:'Jun 17, 2026',rec:'BUY',verdict:'UNDERWATER DEFENSE INFRASTRUCTURE',col:'#1a8a3a'},
-  'SWMR':{name:'Swarm & Sting',score:7.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+950%',short:'12%',float:'8M',revenue:'$12M TTM',earnings:'Jun 10, 2026',rec:'WATCH',verdict:'SHAKEDOWN STREET SCOUT',col:'#886600'},
-  'RXRX':{name:'Recursion Pharma',score:6.5,s:1.5,i:1.0,g:0.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+280%',short:'12%',float:'220M',revenue:'$48M TTM',earnings:'May 8, 2026',rec:'HOLD',verdict:'AI DRUG DISCOVERY — NVIDIA PARTNER',col:'#886600'},
+  'TMUS':{name:'T-Mobile',score:6.0,s:1.5,i:1.0,g:1.0,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+165%',short:'1.2%',float:'1.2B',revenue:'$81B TTM',earnings:'Apr 24, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'INTC':{name:'Intel',score:4.0,s:0.0,i:0.0,g:0.5,n:1.0,a:0.5,l:1.0,plus:1.0,surge:'+18%',short:'2.4%',float:'4.2B',revenue:'$53B TTM',earnings:'Apr 24, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'BRKB':{name:'Berkshire Hathaway',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.5,surge:'+185%',short:'0.1%',float:'2.1B',revenue:'$364B TTM',earnings:'May 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'QQQ':{name:'Invesco QQQ ETF',score:6.5,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+210%',short:'0.3%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'PASS',verdict:'TECH BASKET INDEX',col:'#cc4400'},
+  'CRM':{name:'Salesforce',score:6.5,s:1.0,i:0.5,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.5,surge:'+145%',short:'1.6%',float:'960M',revenue:'$38B TTM',earnings:'May 28, 2026',rec:'PASS',verdict:'AGENTFORCE — DOWNTREND WATCH',col:'#cc4400'},
+  'MU':{name:'Micron Technology',score:7.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.5,l:1.0,plus:0.0,surge:'+195%',short:'1.8%',float:'1.1B',revenue:'$25B TTM',earnings:'Mar 27, 2026',rec:'WRONG INSTRUMENT',verdict:'Wrong instrument. K1LADEX is built for geometric moves.',col:'#4a6888'},
+  'CODA':{name:'Coda Octopus',score:8.25,s:1.5,i:1.5,g:1.5,n:1.5,a:1.25,l:1.0,plus:0.0,surge:'+310%',short:'12%',float:'15M',revenue:'$25M TTM',earnings:'Jun 17, 2026',rec:'WATCHLIST',verdict:'UNDERWATER DEFENSE INFRASTRUCTURE',col:'#886600'},
+  'SWMR':{name:'Swarm & Sting',score:7.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+950%',short:'12%',float:'8M',revenue:'$12M TTM',earnings:'Jun 10, 2026',rec:'WATCHLIST',verdict:'SHAKEDOWN STREET SCOUT',col:'#886600'},
+  'RXRX':{name:'Recursion Pharma',score:6.5,s:1.5,i:1.0,g:0.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+280%',short:'12%',float:'220M',revenue:'$48M TTM',earnings:'May 8, 2026',rec:'PASS',verdict:'AI DRUG DISCOVERY — NVIDIA PARTNER',col:'#cc4400'},
 };
 
 // ── SCORE CANVAS ────────────────────────────────────────────
@@ -366,13 +383,13 @@ function drawScoreScreen(ticker,data,t){
   sc.restore();
   const recA=eeo(eop(0.2,0.7));
   if(recA>0){sc.save();sc.globalAlpha=recA;
-    const recCol=data.rec==='BUY'?'#1a8a3a':data.rec==='HOLD'?'#886600':'#cc4400';
-    const recBg=data.rec==='BUY'?'rgba(26,138,58,0.12)':data.rec==='HOLD'?'rgba(136,102,0,0.12)':'rgba(204,68,0,0.12)';
+    const recCol=data.rec==='BUY SIGNAL'?'#1a8a3a':data.rec==='WATCHLIST'?'#886600':data.rec==='WRONG INSTRUMENT'?'#4a6888':'#cc4400';
+    const recBg=data.rec==='BUY SIGNAL'?'rgba(26,138,58,0.12)':data.rec==='WATCHLIST'?'rgba(136,102,0,0.12)':data.rec==='WRONG INSTRUMENT'?'rgba(74,104,136,0.12)':'rgba(204,68,0,0.12)';
     sc.fillStyle=recBg;scRR(22,82,SW-44,38,8);sc.fill();sc.strokeStyle=recCol;sc.lineWidth=1.5;scRR(22,82,SW-44,38,8);sc.stroke();
     sc.fillStyle=recCol;sc.font=`700 18px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(data.rec,36,101);
     if(data.rec==='PASS'){const rW=sc.measureText('PASS').width,sP=eeo(eop(0.5,1.1));if(sP>0){sc.strokeStyle='#e63030';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#e63030';sc.shadowBlur=6;sc.globalAlpha=recA*sP;sc.beginPath();sc.moveTo(34,101);sc.lineTo(34+rW*sP,101);sc.stroke();sc.shadowBlur=0;}}
-    if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
-    sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);sc.restore();}
+    if(data.rec==='BUY SIGNAL'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY SIGNAL').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
+    sc.globalAlpha=recA;const vLen=(data.verdict||'').length;sc.fillStyle=INK_MID;sc.font=`${vLen>36?'500 9px':'600 11px'} ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);sc.restore();}
   const lineA=eeo(eop(0.4,1.2));
   if(lineA>0){sc.save();sc.globalAlpha=lineA;const lTop=130,lBot=178,lLeft=22,lRight=SW-22;sc.fillStyle='rgba(26,138,58,0.04)';sc.fillRect(lLeft,lTop,lRight-lLeft,lBot-lTop);const lp=eeo(eop(0.5,1.8)),pts=100,drawn=Math.floor(pts*lp);if(drawn>1){sc.strokeStyle=GREEN;sc.lineWidth=2;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor=GREEN;sc.shadowBlur=4;sc.beginPath();for(let i=0;i<=drawn;i++){const xf=i/pts,x=lLeft+xf*(lRight-lLeft),y=lBot-(surgeY(xf)-(1-((lBot-lTop)/SH)))*(lBot-lTop)*3.2,yc=Math.max(lTop,Math.min(lBot,y));i===0?sc.moveTo(x,yc):sc.lineTo(x,yc);}sc.stroke();sc.shadowBlur=0;}sc.fillStyle=GREEN;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.textBaseline='middle';sc.fillText(data.surge,lRight-4,lTop+8);sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText('52W PATTERN',lLeft,lBot+12);sc.restore();}
   const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
@@ -401,11 +418,12 @@ function drawScoreScreen(ticker,data,t){
     sc.restore();
   }
   const circleA=eeo(eop(2.1,3.2));
-  if(circleA>0){const sy2=divY+22,cx=42,cy=sy2,rx=40,ry=32,prog=Math.min(circleA,1);sc.save();sc.strokeStyle='#f5c400';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#f5c400';sc.shadowBlur=10*prog;sc.globalAlpha=prog*0.95;sc.beginPath();const steps=120,drawn=Math.floor(steps*prog);for(let i=0;i<=drawn;i++){const angle=(i/steps)*Math.PI*2.15-Math.PI*0.65;if(i===0)sc.moveTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);else sc.lineTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);}sc.stroke();sc.shadowBlur=0;sc.restore();}
+  if(circleA>0){const sy2=divY+22;sc.font=`700 44px ${HN}`;const sW=sc.measureText(String(data.score)).width;const cx=22+sW/2,cy=sy2,rx=Math.max(42,sW/2+18),ry=32,prog=Math.min(circleA,1);sc.save();sc.strokeStyle='#f5c400';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#f5c400';sc.shadowBlur=10*prog;sc.globalAlpha=prog*0.95;sc.beginPath();const steps=120,drawn=Math.floor(steps*prog);for(let i=0;i<=drawn;i++){const angle=(i/steps)*Math.PI*2.15-Math.PI*0.65;if(i===0)sc.moveTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);else sc.lineTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);}sc.stroke();sc.shadowBlur=0;sc.restore();}
   const ctaA=eeo(eop(2.4,3.0));
   document.getElementById('ctaRow').style.opacity=ctaA>0?ctaA:0;
   document.getElementById('reportBtn').style.opacity=ctaA>0?ctaA:0;
   document.getElementById('ctaShare').style.opacity=ctaA>0?ctaA:0;
+  document.getElementById('scanDate').style.opacity=ctaA>0?ctaA:0;
 }
 
 function runScoreAnimation(ticker,data){
@@ -449,6 +467,7 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     if(live){base.price=live.price;base.change=live.change;}
   }catch(e){}
   currentTicker=ticker;currentData=base;
+  document.getElementById('scanDate').textContent='Scanned '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   document.getElementById('loadingOverlay').classList.remove('visible');
   document.getElementById('scoreOverlay').classList.add('visible');
   runScoreAnimation(ticker,base);
@@ -462,6 +481,7 @@ function goBack(){
   document.getElementById('ctaRow').style.opacity=0;
   document.getElementById('reportBtn').style.opacity=0;
   document.getElementById('ctaShare').style.opacity=0;
+  document.getElementById('scanDate').style.opacity=0;
   if(scoreRaf)cancelAnimationFrame(scoreRaf);
   document.getElementById('tickerInput').value='';
   setTimeout(function(){document.getElementById('tickerInput').focus();},300);
@@ -485,7 +505,7 @@ function generateReport(ticker,data){
   const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'pt',format:'letter'});
   const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight(),M=54,CW=pw-M*2;
   const dateStr=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  const recCol=data.rec==='BUY'?[26,138,58]:data.rec==='HOLD'?[136,102,0]:[204,68,0];
+  const recCol=data.rec==='BUY SIGNAL'?[26,138,58]:data.rec==='WATCHLIST'?[136,102,0]:data.rec==='WRONG INSTRUMENT'?[74,104,136]:[204,68,0];
   const scoreCol=data.col==='#1a8a3a'?[26,138,58]:data.col==='#886600'?[136,102,0]:[204,68,0];
   function hdr(n){doc.setFillColor(10,22,40);doc.rect(0,0,pw,52,'F');doc.setFillColor(26,138,58);doc.rect(0,52,pw,3,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('K1LADEX',M,34);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(26,138,58);doc.text('INTELLIGENCE FRAMEWORK',M,45);doc.setTextColor(180,200,220);doc.setFontSize(8);doc.text(ticker+' · '+dateStr,pw-M,34,{align:'right'});doc.text('Page '+n,pw-M,45,{align:'right'});}
   function ftr(){doc.setFillColor(245,248,252);doc.rect(0,ph-36,pw,36,'F');doc.setDrawColor(220,228,240);doc.setLineWidth(0.5);doc.line(0,ph-36,pw,ph-36);doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(10,22,40);doc.text('K1LADEX',M,ph-18);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(74,104,136);doc.text("Finally know what you're doing.  ·  k1ladex.com",M+52,ph-18);doc.setTextColor(160,180,200);doc.text('For informational purposes only. Not financial advice.',pw-M,ph-18,{align:'right'});}
@@ -543,6 +563,7 @@ window.addEventListener('load',function(){
   document.getElementById('ctaRow').style.opacity=0;
   document.getElementById('reportBtn').style.opacity=0;
   document.getElementById('ctaShare').style.opacity=0;
+  document.getElementById('scanDate').style.opacity=0;
   updateScanLabel();
 });
 </script>

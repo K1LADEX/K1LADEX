@@ -10,6 +10,8 @@ async function handleRequest(request) {
   if (!ticker) return new Response(JSON.stringify({error:'No ticker'}), {headers:CORS});
   if (url.pathname === '/scan') return fullScan(ticker);
   if (url.pathname === '/candles') return getCandles(ticker);
+  if (url.pathname === '/auth-log') return logAuth(url);
+  if (url.pathname === '/debug') return debugMetrics(ticker);
   return legacyPrice(ticker);
 }
 
@@ -126,7 +128,7 @@ async function fullScan(ticker) {
     }
     const totalRevenue  = m.revenuePerShareTTM && profile.shareOutstanding ? m.revenuePerShareTTM * profile.shareOutstanding * 1e6 : null;
     const revenueGrowth = m.revenueGrowthTTMYoy ? m.revenueGrowthTTMYoy/100 : null;
-    const totalCash     = m.totalDebtToEquityQuarterly !== undefined ? 1 : null;
+    const totalCash     = m.cashAndEquivalentsAnnual ?? m.cashAndCashEquivalentsAnnual ?? m.freeCashFlowAnnual ?? null;
 
     let nextEarnings = null;
     const now = Date.now()/1000;
@@ -156,6 +158,19 @@ async function fullScan(ticker) {
     const change   = (prevClose&&currentPrice) ? (currentPrice-prevClose)/prevClose*100 : 0;
     const name     = (profile.name||ticker).replace(/,?\s*(Inc\.?|Corp\.?|Ltd\.?|LLC\.?|PLC\.?)$/gi,'').trim();
 
+    // ── VERDICT LOGIC ────────────────────────────────────────
+    const floatOver1B = floatShares && floatShares > 1e9;
+    let totalScore = null;
+    let rec, verdict, col;
+    if (floatOver1B) {
+      rec = 'WRONG INSTRUMENT';
+      verdict = 'Wrong instrument. K1LADEX is built for geometric moves.';
+      col = '#4a6888';
+    } else {
+      // Score is computed by caller if known; for live scans use nScore as proxy
+      rec = null; verdict = null; col = null;
+    }
+
     return new Response(JSON.stringify({
       name,
       price: '$'+currentPrice.toFixed(2),
@@ -168,9 +183,33 @@ async function fullScan(ticker) {
       floatFormatted: floatShares?fmt(floatShares,1e9,'B'):'N/A',
       revenueFormatted: totalRevenue?'$'+fmt(totalRevenue,1e9,'B')+' TTM':'Pre-revenue',
       nextEarnings,
-      nScore, nStrikes, nFlags
+      nScore, nStrikes, nFlags,
+      rec, verdict, col
     }), {headers:CORS});
 
+  } catch(e) {
+    return new Response(JSON.stringify({error:e.message}), {headers:CORS});
+  }
+}
+
+// ── AUTH LOGGING ─────────────────────────────────────────────
+async function logAuth(url) {
+  const VALID = ['LAZYGATE','DAD','DEX','KLDX'];
+  const code = (url.searchParams.get('code') || '').toUpperCase();
+  const ts = new Date().toISOString();
+  if (VALID.includes(code)) {
+    console.log(`[K1LADEX AUTH] code=${code} ts=${ts}`);
+  }
+  return new Response(JSON.stringify({ok: VALID.includes(code), ts}), {headers:CORS});
+}
+
+// ── DEBUG METRICS ─────────────────────────────────────────────
+async function debugMetrics(ticker) {
+  if (!ticker) return new Response(JSON.stringify({error:'No ticker'}), {headers:CORS});
+  try {
+    const r = await fetch(`https://finnhub.io/api/v1/stock/metric?symbol=${ticker}&metric=all&token=${FINNHUB_API_KEY}`);
+    const data = await r.json();
+    return new Response(JSON.stringify(data), {headers:CORS});
   } catch(e) {
     return new Response(JSON.stringify({error:e.message}), {headers:CORS});
   }
