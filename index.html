@@ -17,6 +17,7 @@
 <meta name="twitter:title" content="K1LADEX — AI-Powered Stock Scoring. Seven Checkpoints.">
 <meta name="twitter:description" content="K1LADEX scores any stock through 7 checkpoints — built from real losses and real wins by a retail investor who paid attention.">
 <meta name="twitter:image" content="https://k1ladex.com/og-image.jpg">
+<meta name="description" content="K1LADEX is AI-powered investor intelligence built on the SIGNAL+ framework. Seven checkpoints. One verdict. Geometric opportunities identified before the crowd arrives. Not financial advice.">
 <meta name="keywords" content="stock scoring, AI investing, retail investor, SIGNAL+, K1LADEX">
 <meta name="author" content="K1LADEX">
 <style>
@@ -78,6 +79,7 @@ body{background:#080e1a;display:flex;align-items:center;justify-content:center;m
 .btc-sub{font-size:10px;color:#f5c400;letter-spacing:3px;margin-bottom:24px;}
 .btc-msg{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6;font-style:italic;}
 .btc-close{margin-top:24px;background:none;border:1px solid rgba(245,196,0,0.4);border-radius:20px;padding:6px 20px;font-size:10px;color:#f5c400;cursor:pointer;letter-spacing:2px;}
+.app-disclaimer{position:absolute;bottom:5px;width:100%;text-align:center;font-size:7.5px;color:rgba(100,200,255,0.22);letter-spacing:0.4px;z-index:10;pointer-events:none;padding:0 16px;}
 </style>
 </head>
 <body><div id="k1-gate" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;">
@@ -148,6 +150,7 @@ body{background:#080e1a;display:flex;align-items:center;justify-content:center;m
       <button class="btc-close" id="btcCloseBtn">BACK TO STOCKS</button>
     </div>
   </div>
+  <div class="app-disclaimer">K1LADEX is not a registered investment advisor. Not financial advice. &nbsp;&middot;&nbsp; &copy; 2026 K1LADEX. Copyrighted March 21, 2026.</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -252,7 +255,16 @@ function scoreFromLiveData(ticker,d){
   }
   let n=typeof d.nScore==='number'?d.nScore:1.5;
   const strikes=d.nStrikes||0;
-  if(strikes>=2)n=0;
+  if(strikes>=2){n=0;}
+  else if(d.splitDate){
+    const splitMs=new Date(d.splitDate).getTime();
+    const monthsAgo=(Date.now()-splitMs)/(30*24*3600*1000);
+    if(!isNaN(monthsAgo)&&monthsAgo<=24){
+      n=Math.max(0.5,n-0.5);
+      d.nFlags=Array.isArray(d.nFlags)?d.nFlags:[];
+      d.nFlags=['⚠️ Reverse split '+d.splitDate+' — within 24 months',...d.nFlags];
+    }
+  }
   const a=d.nextEarnings?1.5:0;
   let l=1.0;
   if(d.currentPrice&&d.week52Low){
@@ -276,7 +288,7 @@ function scoreFromLiveData(ticker,d){
   let verdict;
   if(strikes>=2){verdict='SMCI RULE — 2+ LEGAL STRIKES';}
   else if(d.nFlags&&d.nFlags.length>0&&n<1.5){verdict=d.nFlags[0].substring(0,38).toUpperCase();}
-  else{verdict=score>=9?'MAXIMUM CONVICTION':score>=7?'WATCHLIST CANDIDATE':score>=5?'MONITOR ONLY':'FAILED SIGNAL+ — PASS';}
+  else{verdict=score>=10?'MAXIMUM CONVICTION — PERFECT SCORE':score>=9?'MAXIMUM CONVICTION':score>=7?'WATCHLIST CANDIDATE':score>=5?'MONITOR ONLY':'FAILED SIGNAL+ — PASS';}
   const col=rec==='BUY'?'#1a8a3a':rec==='HOLD'?'#886600':'#cc4400';
   const now=new Date();
   const scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
@@ -293,28 +305,6 @@ function scoreFromLiveData(ticker,d){
     highShort:highShort,tightFloat:tightFloat,megaFloat:megaFloat};
 }
 
-// ── FALLBACK SCORES ──────────────────────────────────────────
-const FALLBACK_SCORES={
-  'ONDS':{name:'Ondas Holdings',score:9,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.0,plus:1.0,surge:'+248%',short:'35%',float:'8.2M',revenue:'$38-41M guided',earnings:'May 14, 2026',rec:'BUY',verdict:'CROWN CANDIDATE',col:'#1a8a3a'},
-  'GSAT':{name:'Globalstar',score:8.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:1.0,surge:'+272%',short:'12%',float:'1.2B',revenue:'$280-305M guided',earnings:'Apr 30, 2026',rec:'HOLD',verdict:'APPLE CONSTELLATION CATALYST',col:'#1a8a3a'},
-  'LWLG':{name:'Lightwave Logic',score:5.75,s:1.5,i:1.0,g:0.5,n:0.75,a:1.0,l:1.0,plus:0.0,surge:'+816%',short:'6%',float:'131M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'HOLD',verdict:'CEO SELLING FLAG — DO NOT ADD',col:'#886600'},
-  'IBRX':{name:'ImmunityBio',score:7.0,s:1.5,i:1.0,g:1.0,n:1.0,a:1.5,l:1.0,plus:0.0,surge:'+303%',short:'18%',float:'15M',revenue:'$118M TTM',earnings:'May 8, 2026',rec:'HOLD',verdict:'FDA CATALYST WATCH',col:'#886600'},
-  'DNN':{name:'Denison Mines',score:7.0,s:1.0,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+116%',short:'4%',float:'620M',revenue:'Pre-revenue',earnings:'May 11, 2026',rec:'HOLD',verdict:'URANIUM — PHOENIX ISR UNDERWAY',col:'#886600'},
-  'PL':{name:'Planet Labs',score:9.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.5,plus:0.5,surge:'+380%',short:'28%',float:'14M',revenue:'$240M TTM',earnings:'Jun 4, 2026',rec:'BUY',verdict:'DEFENSE INTELLIGENCE — LEVI STRAUSS',col:'#1a8a3a'},
-  'TSEM':{name:'Tower Semiconductor',score:9.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.5,plus:1.0,surge:'+285%',short:'3%',float:'160M',revenue:'$1.4B TTM',earnings:'Apr 28, 2026',rec:'BUY',verdict:'SILICON PHOTONICS FOUNDRY',col:'#1a8a3a'},
-  'RCAT':{name:'Red Cat Holdings',score:8.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+460%',short:'22%',float:'28M',revenue:'$38-41M guided',earnings:'Jun 12, 2026',rec:'HOLD',verdict:'RE-SCORE WHEN LEGAL CLEARS',col:'#886600'},
-  'GLNG':{name:'Golar LNG',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+180%',short:'8%',float:'95M',revenue:'$580M TTM',earnings:'May 20, 2026',rec:'HOLD',verdict:'FLOATING LNG — ENTRY $42-46',col:'#1a8a3a'},
-  'ERAS':{name:'Erasca',score:8.0,s:1.5,i:1.5,g:1.0,n:1.5,a:1.5,l:1.0,plus:0.0,surge:'+290%',short:'15%',float:'120M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'BUY',verdict:'PRECISION ONCOLOGY — PHASE 1',col:'#1a8a3a'},
-  'NVDA':{name:'Nvidia',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+620%',short:'1.1%',float:'2.4B',revenue:'$130B TTM',earnings:'May 28, 2026',rec:'HOLD',verdict:'AI KING — WATCH EARNINGS',col:'#1a8a3a'},
-  'CODA':{name:'Coda Octopus',score:8.25,s:1.5,i:1.5,g:1.5,n:1.5,a:1.25,l:1.0,plus:0.0,surge:'+310%',short:'12%',float:'15M',revenue:'$25M TTM',earnings:'Jun 17, 2026',rec:'BUY',verdict:'UNDERWATER DEFENSE INFRASTRUCTURE',col:'#1a8a3a'},
-  'SMCI':{name:'Super Micro Computer',score:4.5,s:1.5,i:0.0,g:1.0,n:0.0,a:0.5,l:1.0,plus:0.5,surge:'+280%',short:'14%',float:'580M',revenue:'$14B TTM',earnings:'May 6, 2026',rec:'PASS',verdict:'ACCOUNTING FLAGS — SMCI RULE',col:'#cc4400'},
-  'GME':{name:'GameStop',score:3.0,s:1.0,i:0.0,g:0.0,n:1.0,a:0.5,l:0.5,plus:0.0,surge:'+65%',short:'12%',float:'305M',revenue:'$1.1B TTM',earnings:'Mar 26, 2026',rec:'PASS',verdict:'NO THESIS — MEME ONLY',col:'#cc4400'},
-  'NKLA':{name:'Nikola',score:1.5,s:0.0,i:0.0,g:0.0,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'18%',float:'320M',revenue:'$48M TTM',earnings:'May 2026',rec:'PASS',verdict:'FRAUD HISTORY — AUTOMATIC FAIL',col:'#cc0000'},
-  'PLTR':{name:'Palantir Technologies',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+520%',short:'3.4%',float:'2.1B',revenue:'$2.8B TTM',earnings:'May 5, 2026',rec:'HOLD',verdict:'DEFENSE AI PLATFORM',col:'#1a8a3a'},
-  'NOW':{name:'ServiceNow',score:3,s:0.0,i:0.0,g:1.5,n:0.0,a:1.5,l:0.0,plus:0.0,surge:'+5%',short:'0.9%',float:'1.05B',revenue:'$13.28B TTM',earnings:'Apr 22, 2026',rec:'PASS',verdict:'SMCI RULE — 2+ DOJ ITEMS',col:'#cc4400'},
-  'DPRO':{name:'Draganfly',score:5.5,s:1.0,i:1.0,g:0.5,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+180%',short:'98%',float:'12M',revenue:'$4M TTM',earnings:'May 28, 2026',rec:'WATCH',verdict:'SHAKEDOWN SCOUT — 98% SHORT',col:'#886600'},
-  'SPY':{name:'SPDR S&P 500 ETF',score:6.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+180%',short:'0.2%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'BROAD MARKET INDEX',col:'#886600'},
-};
 
 // ── SCORE CANVAS ─────────────────────────────────────────────
 const SW=360,SH=640;
@@ -346,13 +336,22 @@ function drawScoreScreen(ticker,data,t){
   sc.restore();
   const recA=eeo(eop(0.2,0.7));
   if(recA>0){sc.save();sc.globalAlpha=recA;
-    const recCol=data.rec==='BUY'?'#1a8a3a':data.rec==='HOLD'?'#886600':'#cc4400';
-    const recBg=data.rec==='BUY'?'rgba(26,138,58,0.15)':data.rec==='HOLD'?'rgba(136,102,0,0.15)':'rgba(204,68,0,0.15)';
-    sc.fillStyle=recBg;scRR(22,82,SW-44,38,8);sc.fill();sc.strokeStyle=recCol;sc.lineWidth=1.5;scRR(22,82,SW-44,38,8);sc.stroke();
-    sc.fillStyle=recCol;sc.font=`700 18px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(data.rec,36,101);
-    if(data.rec==='PASS'){const rW=sc.measureText('PASS').width,sP=eeo(eop(0.5,1.1));if(sP>0){sc.strokeStyle='#e63030';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#e63030';sc.shadowBlur=6;sc.globalAlpha=recA*sP;sc.beginPath();sc.moveTo(34,101);sc.lineTo(34+rW*sP,101);sc.stroke();sc.shadowBlur=0;}}
-    if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
-    sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);sc.restore();}
+    const isKill=data.nStrikes>=2;
+    const recCol=isKill?'#cc0000':data.rec==='BUY'?'#1a8a3a':data.rec==='HOLD'?'#886600':'#cc4400';
+    const recBg=isKill?'rgba(200,0,0,0.18)':data.rec==='BUY'?'rgba(26,138,58,0.15)':data.rec==='HOLD'?'rgba(136,102,0,0.15)':'rgba(204,68,0,0.15)';
+    sc.fillStyle=recBg;scRR(22,82,SW-44,38,8);sc.fill();
+    if(isKill){const kp=0.5+0.5*Math.sin(t*3);sc.shadowColor='#cc0000';sc.shadowBlur=6+kp*10;}
+    sc.strokeStyle=recCol;sc.lineWidth=isKill?2:1.5;scRR(22,82,SW-44,38,8);sc.stroke();sc.shadowBlur=0;
+    if(isKill){
+      sc.fillStyle='#cc0000';sc.font=`700 14px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText('CHECKPOINT ZERO',36,101);
+      sc.fillStyle=INK_MID;sc.font=`600 10px ${HN}`;sc.textAlign='right';sc.fillText('DISQUALIFIED — '+data.nStrikes+' STRIKE'+(data.nStrikes===1?'':'S'),SW-36,101);
+    }else{
+      sc.fillStyle=recCol;sc.font=`700 18px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(data.rec,36,101);
+      if(data.rec==='PASS'){const rW=sc.measureText('PASS').width,sP=eeo(eop(0.5,1.1));if(sP>0){sc.strokeStyle='#e63030';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#e63030';sc.shadowBlur=6;sc.globalAlpha=recA*sP;sc.beginPath();sc.moveTo(34,101);sc.lineTo(34+rW*sP,101);sc.stroke();sc.shadowBlur=0;}}
+      if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
+      sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);
+    }
+    sc.restore();}
   const lineA=eeo(eop(0.4,1.2));
   if(lineA>0){
     sc.save();sc.globalAlpha=lineA;
@@ -450,7 +449,22 @@ function drawScoreScreen(ticker,data,t){
     sc.restore();
   }
   const circleA=eeo(eop(2.1,3.2));
-  if(circleA>0){const sy2=divY+22,cx=42,cy=sy2,rx=40,ry=32,prog=Math.min(circleA,1);sc.save();sc.strokeStyle='#f5c400';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#f5c400';sc.shadowBlur=10*prog;sc.globalAlpha=prog*0.95;sc.beginPath();const steps=120,drawn=Math.floor(steps*prog);for(let i=0;i<=drawn;i++){const angle=(i/steps)*Math.PI*2.15-Math.PI*0.65;if(i===0)sc.moveTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);else sc.lineTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);}sc.stroke();sc.shadowBlur=0;sc.restore();}
+  if(circleA>0){
+    const sy2=divY+22,cx=42,cy=sy2,rx=40,ry=32,prog=Math.min(circleA,1);
+    const is10=data.score>=10;
+    const circleCol=is10?'#f5c400':data.col;
+    const maxSweep=(data.score/10)*Math.PI*2;
+    const pulseBlur=is10?(8+6*Math.sin(t*4)):10*prog;
+    sc.save();sc.strokeStyle=circleCol;sc.lineWidth=is10?4:3;sc.lineCap='round';
+    sc.shadowColor=circleCol;sc.shadowBlur=pulseBlur;sc.globalAlpha=prog*0.95;
+    sc.beginPath();const steps=120,drawn=Math.floor(steps*prog);
+    for(let i=0;i<=drawn;i++){
+      const angle=-Math.PI/2+(i/steps)*maxSweep;
+      if(i===0)sc.moveTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);
+      else sc.lineTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);
+    }
+    sc.stroke();sc.shadowBlur=0;sc.restore();
+  }
   const ctaA=eeo(eop(2.4,3.0));
   document.getElementById('ctaRow').style.opacity=ctaA>0?ctaA:0;
   document.getElementById('reportBtn').style.opacity=ctaA>0?ctaA:0;
@@ -530,17 +544,10 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   await new Promise(resolve=>setTimeout(resolve,3000));
   stopLoadingStages();
   if(!scoreData){
-    if(FALLBACK_SCORES[ticker]){
-      scoreData=Object.assign({},FALLBACK_SCORES[ticker]);
-      const now=new Date();
-      scoreData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-      try{const lp=await fetchLivePrice(ticker);if(lp){scoreData.price=lp.price;scoreData.change=lp.change;}}catch(e){}
-    }else{
-      document.getElementById('loadingOverlay').classList.remove('visible');
-      scansUsed--;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
-      alert(ticker+'\n\nNo data returned. Check the ticker symbol and try again.');
-      document.getElementById('tickerInput').value='';return;
-    }
+    document.getElementById('loadingOverlay').classList.remove('visible');
+    scansUsed--;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
+    alert(ticker+'\n\nNo data returned. Verify the ticker symbol and try again.');
+    document.getElementById('tickerInput').value='';return;
   }
   currentTicker=ticker;currentData=scoreData;
   document.getElementById('loadingOverlay').classList.remove('visible');

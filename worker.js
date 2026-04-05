@@ -128,7 +128,7 @@ async function fullScan(ticker) {
     }
     const totalRevenue  = m.revenuePerShareTTM && profile.shareOutstanding ? m.revenuePerShareTTM * profile.shareOutstanding * 1e6 : null;
     const revenueGrowth = m.revenueGrowthTTMYoy ? m.revenueGrowthTTMYoy/100 : null;
-    const totalCash     = m.cashAndEquivalentsAnnual ?? m.cashAndCashEquivalentsAnnual ?? m.freeCashFlowAnnual ?? null;
+    const totalCash     = m.cashAndCashEquivalentsAnnual ?? m.cashAndEquivalentsAnnual ?? m.totalCashAnnual ?? m.freeCashFlowAnnual ?? null;
 
     let nextEarnings = null;
     const now = Date.now()/1000;
@@ -147,10 +147,10 @@ async function fullScan(ticker) {
       newLow30d = recentMin <= week52Low * 1.002;
     }
 
-    let nScore = 1.5, nStrikes = 0, nFlags = [];
+    let nScore = 1.5, nStrikes = 0, nFlags = [], nSplitDate = null;
     try {
       const n = await checkN(ticker);
-      nScore = n.score; nStrikes = n.strikes; nFlags = n.flags;
+      nScore = n.score; nStrikes = n.strikes; nFlags = n.flags; nSplitDate = n.splitDate || null;
     } catch(e) { nFlags = ['Legal scan unavailable']; }
 
     const fmt = (n,b,s) => n>=b?(n/b).toFixed(1)+s:n>=1e6?(n/1e6).toFixed(0)+'M':n?(n/1e3).toFixed(0)+'K':'N/A';
@@ -183,7 +183,7 @@ async function fullScan(ticker) {
       floatFormatted: floatShares?fmt(floatShares,1e9,'B'):'N/A',
       revenueFormatted: totalRevenue?'$'+fmt(totalRevenue,1e9,'B')+' TTM':'Pre-revenue',
       nextEarnings,
-      nScore, nStrikes, nFlags,
+      nScore, nStrikes, nFlags, splitDate: nSplitDate,
       rec, verdict, col
     }), {headers:CORS});
 
@@ -225,10 +225,10 @@ async function checkN(ticker) {
     },
     body: JSON.stringify({
       model:'claude-sonnet-4-20250514',
-      max_tokens:600,
+      max_tokens:700,
       tools:[{type:'web_search_20250305',name:'web_search'}],
-      system:'You are the K1LADEX N checkpoint scanner. Apply the SMCI Rule: 2+ strikes = score 0. Respond ONLY with valid JSON, no other text.',
-      messages:[{role:'user',content:`Search "${ticker} SEC investigation lawsuit DOJ short seller fraud class action going concern". Return ONLY JSON: {"strikes":<number>,"flags":["brief flag"],"score":<1.5 if clean, 1.0 if minor, 0.5 if 1 strike, 0 if 2+ strikes>}`}]
+      system:'You are the K1LADEX N checkpoint scanner. Apply the SMCI Rule: 2+ strikes = score 0. Also detect reverse stock splits. Respond ONLY with valid JSON, no other text.',
+      messages:[{role:'user',content:`Search "${ticker} SEC investigation lawsuit DOJ short seller fraud class action going concern reverse stock split". Return ONLY JSON: {"strikes":<number>,"flags":["brief flag"],"score":<1.5 if clean, 1.0 if minor, 0.5 if 1 strike, 0 if 2+ strikes>,"splitDate":<"YYYY-MM-DD" of most recent reverse split or null>}`}]
     })
   });
   const data = await resp.json();
