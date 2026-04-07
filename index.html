@@ -284,13 +284,13 @@ function scoreFromLiveData(ticker,d){
   if(megaFloat&&!highShort)plus=0;
   const raw=s+i+g+n+a+l+plus;
   const score=Math.round(Math.min(10,raw)*10)/10;
-  let rec=score>=9?'BUY SIGNAL':score>=7?'WATCHLIST':'PASS';
+  let rec=score>=9?'+':score>=7?'+':'-';
   if(strikes>=2)rec='PASS';
   let verdict;
   if(strikes>=2){verdict='SMCI RULE — 2+ LEGAL STRIKES';}
   else if(d.nFlags&&d.nFlags.length>0&&n<1.5){verdict=d.nFlags[0].substring(0,38).toUpperCase();}
-  else{verdict=score>=10?'MAXIMUM CONVICTION — PERFECT SCORE':score>=9?'MAXIMUM CONVICTION — BUY SIGNAL':score>=7?'WATCHLIST':score>=5?'MONITOR ONLY':'FAILED SIGNAL+ — PASS';}
-  const col=rec==='BUY SIGNAL'?'#1a8a3a':rec==='WATCHLIST'?'#886600':'#cc4400';
+  else{verdict=score>=10?'MAXIMUM CONVICTION':score>=9?'MAXIMUM CONVICTION':score>=7?'WATCHLIST':score>=5?'MONITOR ONLY':'FAILED SIGNAL+';}
+  const col=score>=9?'#1a8a3a':score>=7?'#886600':'#cc4400';
   const now=new Date();
   const scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   return{name:d.name||ticker,score,s,i,g,n,a,l,plus,surge:d.surgeFormatted||'—',short:d.shortPctFormatted||'N/A',float:d.floatFormatted||'N/A',revenue:d.revenueFormatted||'N/A',earnings:d.nextEarnings||'TBD',rec,verdict,col,price:d.price,change:d.change,scanTime,
@@ -338,8 +338,8 @@ function drawScoreScreen(ticker,data,t){
   const recA=eeo(eop(0.2,0.7));
   if(recA>0){sc.save();sc.globalAlpha=recA;
     const isKill=data.nStrikes>=2;
-    const recCol=isKill?'#cc0000':data.rec==='BUY SIGNAL'?'#1a8a3a':data.rec==='WATCHLIST'?'#886600':'#cc4400';
-    const recBg=isKill?'rgba(200,0,0,0.18)':data.rec==='BUY SIGNAL'?'rgba(26,138,58,0.15)':data.rec==='WATCHLIST'?'rgba(136,102,0,0.15)':'rgba(204,68,0,0.15)';
+    const recCol=isKill?'#cc0000':data.score>=9?'#1a8a3a':data.score>=7&&data.score<9?'#886600':'#cc4400';
+    const recBg=isKill?'rgba(200,0,0,0.18)':data.score>=9?'rgba(26,138,58,0.15)':data.score>=7&&data.score<9?'rgba(136,102,0,0.15)':'rgba(204,68,0,0.15)';
     sc.fillStyle=recBg;scRR(22,82,SW-44,38,8);sc.fill();
     if(isKill){const kp=0.5+0.5*Math.sin(t*3);sc.shadowColor='#cc0000';sc.shadowBlur=6+kp*10;}
     sc.strokeStyle=recCol;sc.lineWidth=isKill?2:1.5;scRR(22,82,SW-44,38,8);sc.stroke();sc.shadowBlur=0;
@@ -348,7 +348,7 @@ function drawScoreScreen(ticker,data,t){
       sc.fillStyle=INK_MID;sc.font=`600 10px ${HN}`;sc.textAlign='right';sc.fillText('DISQUALIFIED — '+data.nStrikes+' STRIKE'+(data.nStrikes===1?'':'S'),SW-36,101);
     }else{
       sc.fillStyle=recCol;sc.font=`700 18px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(data.rec,36,101);
-      if(data.rec==='PASS'){const rW=sc.measureText('PASS').width,sP=eeo(eop(0.5,1.1));if(sP>0){sc.strokeStyle='#e63030';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#e63030';sc.shadowBlur=6;sc.globalAlpha=recA*sP;sc.beginPath();sc.moveTo(34,101);sc.lineTo(34+rW*sP,101);sc.stroke();sc.shadowBlur=0;}}
+      if(data.rec==='-'){const rW=sc.measureText('PASS').width,sP=eeo(eop(0.5,1.1));if(sP>0){sc.strokeStyle='#e63030';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#e63030';sc.shadowBlur=6;sc.globalAlpha=recA*sP;sc.beginPath();sc.moveTo(34,101);sc.lineTo(34+rW*sP,101);sc.stroke();sc.shadowBlur=0;}}
       if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
       sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);
     }
@@ -590,7 +590,7 @@ function generateReport(ticker,data){
   // ── PALETTE: white paper, blue + dark ink ─────────────────
   const W=[255,255,255],INK=[20,28,48],INK2=[85,100,125];
   const B=[0,108,200],BLT=[230,241,254],RUL=[205,218,232],NV=[8,32,80];
-  const recCol=data.rec==='BUY SIGNAL'?[0,128,60]:data.rec==='WATCHLIST'?[155,108,0]:[172,48,0];
+  const recCol=data.score>=9?[0,128,60]:data.score>=7&&data.score<9?[155,108,0]:[172,48,0];
   function cpCol(v){return v>=1.5?B:v>=1.0?[155,108,0]:[172,48,0];}
   // ── LAYOUT HELPERS ────────────────────────────────────────
   function hdr(n){
@@ -831,8 +831,8 @@ dp:[['Revenue (TTM)',data.revenue],['Growth YoY',data.revenueGrowth!=null?(data.
   y+=62;rule(y);y+=16;
   y=sec(y,'OVERALL ASSESSMENT');
   let vp='';
-  if(data.rec==='BUY SIGNAL')vp=ticker+' has achieved a K1LADEX SIGNAL+ score of '+data.score+'/10 — a BUY SIGNAL recommendation. Every critical checkpoint has been evaluated and the setup satisfies the geometric and fundamental requirements of the framework. Surge confirmed at '+data.surge+'. Consolidation intact. Revenue of '+data.revenue+' growing. Regulatory record clean. Catalyst on the calendar for '+data.earnings+'. Price levels constructive. Squeeze dynamics present (short interest: '+data.short+', float: '+data.float+'). This is the configuration the framework was built to find. Position sizing, entry level, and stop discipline remain the trader\'s responsibility.';
-  else if(data.rec==='WATCHLIST')vp=ticker+' has scored '+data.score+'/10 — a WATCHLIST. The setup shows real promise but has not cleared every checkpoint at the threshold required for maximum conviction. One or more gates are scoring partial, limiting the overall signal. The name is worth watching with discipline. Review the failing gate on the checkpoint pages. If partial readings resolve in the bull direction, this upgrades to a BUY SIGNAL on the next scan. Do not chase. Wait for confirmation.';
+  if(data.score>=9)vp=ticker+' has achieved a K1LADEX SIGNAL+ score of '+data.score+'/10 — a SIGNAL+ positive result. Every critical checkpoint has been evaluated and the setup satisfies the geometric and fundamental requirements of the framework. Surge confirmed at '+data.surge+'. Consolidation intact. Revenue of '+data.revenue+' growing. Regulatory record clean. Catalyst on the calendar for '+data.earnings+'. Price levels constructive. Squeeze dynamics present (short interest: '+data.short+', float: '+data.float+'). This is the configuration the framework was built to find. Position sizing, entry level, and stop discipline remain the trader\'s responsibility.';
+  else if(data.score>=7&&data.score<9)vp=ticker+' has scored '+data.score+'/10 — a WATCHLIST. The setup shows real promise but has not cleared every checkpoint at the threshold required for maximum conviction. One or more gates are scoring partial, limiting the overall signal. The name is worth watching with discipline. Review the failing gate on the checkpoint pages. If partial readings resolve in the bull direction, this upgrades to a BUY SIGNAL on the next scan. Do not chase. Wait for confirmation.';
   else vp=ticker+' has scored '+data.score+'/10 — a PASS. The SIGNAL+ framework requires a minimum threshold across all seven checkpoints before a name is actionable. This scan identified one or more critical failures that disqualify the setup at this time. Passing is discipline. The K1LADEX edge is built on selectivity — not every scan needs to be a trade. Review the checkpoint pages for specific failure points and what must change before this name is reconsidered.';
   doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...INK);
   const vpL=doc.splitTextToSize(vp,CW);doc.text(vpL,M,y);y+=vpL.length*14+18;
