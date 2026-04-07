@@ -151,7 +151,7 @@ async function fullScan(ticker) {
     try {
       const n = await checkN(ticker);
       nScore = n.score; nStrikes = n.strikes; nFlags = n.flags; nSplitDate = n.splitDate || null;
-    } catch(e) { nFlags = ['Legal scan unavailable']; }
+    } catch(e) { nScore = 0; nStrikes = 99; nFlags = ['Legal scan error: ' + e.message]; }
 
     const fmt = (n,b,s) => n>=b?(n/b).toFixed(1)+s:n>=1e6?(n/1e6).toFixed(0)+'M':n?(n/1e3).toFixed(0)+'K':'N/A';
     const surgeVal = (week52Low&&currentPrice) ? (currentPrice-week52Low)/week52Low*100 : 0;
