@@ -515,7 +515,7 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     scansUsed++;
     try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}
     updateScanLabel();
-    const mvisData={name:'MicroVision',score:2.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'8%',float:'180M',revenue:'$7M TTM',earnings:'May 15, 2026',rec:'PASS',verdict:'MONUMENT — NOT A POSITION',col:'#cc0000',price:'',change:''};
+    const mvisData={name:'MicroVision',score:2.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'8%',float:'180M',revenue:'$7M TTM',earnings:'May 15, 2026',rec:'-',verdict:'MONUMENT — NOT A POSITION',col:'#cc0000',price:'',change:''};
     const now=new Date();
     mvisData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     document.getElementById('loadingTicker').textContent='MVIS';
