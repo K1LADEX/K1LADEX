@@ -232,7 +232,7 @@ async function checkN(ticker) {
     })
   });
   const data = await resp.json();
-  const text = (data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('');
+  const text = (data.content||[]).map(c=>c.type==='text'?c.text:c.type==='tool_result'?(Array.isArray(c.content)?c.content.filter(x=>x.type==='text').map(x=>x.text).join(''):''):'').join('');
   const clean = text.replace(/```json|```/g,'').trim();
   const jsonMatch = clean.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('NO_JSON:'+clean.substring(0,200));
