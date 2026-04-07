@@ -653,7 +653,7 @@ function generateReport(ticker,data){
   y=sec(y,'K1LADEX SIGNAL+ SCORECARD',ticker+' · '+data.rec+' · '+data.score+'/10');
   doc.setFont('helvetica','bold');doc.setFontSize(58);doc.setTextColor(...B);doc.text(String(data.score),M,y+68);
   doc.setFont('helvetica','normal');doc.setFontSize(20);doc.setTextColor(...INK2);doc.text('/10',M+72,y+68);
-  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...recCol);doc.text('Recommendation: '+data.rec,M+110,y+46);
+  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...recCol);doc.text('Verdict: '+data.rec,M+110,y+46);
   doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...INK2);doc.text(data.verdict,M+110,y+62);y+=90;
   const lbls=['S','I','G','N','A','L','+'],vls=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
   const fN=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Approaching Catalyst','Levels & Macro','Volume + Short Pressure'];
