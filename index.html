@@ -285,11 +285,11 @@ function scoreFromLiveData(ticker,d){
   const raw=s+i+g+n+a+l+plus;
   const score=Math.round(Math.min(10,raw)*10)/10;
   let rec=score>=9?'+':score>=7?'+':'-';
-  if(strikes>=2)rec='PASS';
+  if(strikes>=2)rec='-';
   let verdict;
   if(strikes>=2){verdict='SMCI RULE — 2+ LEGAL STRIKES';}
   else if(d.nFlags&&d.nFlags.length>0&&n<1.5){verdict=d.nFlags[0].substring(0,38).toUpperCase();}
-  else{verdict=score>=10?'MAXIMUM CONVICTION':score>=9?'MAXIMUM CONVICTION':score>=7?'WATCHLIST':score>=5?'MONITOR ONLY':'FAILED SIGNAL+';}
+  else{verdict=score>=7?'+':'-';}
   const col=score>=9?'#1a8a3a':score>=7?'#886600':'#cc4400';
   const now=new Date();
   const scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});

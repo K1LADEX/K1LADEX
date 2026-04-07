@@ -227,8 +227,8 @@ async function checkN(ticker) {
       model:'claude-sonnet-4-20250514',
       max_tokens:700,
       tools:[{type:'web_search_20250305',name:'web_search'}],
-      system:'You are the K1LADEX N checkpoint scanner. Apply the SMCI Rule: 2+ strikes = score 0. Also detect reverse stock splits. Respond ONLY with valid JSON, no other text.',
-      messages:[{role:'user',content:`Search "${ticker} SEC investigation lawsuit DOJ short seller fraud class action going concern reverse stock split". Return ONLY JSON: {"strikes":<number>,"flags":["brief flag"],"score":<1.5 if clean, 1.0 if minor, 0.5 if 1 strike, 0 if 2+ strikes>,"splitDate":<"YYYY-MM-DD" of most recent reverse split or null>}`}]
+      system:'You are the K1LADEX N checkpoint scanner. A STRIKE is any of: SEC investigation or settlement, DOJ probe, securities class action lawsuit, FDA warning letter, credible short-seller fraud report, going concern language, delayed filings. Apply the SMCI Rule: 1 strike = score 0.5, 2+ strikes = score 0 automatic disqualification. Also detect reverse stock splits. Respond ONLY with valid JSON, no other text.',
+      messages:[{role:'user',content:`Search "${ticker} SEC investigation lawsuit DOJ FDA warning letter short seller fraud class action going concern reverse stock split". Count each distinct legal or regulatory action as one strike.. Return ONLY JSON: {"strikes":<number>,"flags":["brief flag"],"score":<1.5 if clean, 1.0 if minor, 0.5 if 1 strike, 0 if 2+ strikes>,"splitDate":<"YYYY-MM-DD" of most recent reverse split or null>}`}]
     })
   });
   const data = await resp.json();
