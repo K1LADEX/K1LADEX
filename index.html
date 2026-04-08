@@ -434,9 +434,9 @@ function drawScoreScreen(ticker,data,t){
   const scoreA=eeo(eop(1.7,2.2));
   if(scoreA>0){
     sc.save();sc.globalAlpha=scoreA;const sy2=divY+22;
-    sc.fillStyle=data.col;sc.font=`700 44px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.shadowColor=data.col;sc.shadowBlur=14*scoreA;sc.fillText(data.score,22,sy2);
+    if(data.nStrikes>=2){sc.fillStyle='#cc4400';sc.font=`700 44px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.shadowColor='#cc4400';sc.shadowBlur=14*scoreA;sc.fillText('✕',22,sy2);}else{sc.fillStyle=data.col;sc.font=`700 44px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.shadowColor=data.col;sc.shadowBlur=14*scoreA;sc.fillText(data.score,22,sy2);}
     const snW=sc.measureText(String(data.score)).width;sc.shadowBlur=0;
-    sc.fillStyle=INK_DIM;sc.font=`400 18px ${HN}`;sc.fillText('/10',22+snW+4,sy2+4);
+    if(!(data.nStrikes>=2)){sc.fillStyle=INK_DIM;sc.font=`400 18px ${HN}`;sc.fillText('/10',22+snW+4,sy2+4);}
     [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
       const dy=(sy2-18)+i*20;
       sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText(label,130,dy);
