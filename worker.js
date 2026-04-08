@@ -235,6 +235,6 @@ async function checkN(ticker) {
   const text = (data.content||[]).map(c=>c.type==='text'?c.text:c.type==='tool_result'?(Array.isArray(c.content)?c.content.filter(x=>x.type==='text').map(x=>x.text).join(''):''):'').join('');
   const clean = text.replace(/```json|```/g,'').trim();
   const jsonMatch = clean.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('NO_JSON:status='+resp.status+' types='+(data.content||[]).map(c=>c.type).join(',')+' err='+JSON.stringify(data.error||'none').substring(0,150));
+  if (!jsonMatch) throw new Error('NO_JSON:'+clean.substring(0,200));
   return JSON.parse(jsonMatch[0]);
 }
