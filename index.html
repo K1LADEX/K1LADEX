@@ -350,24 +350,7 @@ function drawScoreScreen(ticker,data,t){
     sc.fillStyle=col;sc.font=`600 10px ${HN}`;sc.fillText(val,panelX,ly+9);
   });
   sc.restore();
-  const recA=eeo(eop(0.2,0.7));
-  if(recA>0){sc.save();sc.globalAlpha=recA;
-    const isKill=data.nStrikes>=2;
-    const recCol=isKill?'#cc0000':data.score>=9?'#1a8a3a':data.score>=7&&data.score<9?'#886600':'#cc4400';
-    const recBg=isKill?'rgba(200,0,0,0.18)':data.score>=9?'rgba(26,138,58,0.15)':data.score>=7&&data.score<9?'rgba(136,102,0,0.15)':'rgba(204,68,0,0.15)';
-    sc.fillStyle=recBg;scRR(22,82,SW-44,38,8);sc.fill();
-    if(isKill){const kp=0.5+0.5*Math.sin(t*3);sc.shadowColor='#cc0000';sc.shadowBlur=6+kp*10;}
-    sc.strokeStyle=recCol;sc.lineWidth=isKill?2:1.5;scRR(22,82,SW-44,38,8);sc.stroke();sc.shadowBlur=0;
-    if(isKill){
-      sc.fillStyle='#cc0000';sc.font=`700 14px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText('CHECKPOINT ZERO',36,101);
-      sc.fillStyle=INK_MID;sc.font=`600 10px ${HN}`;sc.textAlign='right';sc.fillText('DISQUALIFIED — '+data.nStrikes+' STRIKE'+(data.nStrikes===1?'':'S'),SW-36,101);
-    }else{
-      sc.fillStyle=recCol;sc.font=`700 18px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(data.rec,36,101);
-      if(data.rec==='-'){const rW=sc.measureText('PASS').width,sP=eeo(eop(0.5,1.1));if(sP>0){sc.strokeStyle='#e63030';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#e63030';sc.shadowBlur=6;sc.globalAlpha=recA*sP;sc.beginPath();sc.moveTo(34,101);sc.lineTo(34+rW*sP,101);sc.stroke();sc.shadowBlur=0;}}
-      if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
-      sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);
-    }
-    sc.restore();}
+
   const lineA=eeo(eop(0.4,1.2));
   if(lineA>0){
     sc.save();sc.globalAlpha=lineA;
@@ -469,12 +452,8 @@ function drawScoreScreen(ticker,data,t){
     if(!(data.nStrikes>=2)){sc.fillStyle=INK_DIM;sc.font=`400 18px ${HN}`;sc.fillText('/10',22+snW+4,sy2+4);}
     [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
       const dy=(sy2-18)+i*20;
-      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText(label,130,dy);
-      sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.fillText(val,130,dy+12);
-      if(label==='Short Interest'&&val==='N/A'){
-        sc.fillStyle='rgba(0,229,255,0.5)';sc.font=`400 8px ${HN}`;sc.textAlign='left';
-        sc.fillText('← coming soon',170,dy+12);
-      }
+      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='right';sc.fillText(label,SW-22,dy);
+      sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-22,dy+12);
     });
     if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.35)';sc.font=`400 9px ${HN}`;sc.textAlign='center';sc.fillText('Scanned '+data.scanTime,SW/2,SH-32);}
     sc.restore();
