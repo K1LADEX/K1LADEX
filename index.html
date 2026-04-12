@@ -343,7 +343,7 @@ function drawScoreScreen(ticker,data,t){
   sc.fillStyle=BLUE;sc.font='600 14px '+HN;sc.textAlign='center';sc.textBaseline='middle';
   sc.fillText('#'+ticker.toUpperCase(),SW/2,52);
   const priceCol=data.change&&data.change.startsWith('-')?'#ff6b6b':BLUE;
-  const sY=68,sRowH=16;
+  const sY=82,sRowH=16;
   const leftStats=[
     ['FLAGS: ',data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,26).toUpperCase():'CLEAN',BLUE],
     ['CURRENT PRICE IS ',data.price||'--',priceCol],
@@ -359,13 +359,15 @@ function drawScoreScreen(ticker,data,t){
     sc.fillText(val,20+lw,ly);
   });
   const rightStats=[
-    [data.shortPctFormatted||'N/A',' SHORT INTEREST'],
-    [data.floatFormatted||'N/A',' FLOAT'],
-    [data.revenueFormatted||'N/A',' REVENUE'],
-    [data.nextEarnings?'ON '+data.nextEarnings.toUpperCase():'TBD',' EARNINGS']
+    [data.shortPctFormatted&&data.shortPctFormatted!=='N/A'?data.shortPctFormatted:null,' SHORT INTEREST'],
+    [data.floatFormatted&&data.floatFormatted!=='N/A'?data.floatFormatted:null,' FLOAT'],
+    [data.revenueFormatted&&data.revenueFormatted!=='N/A'&&data.revenueFormatted!=='Pre-revenue'?data.revenueFormatted:null,' REVENUE'],
+    [data.nextEarnings?'ON '+data.nextEarnings.toUpperCase():null,' EARNINGS']
   ];
-  rightStats.forEach(([val,label],i)=>{
-    const ly=sY+i*sRowH;
+  let rRow=0;
+  rightStats.forEach(([val,label])=>{
+    if(!val)return;
+    const ly=sY+rRow*sRowH;rRow++;
     sc.textBaseline='alphabetic';
     sc.fillStyle=INK;sc.font='600 11px '+HN;sc.textAlign='right';
     const labelW=sc.measureText(label).width;
@@ -432,8 +434,8 @@ function drawScoreScreen(ticker,data,t){
         }
       }
     }
-    sc.fillStyle=INK_DIM;sc.font='400 9px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
-    sc.fillText('52W Low → Current',lLeft,lBot+11);
+    sc.fillStyle=INK_DIM;sc.font='400 9px '+HN;sc.textAlign='right';sc.textBaseline='alphabetic';
+    sc.fillText('52W Low → Current',lRight,lBot+11);
     sc.restore();
   }
   const iconA=eeo(eop(0.8,1.4));
@@ -487,13 +489,13 @@ function drawScoreScreen(ticker,data,t){
     const surgeAmt=data.surgeFormatted||'+0%';
     const surgeLow=data.week52Low?'$'+data.week52Low.toFixed(2):'--';
     const dDescs=[
-      'Surged '+surgeAmt+' from its 52-week low of '+surgeLow,
-      data.i>=1.5?'Holding above 50MA, near highs, no new 30-day lows':data.i>=1.0?'Partial consolidation -- one or more gates not fully cleared':'Outside consolidation parameters -- price not in base',
-      data.g>=1.5?'Revenue '+(data.revenueFormatted||'confirmed')+', growing year-over-year':data.g>=1.0?'Revenue present -- growth signal mixed':'Revenue declining or pre-revenue -- requires scrutiny',
-      data.nStrikes>=2?'Two or more active strikes -- SMCI Rule triggered':data.nStrikes===1?'One active strike -- single flag under SMCI Rule':'No active legal or regulatory disqualifiers detected',
-      data.a>=1.5?'Dated catalyst confirmed -- '+(data.nextEarnings||'on record'):data.a>=1.0?'Catalyst present -- timing uncertain':'No confirmed dated catalyst on record',
-      data.l>=1.5?'Support, stop, and macro sector all aligned':data.l>=1.0?'Levels partially defined -- macro confirmation needed':'Support and macro alignment not confirmed',
-      'Short interest '+(data.shortPctFormatted||'--')+', float '+(data.floatFormatted||'--')+(data.plus>=1.5?' -- squeeze overlay present':'')
+      'Surged '+surgeAmt+' from 52-week low of '+surgeLow,
+      data.i>=1.5?'Above 50MA, within 30% of 52W high, no new 30-day lows — all gates clear':data.i>=1.0?'2 of 3 consolidation gates cleared — monitoring closely':'Outside all three consolidation parameters',
+      data.g>=1.5?'Revenue '+(data.revenueFormatted||'growing')+' year-over-year — cash and guidance intact':data.g>=1.0?'Revenue exists — growth trajectory or cash signal is not clean':'Pre-revenue or declining — treat as speculative until filed revenue confirms',
+      data.nStrikes>=2?'SMCI Rule triggered — '+data.nStrikes+' active strikes on record':data.nStrikes===1?'One active strike on record — SMCI Rule monitoring':'No SEC, DOJ, class action, or FDA disqualifiers found',
+      data.a>=1.5?'Dated catalyst confirmed — '+(data.nextEarnings||'on calendar'):data.a>=1.0?'Catalyst window present — exact date not fully confirmed':'No dated catalyst on record — without one, this is speculation',
+      data.l>=1.5?'Support, stop, and macro sector structurally aligned — risk is defined':data.l>=1.0?'Partial structure — one level or macro signal needs confirmation':'No defined stop or sector alignment — risk is unstructured',
+      'Float '+(data.floatFormatted||'—')+' · Short interest '+(data.shortPctFormatted||'—')+(data.plus>=1.5?' · Squeeze overlay conditions present':data.plus>=1.0?' · Partial pressure signal':' · No squeeze overlay detected')
     ];
     const dStartY=Math.round(SH*0.46),dRowH=Math.round((SH*0.84-SH*0.46)/7);
     dLetters.forEach((ltr,i)=>{
@@ -502,8 +504,11 @@ function drawScoreScreen(ticker,data,t){
       sc.fillText(ltr,20,dy);
       sc.fillStyle=BLUE;sc.font='700 12px '+HN;sc.textAlign='left';sc.textBaseline='top';
       sc.fillText(dTitles[i],46,dy+2);
-      sc.fillStyle='rgba(255,255,255,0.5)';sc.font='400 10px '+HN;
+      sc.fillStyle='rgba(255,255,255,0.6)';sc.font='500 10px '+HN;
       sc.fillText(dDescs[i],46,dy+17);
+      const dDescs2=['200%+ threshold cleared — Mr. Market has already validated this name.','Price is resting, not retreating. The base is constructive.','Cash sufficient. Growth is filed, not projected.','Full disqualification. This is not a deduction — it is a veto.','A dated event forces price discovery on a known timeline.','Risk is structured. Entry, stop, and sector are all defined.','Volume and short structure create conditions for geometric acceleration.'];
+      sc.fillStyle='rgba(255,255,255,0.35)';sc.font='400 9px '+HN;
+      sc.fillText(dDescs2[i]||'',46,dy+29);
     });
     sc.restore();
   }
@@ -511,9 +516,9 @@ function drawScoreScreen(ticker,data,t){
   if(scoreA>0){
     sc.save();sc.globalAlpha=scoreA;
     const vY=Math.round(SH*0.88);
-    const verdictLine=data.nStrikes>=2?'DISQUALIFIED':data.score>=9?'SIGNAL+':data.score>=7?'WATCHLIST':'PASS';
-    const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=9?'#1a8a3a':data.score>=7?'#886600':'#cc4400';
-    sc.fillStyle=verdictCol;sc.font='700 15px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
+    const verdictLine=data.nStrikes>=2?'—':data.score>=7?'+':'-';
+    const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=7?BLUE:'#cc4400';
+    sc.fillStyle=verdictCol;sc.font='700 22px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
     sc.fillText(verdictLine,20,vY);
     sc.fillStyle=INK_DIM;sc.font='400 11px '+HN;
     sc.fillText('SIGNAL+ SCORE  '+data.score+' / 10',20,vY+16);
