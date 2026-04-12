@@ -217,25 +217,5 @@ async function debugMetrics(ticker) {
 }
 
 async function checkN(ticker) {
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version':'2023-06-01','anthropic-beta':'web-search-2025-03-05'
-    },
-    body: JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:2000,
-      tools:[{type:'web_search_20250305',name:'web_search'}],
-      system:'You are the K1LADEX N checkpoint scanner. You MUST use web_search before scoring. Never answer from training data alone. A STRIKE is any of: SEC investigation or settlement, DOJ probe, securities class action lawsuit, FDA warning letter, credible short-seller fraud report, going concern language, delayed filings. Apply the SMCI Rule: 1 strike = score 0.5, 2+ strikes = score 0 automatic disqualification. Also detect reverse stock splits. Respond ONLY with valid JSON, no other text.',
-      messages:[{role:'user',content:`Search "${ticker} SEC investigation lawsuit DOJ FDA warning letter short seller fraud class action going concern reverse stock split". Count each distinct legal or regulatory action as one strike.. Return ONLY JSON: {"strikes":<number>,"flags":["brief flag"],"score":<1.5 if clean, 1.0 if minor, 0.5 if 1 strike, 0 if 2+ strikes>,"splitDate":<"YYYY-MM-DD" of most recent reverse split or null>}`}]
-    })
-  });
-  const data = await resp.json();
-  const text = (data.content||[]).map(c=>c.type==='text'?c.text:c.type==='tool_result'?(Array.isArray(c.content)?c.content.filter(x=>x.type==='text').map(x=>x.text).join(''):''):'').join('');
-  const clean = text.replace(/```json|```/g,'').trim();
-  const jsonMatch = clean.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('NO_JSON:'+clean.substring(0,200));
-  return JSON.parse(jsonMatch[0]);
+  return { strikes: 0, flags: ["Manual review required — run Eyes of the World"], score: 0.5, splitDate: null };
 }
