@@ -467,17 +467,29 @@ function drawScoreScreen(ticker,data,t){
       if(charCount<=0)break;
       const shown=line.substring(0,Math.min(charCount,line.length));
       sc.fillStyle='rgba(255,255,255,0.45)';sc.font=`400 10px ${HN}`;sc.textAlign='left';
-      sc.save();sc.rect(22,lineY-12,SW-56,16);sc.clip();
+      sc.save();sc.beginPath();sc.rect(22,lineY-12,SW-100,16);sc.clip();
       sc.fillText(shown,22,lineY);sc.restore();
       lineY+=15;
       charCount-=line.length;
     }
     [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
       const dy=(sy2-4)+i*20;
-      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='right';sc.fillText(label,SW-28,dy);
-      sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-28,dy+12);
+      sc.fillStyle=BLUE;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-36,dy);
+      sc.fillStyle=INK_DIM;sc.font=`400 8px ${HN}`;sc.textAlign='right';sc.fillText(label.toUpperCase(),SW-36,dy+11);
     });
-    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.35)';sc.font=`400 9px ${HN}`;sc.textAlign='center';sc.fillText('Scanned '+data.scanTime,SW/2,SH-32);}
+    const gfxY=sy2+105,gfxX=22,gfxW=60,gfxH=40;
+    const gfxA=eeo(eop(3.2,4.0));
+    if(gfxA>0){
+      sc.save();sc.globalAlpha=gfxA*0.35;sc.strokeStyle=BLUE;sc.lineWidth=1;sc.lineCap='round';
+      sc.beginPath();sc.moveTo(gfxX,gfxY);sc.lineTo(gfxX+gfxW,gfxY+gfxH);sc.stroke();
+      sc.beginPath();sc.moveTo(gfxX+gfxW,gfxY);sc.lineTo(gfxX,gfxY+gfxH);sc.stroke();
+      sc.beginPath();sc.moveTo(gfxX,gfxY);sc.lineTo(gfxX+gfxW,gfxY);sc.stroke();
+      sc.beginPath();sc.moveTo(gfxX,gfxY+gfxH);sc.lineTo(gfxX+gfxW,gfxY+gfxH);sc.stroke();
+      sc.globalAlpha=gfxA*0.15;
+      sc.beginPath();sc.moveTo(gfxX,gfxY+gfxH/2);sc.lineTo(gfxX+gfxW,gfxY+gfxH/2);sc.stroke();
+      sc.restore();
+    }
+    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.25)';sc.font=`400 8px ${HN}`;sc.textAlign='left';sc.fillText('Scanned '+data.scanTime,22,SH-22);}
     sc.restore();
   }
   const circleA=eeo(eop(0.3,1.4));
