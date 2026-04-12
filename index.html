@@ -444,7 +444,7 @@ function drawScoreScreen(ticker,data,t){
     sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(lbl,22,y);
     sc.fillStyle=INK_MID;sc.font=`400 11px ${HN}`;sc.fillText(names[i],40,y);
     const bW=Math.round(SW*0.18),bX=SW-bW-16,bF=bW*(val/1.5);sc.fillStyle='rgba(255,255,255,0.06)';scRR(bX,y-6,bW,12,3);sc.fill();if(bF>0){sc.fillStyle=col;scRR(bX,y-6,bF,12,3);sc.fill();}
-    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-8,y);
+    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-28,y);
     if(val>=1.0){const ck=eeo(eop(0.8+i*0.08,1.1+i*0.08));if(ck>0){sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.lineJoin='round';sc.globalAlpha=rowA*ck;sc.beginPath();sc.moveTo(30,y-3);sc.lineTo(33,y+1);sc.lineTo(38,y-5);sc.stroke();}}
     sc.restore();
   });
@@ -467,21 +467,22 @@ function drawScoreScreen(ticker,data,t){
       if(charCount<=0)break;
       const shown=line.substring(0,Math.min(charCount,line.length));
       sc.fillStyle='rgba(255,255,255,0.45)';sc.font=`400 10px ${HN}`;sc.textAlign='left';
-      sc.fillText(shown,22,lineY);
+      sc.save();sc.rect(22,lineY-12,SW-56,16);sc.clip();
+      sc.fillText(shown,22,lineY);sc.restore();
       lineY+=15;
       charCount-=line.length;
     }
     [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
       const dy=(sy2-4)+i*20;
-      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='right';sc.fillText(label,SW-22,dy);
-      sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-22,dy+12);
+      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='right';sc.fillText(label,SW-28,dy);
+      sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-28,dy+12);
     });
     if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.35)';sc.font=`400 9px ${HN}`;sc.textAlign='center';sc.fillText('Scanned '+data.scanTime,SW/2,SH-32);}
     sc.restore();
   }
   const circleA=eeo(eop(0.3,1.4));
   if(circleA>0){
-    const cx=SW-56,cy=82,cr=36,prog=Math.min(circleA,1);
+    const cx=SW-62,cy=72,cr=42,prog=Math.min(circleA,1);
     const maxSweep=(data.score/10)*Math.PI*2;
     sc.save();sc.globalAlpha=prog*0.95;
     sc.strokeStyle='rgba(255,255,255,0.12)';sc.lineWidth=2;
