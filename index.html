@@ -329,6 +329,7 @@ function surgeY(xf){if(xf<0.12)return 0.82+xf*0.08;if(xf<0.25)return 0.83-(xf-0.
 function drawScoreScreen(ticker,data,t){
   const eop=(s,e)=>Math.max(0,Math.min(1,(t-s)/(e-s)));
   const eeo=(v)=>1-Math.pow(1-v,3);
+  const GOLD='#c8a96e';
   const g=sc.createLinearGradient(0,0,0,SH);g.addColorStop(0,BG_TOP);g.addColorStop(1,BG_BOT);
   sc.fillStyle=g;sc.fillRect(0,0,SW,SH);
   sc.strokeStyle=RULE;sc.lineWidth=0.5;
@@ -337,30 +338,46 @@ function drawScoreScreen(ticker,data,t){
   if(ringA>0){sc.save();sc.globalAlpha=ringA*0.15;sc.strokeStyle=BLUE;sc.lineWidth=1;sc.beginPath();sc.roundRect(12,10,SW-24,SH-20,16);sc.stroke();sc.restore();}
   const h1=eeo(eop(0,0.4));
   sc.save();sc.globalAlpha=h1;
-  sc.fillStyle=INK;sc.font=`700 34px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(ticker.toUpperCase(),22,46);
-  sc.fillStyle=INK_DIM;sc.font=`400 14px ${HN}`;sc.fillText(data.name,22,66);
+  sc.fillStyle=GOLD;sc.font='700 24px '+HN;sc.textAlign='center';sc.textBaseline='middle';
+  sc.fillText((data.name||ticker).toUpperCase(),SW/2,32);
+  sc.fillStyle=BLUE;sc.font='600 14px '+HN;sc.textAlign='center';sc.textBaseline='middle';
+  sc.fillText('#'+ticker.toUpperCase(),SW/2,52);
   const priceCol=data.change&&data.change.startsWith('-')?'#ff6b6b':BLUE;
-  const footnote=data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,38).toUpperCase():'CLEAN';
-  const catalyst=data.earnings||'TBD';
-  const panel=[
-    ['FLAGS', footnote, BLUE],
-    ['PRICE', data.price||'—', priceCol],
-    ['TODAY', data.price?data.change:'—', priceCol],
-    ['CATALYST', catalyst, BLUE]
+  const sY=68,sRowH=16;
+  const leftStats=[
+    ['FLAGS: ',data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,26).toUpperCase():'CLEAN',BLUE],
+    ['CURRENT PRICE IS ',data.price||'--',priceCol],
+    ["TODAY'S % CHANGE IS ",data.change||'--',priceCol],
+    ['NEXT CATALYST IS ','ON '+(data.nextEarnings||'TBD').toUpperCase(),BLUE]
   ];
-  const pStartY=82,pRowH=17;
-  panel.forEach(([label,val,col],i)=>{
-    const ly=pStartY+i*pRowH;
-    sc.fillStyle=INK_MID;sc.font=`500 11px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
-    const lbl=label+': ';const lw=sc.measureText(lbl).width;sc.fillText(lbl,22,ly);
-    sc.fillStyle=col;sc.font=`600 11px ${HN}`;sc.fillText(val,22+lw,ly);
+  leftStats.forEach(([label,val,col],i)=>{
+    const ly=sY+i*sRowH;
+    sc.fillStyle=INK;sc.font='600 11px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
+    const lw=sc.measureText(label).width;
+    sc.fillText(label,20,ly);
+    sc.fillStyle=col;sc.font='700 11px '+HN;
+    sc.fillText(val,20+lw,ly);
+  });
+  const rightStats=[
+    [data.shortPctFormatted||'N/A',' SHORT INTEREST'],
+    [data.floatFormatted||'N/A',' FLOAT'],
+    [data.revenueFormatted||'N/A',' REVENUE'],
+    [data.nextEarnings?'ON '+data.nextEarnings.toUpperCase():'TBD',' EARNINGS']
+  ];
+  rightStats.forEach(([val,label],i)=>{
+    const ly=sY+i*sRowH;
+    sc.textBaseline='alphabetic';
+    sc.fillStyle=INK;sc.font='600 11px '+HN;sc.textAlign='right';
+    const labelW=sc.measureText(label).width;
+    sc.fillText(label,SW-18,ly);
+    sc.fillStyle=BLUE;sc.font='700 11px '+HN;sc.textAlign='right';
+    sc.fillText(val,SW-18-labelW,ly);
   });
   sc.restore();
-
   const lineA=eeo(eop(0.4,1.2));
   if(lineA>0){
     sc.save();sc.globalAlpha=lineA;
-    const lTop=130,lBot=178,lLeft=22,lRight=SW-22,lW=SW-44,lH=lBot-lTop;
+    const lTop=136,lBot=178,lLeft=20,lRight=SW-20,lW=SW-40,lH=lBot-lTop;
     sc.fillStyle='rgba(0,229,255,0.04)';sc.fillRect(lLeft,lTop,lW,lH);
     const lp=eeo(eop(0.5,1.8));
     const candles=data.candles&&data.candles.length>2?data.candles:null;
@@ -402,116 +419,105 @@ function drawScoreScreen(ticker,data,t){
           sc.shadowColor=lineCol;sc.shadowBlur=6;
           sc.beginPath();sc.moveTo(endX,arrowY-8);sc.lineTo(endX,arrowY-1);sc.stroke();
           sc.beginPath();sc.moveTo(endX-4,arrowY-5);sc.lineTo(endX,arrowY+1);sc.lineTo(endX+4,arrowY-5);sc.closePath();sc.fill();
-          sc.shadowBlur=0;
-          sc.font=`700 13px ${HN}`;sc.textAlign='center';sc.textBaseline='top';sc.fillText(data.surge,endX,arrowY+3);
+          sc.shadowBlur=0;sc.font='700 11px '+HN;sc.textAlign='center';sc.textBaseline='top';
+          sc.fillText(data.surgeFormatted||'',endX,arrowY+3);
         }else{
           const arrowY=Math.max(lTop+14,endY-2);
           sc.fillStyle=lineCol;sc.strokeStyle=lineCol;sc.lineWidth=1.5;sc.lineCap='round';
           sc.shadowColor=lineCol;sc.shadowBlur=6;
           sc.beginPath();sc.moveTo(endX,arrowY+8);sc.lineTo(endX,arrowY+1);sc.stroke();
           sc.beginPath();sc.moveTo(endX-4,arrowY+5);sc.lineTo(endX,arrowY-1);sc.lineTo(endX+4,arrowY+5);sc.closePath();sc.fill();
-          sc.shadowBlur=0;
-          sc.font=`700 13px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,arrowY-3);
+          sc.shadowBlur=0;sc.font='700 11px '+HN;sc.textAlign='center';sc.textBaseline='bottom';
+          sc.fillText(data.surgeFormatted||'',endX,arrowY-3);
         }
       }
     }
-    sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
-    sc.fillText('52W Low → Current',lLeft,lBot+12);
+    sc.fillStyle=INK_DIM;sc.font='400 9px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
+    sc.fillText('52W Low → Current',lLeft,lBot+11);
     sc.restore();
   }
-  const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
-  const names=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Catalyst Dated','Levels & Macro','Vol + Short'];
-  const startY=232,rowH=32;
-  const iconY=208,iconR=9,iconSlot=Math.floor((SW-44)/7);
-  [data.s,data.i,data.g,data.n,data.a,data.l,data.plus].forEach((val,i)=>{
-    const iA=eeo(eop(0.6+i*0.1,1.0+i*0.1));if(iA<=0)return;
-    sc.save();sc.globalAlpha=iA;
-    const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
-    const cx=22+iconSlot*i+iconSlot/2;
-    sc.strokeStyle=col;sc.lineWidth=1.5;sc.shadowColor=col;sc.shadowBlur=val>=1.0?6:0;
-    sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.stroke();
-    if(val>=1.0){sc.fillStyle=col;sc.globalAlpha=iA*0.15;sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.fill();sc.globalAlpha=iA;}
-    sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText(['S','I','G','N','A','L','+'][i],cx,iconY);
-    sc.shadowBlur=0;sc.restore();
-  });
-
-
-
-  labels.forEach((lbl,i)=>{
-    const rowA=eeo(eop(0.6+i*0.1,1.0+i*0.1));if(rowA<=0)return;
-    sc.save();sc.globalAlpha=rowA;const y=startY+i*rowH,val=vals[i];
-    const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
-    sc.fillStyle=col;sc.font=`700 15px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(lbl,22,y);
-    sc.fillStyle=INK_MID;sc.font=`400 13px ${HN}`;sc.fillText(names[i],40,y);
-    const bW=Math.round(SW*0.18),bX=SW-bW-16,bF=bW*(val/1.5);sc.fillStyle='rgba(255,255,255,0.06)';scRR(bX,y-6,bW,12,3);sc.fill();if(bF>0){sc.fillStyle=col;scRR(bX,y-6,bF,12,3);sc.fill();}
-    sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-36,y);
-    if(val>=1.0){const ck=eeo(eop(0.8+i*0.08,1.1+i*0.08));if(ck>0){sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.lineJoin='round';sc.globalAlpha=rowA*ck;sc.beginPath();sc.moveTo(30,y-3);sc.lineTo(33,y+1);sc.lineTo(38,y-5);sc.stroke();}}
+  const iconA=eeo(eop(0.8,1.4));
+  if(iconA>0){
+    const iconVals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
+    const iconLetters=['S','I','G','N','A','L','+'];
+    const iconY=196,iconR=9,iconSlot=Math.floor((SW-40)/7);
+    iconVals.forEach((val,i)=>{
+      const iA=eeo(eop(0.8+i*0.08,1.2+i*0.08));if(iA<=0)return;
+      sc.save();sc.globalAlpha=iA*iconA;
+      const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
+      const cx=20+iconSlot*i+iconSlot/2;
+      sc.strokeStyle=col;sc.lineWidth=1.5;sc.shadowColor=col;sc.shadowBlur=val>=1.0?6:0;
+      sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.stroke();
+      if(val>=1.0){sc.fillStyle=col;sc.globalAlpha=iA*iconA*0.15;sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.fill();sc.globalAlpha=iA*iconA;}
+      sc.fillStyle=col;sc.font='700 11px '+HN;sc.textAlign='center';sc.textBaseline='middle';
+      sc.fillText(iconLetters[i],cx,iconY);
+      sc.shadowBlur=0;sc.restore();
+    });
+  }
+  const barA=eeo(eop(1.0,1.8));
+  if(barA>0){
+    sc.save();sc.globalAlpha=barA;
+    const barVals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
+    const colNames=['Surge','Consol.','Growth','Flags','Catalyst','Levels','Volume'];
+    const barSlot=Math.floor((SW-40)/7);
+    const hdrTop=210,hdrH=20,barMaxH=62;
+    barVals.forEach((val,i)=>{
+      const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
+      const cx=20+barSlot*i+barSlot/2;
+      const bW=Math.min(barSlot-4,38);
+      sc.strokeStyle=col;sc.lineWidth=1;sc.globalAlpha=barA;
+      scRR(cx-bW/2,hdrTop,bW,hdrH,3);sc.stroke();
+      sc.fillStyle=col;sc.globalAlpha=barA*0.12;
+      scRR(cx-bW/2,hdrTop,bW,hdrH,3);sc.fill();
+      sc.globalAlpha=barA;
+      sc.fillStyle=col;sc.font='500 8px '+HN;sc.textAlign='center';sc.textBaseline='middle';
+      sc.fillText(colNames[i],cx,hdrTop+hdrH/2);
+      const bH=Math.round((val/1.5)*barMaxH);
+      if(bH>0){sc.fillStyle=col;sc.globalAlpha=barA*0.65;scRR(cx-bW/2,hdrTop+hdrH,bW,bH,2);sc.fill();}
+      sc.globalAlpha=barA;
+    });
     sc.restore();
-  });
-  const divY=startY+7*rowH+4;
-  sc.save();sc.globalAlpha=eeo(eop(1.6,2.0))*0.15;sc.strokeStyle=BLUE;sc.lineWidth=0.7;sc.beginPath();sc.moveTo(20,divY);sc.lineTo(SW-20,divY);sc.stroke();sc.restore();
-  const scoreA=eeo(eop(1.7,2.2));
+  }
+  const descA=eeo(eop(1.6,2.4));
+  if(descA>0){
+    sc.save();sc.globalAlpha=descA;
+    const dVals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
+    const dLetters=['S','I','G','N','A','L','+'];
+    const dTitles=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Approaching Catalyst','Levels & Macro','Vol + Short Pressure'];
+    const surgeAmt=data.surgeFormatted||'+0%';
+    const surgeLow=data.week52Low?'$'+data.week52Low.toFixed(2):'--';
+    const dDescs=[
+      'Surged '+surgeAmt+' from its 52-week low of '+surgeLow,
+      data.i>=1.5?'Holding above 50MA, near highs, no new 30-day lows':data.i>=1.0?'Partial consolidation -- one or more gates not fully cleared':'Outside consolidation parameters -- price not in base',
+      data.g>=1.5?'Revenue '+(data.revenueFormatted||'confirmed')+', growing year-over-year':data.g>=1.0?'Revenue present -- growth signal mixed':'Revenue declining or pre-revenue -- requires scrutiny',
+      data.nStrikes>=2?'Two or more active strikes -- SMCI Rule triggered':data.nStrikes===1?'One active strike -- single flag under SMCI Rule':'No active legal or regulatory disqualifiers detected',
+      data.a>=1.5?'Dated catalyst confirmed -- '+(data.nextEarnings||'on record'):data.a>=1.0?'Catalyst present -- timing uncertain':'No confirmed dated catalyst on record',
+      data.l>=1.5?'Support, stop, and macro sector all aligned':data.l>=1.0?'Levels partially defined -- macro confirmation needed':'Support and macro alignment not confirmed',
+      'Short interest '+(data.shortPctFormatted||'--')+', float '+(data.floatFormatted||'--')+(data.plus>=1.5?' -- squeeze overlay present':'')
+    ];
+    const dStartY=302,dRowH=38;
+    dLetters.forEach((ltr,i)=>{
+      const dy=dStartY+i*dRowH;
+      sc.fillStyle=GOLD;sc.font='700 20px '+HN;sc.textAlign='left';sc.textBaseline='top';
+      sc.fillText(ltr,20,dy);
+      sc.fillStyle=BLUE;sc.font='700 12px '+HN;sc.textAlign='left';sc.textBaseline='top';
+      sc.fillText(dTitles[i],46,dy+2);
+      sc.fillStyle='rgba(255,255,255,0.5)';sc.font='400 10px '+HN;
+      sc.fillText(dDescs[i],46,dy+17);
+    });
+    sc.restore();
+  }
+  const scoreA=eeo(eop(2.2,2.8));
   if(scoreA>0){
-    sc.save();sc.globalAlpha=scoreA;const sy2=divY+8;
-    sc.shadowBlur=0;
+    sc.save();sc.globalAlpha=scoreA;
+    const vY=572;
     const verdictLine=data.nStrikes>=2?'DISQUALIFIED':data.score>=9?'SIGNAL+':data.score>=7?'WATCHLIST':'PASS';
     const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=9?'#1a8a3a':data.score>=7?'#886600':'#cc4400';
-    sc.fillStyle=verdictCol;sc.font=`700 15px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';sc.fillText(verdictLine,22,sy2+12);
-    sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.fillText('SIGNAL+ SCORE',22,sy2+26);
-    const typeLines=data.nStrikes>=2?['Two or more active legal strikes detected.','The SMCI Rule is not a deduction.','It is a disqualification.']:data.score>=9?['Seven checkpoints. Seven cleared.','The framework found what it was built to find.']:data.score>=7?['Real signal present.','Not every gate cleared at full threshold.','The framework is watching.']:['One or more critical gates failed.','The framework requires all seven.','This is the filter working.'];
-    const typeSpeed=38,typeDelay=2.6;
-    let charCount=Math.floor(Math.max(0,t-typeDelay)*typeSpeed);
-    let lineY=sy2+44;
-    for(let li=0;li<typeLines.length;li++){
-      const line=typeLines[li];
-      if(charCount<=0)break;
-      const shown=line.substring(0,Math.min(charCount,line.length));
-      sc.fillStyle='rgba(255,255,255,0.45)';sc.font=`400 12px ${HN}`;sc.textAlign='left';
-      sc.save();sc.beginPath();sc.rect(22,lineY-14,SW-56,18);sc.clip();
-      sc.fillText(shown,22,lineY);sc.restore();
-      lineY+=17;
-      charCount-=line.length;
-    }
-    [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
-      const dy=(sy2-4)+i*22;
-      sc.fillStyle=BLUE;sc.font=`700 13px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-36,dy);
-      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='right';sc.fillText(label.toUpperCase(),SW-36,dy+11);
-    });
-    const gfxY=SH-160,gfxX=22,gfxW=60,gfxH=40;
-    const gfxA=eeo(eop(3.2,4.0));
-    if(gfxA>0){
-      sc.save();sc.globalAlpha=gfxA*0.35;sc.strokeStyle=BLUE;sc.lineWidth=1;sc.lineCap='round';
-      sc.beginPath();sc.moveTo(gfxX,gfxY);sc.lineTo(gfxX+gfxW,gfxY+gfxH);sc.stroke();
-      sc.beginPath();sc.moveTo(gfxX+gfxW,gfxY);sc.lineTo(gfxX,gfxY+gfxH);sc.stroke();
-      sc.beginPath();sc.moveTo(gfxX,gfxY);sc.lineTo(gfxX+gfxW,gfxY);sc.stroke();
-      sc.beginPath();sc.moveTo(gfxX,gfxY+gfxH);sc.lineTo(gfxX+gfxW,gfxY+gfxH);sc.stroke();
-      sc.globalAlpha=gfxA*0.15;
-      sc.beginPath();sc.moveTo(gfxX,gfxY+gfxH/2);sc.lineTo(gfxX+gfxW,gfxY+gfxH/2);sc.stroke();
-      sc.restore();
-    }
-    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.25)';sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText('Scanned '+data.scanTime,22,SH-22);}
-    sc.restore();
-  }
-  const circleA=eeo(eop(0.3,1.4));
-  if(circleA>0){
-    const cx=SW-62,cy=72,cr=42,prog=Math.min(circleA,1);
-    const maxSweep=(data.score/10)*Math.PI*2;
-    sc.save();sc.globalAlpha=prog*0.95;
-    sc.strokeStyle='rgba(255,255,255,0.12)';sc.lineWidth=2;
-    sc.beginPath();sc.arc(cx,cy,cr,0,Math.PI*2);sc.stroke();
-    sc.strokeStyle=INK;sc.lineWidth=2.5;sc.lineCap='round';
-    sc.shadowColor=INK;sc.shadowBlur=6*prog;
-    sc.beginPath();const steps=120,drawn=Math.floor(steps*prog);
-    for(let i=0;i<=drawn;i++){
-      const angle=-Math.PI/2+(i/steps)*maxSweep;
-      if(i===0)sc.moveTo(cx+Math.cos(angle)*cr,cy+Math.sin(angle)*cr);
-      else sc.lineTo(cx+Math.cos(angle)*cr,cy+Math.sin(angle)*cr);
-    }
-    sc.stroke();sc.shadowBlur=0;
-    if(prog>0.6){sc.globalAlpha=prog*0.95;
-      sc.fillStyle=INK;sc.font=`700 26px ${HN}`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText(data.score,cx,cy-6);
-      sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.fillText('/ 10',cx,cy+10);
-    }
+    sc.fillStyle=verdictCol;sc.font='700 15px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
+    sc.fillText(verdictLine,20,vY);
+    sc.fillStyle=INK_DIM;sc.font='400 11px '+HN;
+    sc.fillText('SIGNAL+ SCORE  '+data.score+' / 10',20,vY+16);
+    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.25)';sc.font='400 8px '+HN;sc.textAlign='left';sc.fillText('Scanned '+data.scanTime,20,vY+30);}
     sc.restore();
   }
   const ctaA=eeo(eop(2.4,3.0));
