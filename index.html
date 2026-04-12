@@ -444,7 +444,7 @@ function drawScoreScreen(ticker,data,t){
     sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(lbl,22,y);
     sc.fillStyle=INK_MID;sc.font=`400 11px ${HN}`;sc.fillText(names[i],40,y);
     const bW=Math.round(SW*0.18),bX=SW-bW-16,bF=bW*(val/1.5);sc.fillStyle='rgba(255,255,255,0.06)';scRR(bX,y-6,bW,12,3);sc.fill();if(bF>0){sc.fillStyle=col;scRR(bX,y-6,bF,12,3);sc.fill();}
-    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-16,y);
+    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-8,y);
     if(val>=1.0){const ck=eeo(eop(0.8+i*0.08,1.1+i*0.08));if(ck>0){sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.lineJoin='round';sc.globalAlpha=rowA*ck;sc.beginPath();sc.moveTo(30,y-3);sc.lineTo(33,y+1);sc.lineTo(38,y-5);sc.stroke();}}
     sc.restore();
   });
@@ -458,6 +458,19 @@ function drawScoreScreen(ticker,data,t){
     const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=9?'#1a8a3a':data.score>=7?'#886600':'#cc4400';
     sc.fillStyle=verdictCol;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';sc.fillText(verdictLine,22,sy2+12);
     sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.fillText('SIGNAL+ SCORE',22,sy2+26);
+    const typeLines=data.nStrikes>=2?['Two or more active legal strikes detected.','The SMCI Rule is not a deduction.','It is a disqualification.']:data.score>=9?['Seven checkpoints. Seven cleared.','The framework found what it was built to find.']:data.score>=7?['Real signal present.','Not every gate cleared at full threshold.','The framework is watching.']:['One or more critical gates failed.','The framework requires all seven.','This is the filter working.'];
+    const typeSpeed=38,typeDelay=2.6;
+    let charCount=Math.floor(Math.max(0,t-typeDelay)*typeSpeed);
+    let lineY=sy2+44;
+    for(let li=0;li<typeLines.length;li++){
+      const line=typeLines[li];
+      if(charCount<=0)break;
+      const shown=line.substring(0,Math.min(charCount,line.length));
+      sc.fillStyle='rgba(255,255,255,0.45)';sc.font=`400 10px ${HN}`;sc.textAlign='left';
+      sc.fillText(shown,22,lineY);
+      lineY+=15;
+      charCount-=line.length;
+    }
     [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
       const dy=(sy2-4)+i*20;
       sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='right';sc.fillText(label,SW-22,dy);
