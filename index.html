@@ -444,10 +444,14 @@ function drawScoreScreen(ticker,data,t){
   sc.save();sc.globalAlpha=eeo(eop(1.6,2.0))*0.15;sc.strokeStyle=BLUE;sc.lineWidth=0.7;sc.beginPath();sc.moveTo(20,divY);sc.lineTo(SW-20,divY);sc.stroke();sc.restore();
   const scoreA=eeo(eop(1.7,2.2));
   if(scoreA>0){
-    sc.save();sc.globalAlpha=scoreA;const sy2=divY+22;
+    sc.save();sc.globalAlpha=scoreA;const sy2=divY+8;
     sc.shadowBlur=0;
+    const verdictLine=data.nStrikes>=2?'DISQUALIFIED':data.score>=9?'SIGNAL+':data.score>=7?'WATCHLIST':'PASS';
+    const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=9?'#1a8a3a':data.score>=7?'#886600':'#cc4400';
+    sc.fillStyle=verdictCol;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';sc.fillText(verdictLine,22,sy2+12);
+    sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.fillText('SIGNAL+ SCORE',22,sy2+26);
     [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
-      const dy=(sy2-18)+i*20;
+      const dy=(sy2-4)+i*20;
       sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='right';sc.fillText(label,SW-22,dy);
       sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-22,dy+12);
     });
