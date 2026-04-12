@@ -122,7 +122,7 @@ async function fullScan(ticker) {
           headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' }
         });
         const fvHtml = await fvRes.text();
-        const fvMatch = fvHtml.match(/Short Float<\/a><\/td><td[^>]*>.*?([\d.]+)%/);
+        const fvMatch = fvHtml.match(/Short Float<\/a><\/div><\/td><td[^>]*>.*?([\d.]+)%/);
         if (fvMatch) shortPct = parseFloat(fvMatch[1]) / 100;
       } catch (_) { /* leave shortPct as null */ }
     }
