@@ -434,8 +434,8 @@ function drawScoreScreen(ticker,data,t){
         }
       }
     }
-    sc.fillStyle='rgba(255,255,255,0.25)';sc.font='400 9px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
-    sc.fillText('52W Low → Current',lLeft+4,lBot-5);
+    sc.fillStyle='rgba(255,255,255,0.3)';sc.font='400 9px '+HN;sc.textAlign='left';sc.textBaseline='bottom';
+    sc.fillText('52W Low → Current',lLeft+4,Math.max(lTop+12,endY-3));
     sc.restore();
   }
   const iconA=eeo(eop(0.8,1.4));
@@ -486,7 +486,7 @@ function drawScoreScreen(ticker,data,t){
     const dVals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
     const dLetters=['S','I','G','N','A','L','+'];
     const dTitles=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Approaching Catalyst','Levels & Macro','Vol + Short Pressure'];
-    const surgeAmt=data.surgeFormatted||'+0%';
+    const surgeAmt=data.surge||'+0%';
     const surgeLow=data.week52Low?'$'+data.week52Low.toFixed(2):'--';
     const dDescs=[
       'Surged '+surgeAmt+' from 52-week low of '+surgeLow,
@@ -507,7 +507,7 @@ function drawScoreScreen(ticker,data,t){
       sc.fillText(dTitles[i],46,dy+2);
       sc.fillStyle='rgba(255,255,255,0.6)';sc.font='500 10px '+HN;
       sc.fillText(dDescs[i],46,dy+17);
-      const dDescs2=[data.s>=1.5?'Surged '+surgeAmt+' — Mr. Market has already validated this name.':'Has not yet cleared the 200%+ threshold required by SIGNAL+.',data.i>=1.5?'All three gates confirmed — above 50MA, near 52W high, no 30-day lows.':data.i>=1.0?'Two of three consolidation gates clear — one condition needs confirmation.':'Price is not in a constructive base — all three gates failed.',data.g>=1.5?'Revenue '+(data.revenueFormatted||'on file')+' — cash and guidance intact.':data.g>=1.0?'Revenue exists but growth trajectory or cash signal is not clean.':'No confirmed filed revenue growth — treat as speculative.',data.nStrikes>=2?'SMCI Rule triggered — '+data.nStrikes+' strikes. Automatic disqualification.':data.nStrikes===1?'One active strike on record — monitoring under SMCI Rule.':'No SEC, DOJ, class action, or FDA disqualifiers on record.',data.a>=1.5?'Catalyst confirmed — '+(data.earnings||'date on file')+'.':data.a>=1.0?'Catalyst window present — exact date not fully confirmed.':'No dated catalyst on record — thesis depends on market structure alone.',data.l>=1.5?'Entry, stop, and macro sector all structurally aligned.':data.l>=1.0?'Partial structure — one level or macro signal needs confirmation.':'Risk is unstructured — no defined stop or sector alignment.',data.plus>=1.5?'Float '+(data.floatFormatted||'—')+' · Short '+(data.shortPctFormatted||'—')+' — squeeze overlay confirmed.':data.plus>=1.0?'Partial pressure signal — one of two conditions met.':'Float and short structure do not create squeeze conditions.'];
+      const dDescs2=[data.s>=1.5?surgeAmt+' from 52W low of '+surgeLow+' — validated by price.':'Not yet cleared 200%+ — Mr. Market has not yet validated this name.',data.i>=1.5?'All three gates confirmed — above 50MA, near 52W high, no 30-day lows.':data.i>=1.0?'Two of three consolidation gates clear — one condition needs confirmation.':'Price is not in a constructive base — all three gates failed.',data.g>=1.5?'Revenue '+(data.revenueFormatted||'on file')+' — cash and guidance intact.':data.g>=1.0?'Revenue exists but growth trajectory or cash signal is not clean.':'No confirmed filed revenue growth — treat as speculative.',data.nStrikes>=2?'Score locked at 0. No other checkpoint can override this veto.':data.nStrikes===1?'Score reduced to 0.5 — one strike caps the N checkpoint.':'Clean public record — SMCI Rule search returned no disqualifying events.',data.a>=1.5?'Catalyst confirmed — '+(data.earnings||'date on file')+'.':data.a>=1.0?'Catalyst window present — exact date not fully confirmed.':'No dated catalyst on record — thesis depends on market structure alone.',data.l>=1.5?'All three L gates confirmed — price has a defined floor and sector wind.':data.l>=1.0?'One of three L gates not confirmed — partial structure only.':'No defined support, stop, or macro alignment — risk cannot be sized.',data.plus>=1.5?'Both conditions active — float compression and short exposure create mechanical upside.':data.plus>=1.0?'One condition met — partial squeeze potential present, not confirmed.':'Neither float nor short interest clears the threshold — no squeeze overlay.'];
       sc.fillStyle='rgba(255,255,255,0.35)';sc.font='400 9px '+HN;
       sc.fillText(dDescs2[i]||'',46,dy+29);
     });
