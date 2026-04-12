@@ -332,8 +332,23 @@ function drawScoreScreen(ticker,data,t){
   sc.fillStyle=INK;sc.font=`700 34px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(ticker.toUpperCase(),22,46);
   sc.fillStyle=INK_DIM;sc.font=`400 12px ${HN}`;sc.fillText(data.name,22,66);
   const priceCol=data.change&&data.change.startsWith('-')?'#ff6b6b':BLUE;
-  sc.fillStyle=priceCol;sc.font=`700 16px ${HN}`;sc.textAlign='right';sc.fillText(data.price||'',SW-22,46);
-  sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.fillText(data.price?data.change:'See Robinhood for price',SW-22,66);
+  const panelX=SW-22,panelStartY=28,panelRowH=14;
+  const footnote=data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,22).toUpperCase():'CLEAN';
+  const catalyst=data.earnings||'TBD';
+  const edge=data.score>=9?'MAX CONVICTION':data.score>=7?'WATCHLIST':'PASS';
+  const edgeCol=data.score>=9?'#1a8a3a':data.score>=7?'#886600':'#cc4400';
+  const panel=[
+    ['LATEST FOOTNOTE', footnote, BLUE],
+    ['SHARE PRICE', data.price||'—', priceCol],
+    ['TODAY', data.price?data.change:'—', priceCol],
+    ['NEXT CATALYST', catalyst, BLUE],
+    ['K1LADEXedge', edge, edgeCol]
+  ];
+  panel.forEach(([label,val,col],i)=>{
+    const ly=panelStartY+i*panelRowH;
+    sc.fillStyle='rgba(255,255,255,0.35)';sc.font=`400 8px ${HN}`;sc.textAlign='right';sc.fillText(label,panelX,ly);
+    sc.fillStyle=col;sc.font=`600 10px ${HN}`;sc.fillText(val,panelX,ly+9);
+  });
   sc.restore();
   const recA=eeo(eop(0.2,0.7));
   if(recA>0){sc.save();sc.globalAlpha=recA;
