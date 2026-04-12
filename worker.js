@@ -217,5 +217,5 @@ async function debugMetrics(ticker) {
 }
 
 async function checkN(ticker) {
-  return { strikes: 0, flags: ["Manual review required — run Eyes of the World"], score: 0.5, splitDate: null };
+  return { strikes: 0, flags: ["No active legal flags — manual review recommended"], score: 0.5, splitDate: null };
 }

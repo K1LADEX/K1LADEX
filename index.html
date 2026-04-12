@@ -495,7 +495,7 @@ function drawScoreScreen(ticker,data,t){
       data.l>=1.5?'Support, stop, and macro sector all aligned':data.l>=1.0?'Levels partially defined -- macro confirmation needed':'Support and macro alignment not confirmed',
       'Short interest '+(data.shortPctFormatted||'--')+', float '+(data.floatFormatted||'--')+(data.plus>=1.5?' -- squeeze overlay present':'')
     ];
-    const dStartY=302,dRowH=38;
+    const dStartY=Math.round(SH*0.46),dRowH=Math.round((SH*0.84-SH*0.46)/7);
     dLetters.forEach((ltr,i)=>{
       const dy=dStartY+i*dRowH;
       sc.fillStyle=GOLD;sc.font='700 20px '+HN;sc.textAlign='left';sc.textBaseline='top';
@@ -510,7 +510,7 @@ function drawScoreScreen(ticker,data,t){
   const scoreA=eeo(eop(2.2,2.8));
   if(scoreA>0){
     sc.save();sc.globalAlpha=scoreA;
-    const vY=572;
+    const vY=Math.round(SH*0.88);
     const verdictLine=data.nStrikes>=2?'DISQUALIFIED':data.score>=9?'SIGNAL+':data.score>=7?'WATCHLIST':'PASS';
     const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=9?'#1a8a3a':data.score>=7?'#886600':'#cc4400';
     sc.fillStyle=verdictCol;sc.font='700 15px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
