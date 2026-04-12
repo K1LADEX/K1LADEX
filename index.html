@@ -348,7 +348,7 @@ function drawScoreScreen(ticker,data,t){
     ['FLAGS: ',data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,26).toUpperCase():'CLEAN',BLUE],
     ['CURRENT PRICE IS ',data.price||'--',priceCol],
     ["TODAY'S % CHANGE IS ",data.change||'--',priceCol],
-    ['NEXT CATALYST IS ','ON '+(data.nextEarnings||'TBD').toUpperCase(),BLUE]
+    [data.earnings&&data.earnings!=='TBD'?'NEXT CATALYST IS ':'','data.earnings&&data.earnings!=='TBD'?'ON '+data.earnings.toUpperCase():'',BLUE]
   ];
   leftStats.forEach(([label,val,col],i)=>{
     const ly=sY+i*sRowH;
@@ -362,7 +362,7 @@ function drawScoreScreen(ticker,data,t){
     [data.shortPctFormatted&&data.shortPctFormatted!=='N/A'?data.shortPctFormatted:null,' SHORT INTEREST'],
     [data.floatFormatted&&data.floatFormatted!=='N/A'?data.floatFormatted:null,' FLOAT'],
     [data.revenueFormatted&&data.revenueFormatted!=='N/A'&&data.revenueFormatted!=='Pre-revenue'?data.revenueFormatted:null,' REVENUE'],
-    [data.nextEarnings?'ON '+data.nextEarnings.toUpperCase():null,' EARNINGS']
+    [data.earnings&&data.earnings!=='TBD'?'ON '+data.earnings.toUpperCase():null,' EARNINGS']
   ];
   let rRow=0;
   rightStats.forEach(([val,label])=>{
@@ -434,8 +434,8 @@ function drawScoreScreen(ticker,data,t){
         }
       }
     }
-    sc.fillStyle=INK_DIM;sc.font='400 9px '+HN;sc.textAlign='right';sc.textBaseline='alphabetic';
-    sc.fillText('52W Low → Current',lRight,lBot+11);
+    sc.fillStyle='rgba(255,255,255,0.25)';sc.font='400 9px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
+    sc.fillText('52W Low → Current',lLeft+4,lBot-5);
     sc.restore();
   }
   const iconA=eeo(eop(0.8,1.4));
@@ -500,13 +500,14 @@ function drawScoreScreen(ticker,data,t){
     const dStartY=Math.round(SH*0.46),dRowH=Math.round((SH*0.84-SH*0.46)/7);
     dLetters.forEach((ltr,i)=>{
       const dy=dStartY+i*dRowH;
-      sc.fillStyle=GOLD;sc.font='700 20px '+HN;sc.textAlign='left';sc.textBaseline='top';
+      const dcol=dVals[i]>=1.5?BLUE:dVals[i]>=1.0?'#886600':'#cc4400';
+      sc.fillStyle=dcol;sc.font='700 20px '+HN;sc.textAlign='left';sc.textBaseline='top';
       sc.fillText(ltr,20,dy);
-      sc.fillStyle=BLUE;sc.font='700 12px '+HN;sc.textAlign='left';sc.textBaseline='top';
+      sc.fillStyle=dcol;sc.font='700 12px '+HN;sc.textAlign='left';sc.textBaseline='top';
       sc.fillText(dTitles[i],46,dy+2);
       sc.fillStyle='rgba(255,255,255,0.6)';sc.font='500 10px '+HN;
       sc.fillText(dDescs[i],46,dy+17);
-      const dDescs2=['200%+ threshold cleared — Mr. Market has already validated this name.','Price is resting, not retreating. The base is constructive.','Cash sufficient. Growth is filed, not projected.','Full disqualification. This is not a deduction — it is a veto.','A dated event forces price discovery on a known timeline.','Risk is structured. Entry, stop, and sector are all defined.','Volume and short structure create conditions for geometric acceleration.'];
+      const dDescs2=[data.s>=1.5?'Surged '+surgeAmt+' — Mr. Market has already validated this name.':'Has not yet cleared the 200%+ threshold required by SIGNAL+.',data.i>=1.5?'All three gates confirmed — above 50MA, near 52W high, no 30-day lows.':data.i>=1.0?'Two of three consolidation gates clear — one condition needs confirmation.':'Price is not in a constructive base — all three gates failed.',data.g>=1.5?'Revenue '+(data.revenueFormatted||'on file')+' — cash and guidance intact.':data.g>=1.0?'Revenue exists but growth trajectory or cash signal is not clean.':'No confirmed filed revenue growth — treat as speculative.',data.nStrikes>=2?'SMCI Rule triggered — '+data.nStrikes+' strikes. Automatic disqualification.':data.nStrikes===1?'One active strike on record — monitoring under SMCI Rule.':'No SEC, DOJ, class action, or FDA disqualifiers on record.',data.a>=1.5?'Catalyst confirmed — '+(data.earnings||'date on file')+'.':data.a>=1.0?'Catalyst window present — exact date not fully confirmed.':'No dated catalyst on record — thesis depends on market structure alone.',data.l>=1.5?'Entry, stop, and macro sector all structurally aligned.':data.l>=1.0?'Partial structure — one level or macro signal needs confirmation.':'Risk is unstructured — no defined stop or sector alignment.',data.plus>=1.5?'Float '+(data.floatFormatted||'—')+' · Short '+(data.shortPctFormatted||'—')+' — squeeze overlay confirmed.':data.plus>=1.0?'Partial pressure signal — one of two conditions met.':'Float and short structure do not create squeeze conditions.'];
       sc.fillStyle='rgba(255,255,255,0.35)';sc.font='400 9px '+HN;
       sc.fillText(dDescs2[i]||'',46,dy+29);
     });
