@@ -124,7 +124,7 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
     <div class="loading-label">K1LADEX AI² scanning</div>
   </div>
   <div class="score-overlay" id="scoreOverlay">
-    <canvas class="score-canvas" id="sc" width="360" height="640"></canvas>
+    <canvas class="score-canvas" id="sc" ></canvas>
     <button class="back-btn" id="backBtn">← BACK</button>
     <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">Subscribe — $9.99 / month</button></div>
     <button class="cta-report" id="reportBtn">⬇ Download PDF Report</button>
@@ -308,11 +308,16 @@ function scoreFromLiveData(ticker,d){
 
 
 // ── SCORE CANVAS ─────────────────────────────────────────────
-const SW=360,SH=640;
 const GREEN='#1a8a3a',BLUE='#00e5ff',INK='#ffffff',INK_MID='rgba(255,255,255,0.85)',INK_DIM='rgba(255,255,255,0.45)';
 const BG_TOP='#080b0f',BG_BOT='#0e1318',RULE='rgba(0,229,255,0.04)';
 const sc_el=document.getElementById('sc');
+const DPR=window.devicePixelRatio||1;
+const SW=Math.min(sc_el.parentElement.offsetWidth||480,480);
+const SH=sc_el.parentElement.offsetHeight||Math.round(SW*(640/360));
+sc_el.width=SW*DPR;sc_el.height=SH*DPR;
+sc_el.style.width=SW+'px';sc_el.style.height=SH+'px';
 const sc=sc_el.getContext('2d');
+sc.scale(DPR,DPR);
 let scoreRaf=null,scoreStart=null;
 
 function scRR(x,y,w,h,r){sc.beginPath();sc.moveTo(x+r,y);sc.lineTo(x+w-r,y);sc.quadraticCurveTo(x+w,y,x+w,y+r);sc.lineTo(x+w,y+h-r);sc.quadraticCurveTo(x+w,y+h,x+w-r,y+h);sc.lineTo(x+r,y+h);sc.quadraticCurveTo(x,y+h,x,y+h-r);sc.lineTo(x,y+r);sc.quadraticCurveTo(x,y,x+r,y);sc.closePath();}
