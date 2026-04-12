@@ -181,6 +181,7 @@ async function fullScan(ticker) {
       surgeFormatted: (surgeVal>=0?'+':'')+surgeVal.toFixed(0)+'%',
       shortPctFormatted: shortPct?(shortPct*100).toFixed(1)+'%':'N/A',
       floatFormatted: floatShares?fmt(floatShares,1e9,'B'):'N/A',
+      cashFormatted: totalCash?'$'+fmt(totalCash,1e9,'B'):'N/A',
       revenueFormatted: totalRevenue?'$'+fmt(totalRevenue,1e9,'B')+' TTM':'Pre-revenue',
       nextEarnings,
       nScore, nStrikes, nFlags, splitDate: nSplitDate,
