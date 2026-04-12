@@ -456,7 +456,7 @@ function drawScoreScreen(ticker,data,t){
   }
   const circleA=eeo(eop(0.3,1.4));
   if(circleA>0){
-    const cx=SW-52,cy=46,cr=26,prog=Math.min(circleA,1);
+    const cx=SW-56,cy=82,cr=36,prog=Math.min(circleA,1);
     const maxSweep=(data.score/10)*Math.PI*2;
     sc.save();sc.globalAlpha=prog*0.95;
     sc.strokeStyle='rgba(255,255,255,0.12)';sc.lineWidth=2;
@@ -471,7 +471,7 @@ function drawScoreScreen(ticker,data,t){
     }
     sc.stroke();sc.shadowBlur=0;
     if(prog>0.6){sc.globalAlpha=prog*0.95;
-      sc.fillStyle=INK;sc.font=`700 18px ${HN}`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText(data.score,cx,cy-5);
+      sc.fillStyle=INK;sc.font=`700 26px ${HN}`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText(data.score,cx,cy-6);
       sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.fillText('/ 10',cx,cy+10);
     }
     sc.restore();
