@@ -348,7 +348,7 @@ function drawScoreScreen(ticker,data,t){
     ['FLAGS: ',data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,26).toUpperCase():'CLEAN',BLUE],
     ['CURRENT PRICE IS ',data.price||'--',priceCol],
     ["TODAY'S % CHANGE IS ",data.change||'--',priceCol],
-    [data.earnings&&data.earnings!=='TBD'?'NEXT CATALYST IS ':'','data.earnings&&data.earnings!=='TBD'?'ON '+data.earnings.toUpperCase():'',BLUE]
+    [data.earnings&&data.earnings!=='TBD'?'NEXT CATALYST IS ':'',data.earnings&&data.earnings!=='TBD'?'ON '+data.earnings.toUpperCase():'',BLUE]
   ];
   leftStats.forEach(([label,val,col],i)=>{
     const ly=sY+i*sRowH;
