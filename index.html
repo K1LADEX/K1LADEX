@@ -332,7 +332,7 @@ function drawScoreScreen(ticker,data,t){
   sc.fillStyle=INK;sc.font=`700 34px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(ticker.toUpperCase(),22,46);
   sc.fillStyle=INK_DIM;sc.font=`400 12px ${HN}`;sc.fillText(data.name,22,66);
   const priceCol=data.change&&data.change.startsWith('-')?'#ff6b6b':BLUE;
-  const panelX=SW-22,panelStartY=28,panelRowH=14;
+  const panelX=SW-22,panelStartY=22,panelRowH=11;
   const footnote=data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,22).toUpperCase():'CLEAN';
   const catalyst=data.earnings||'TBD';
   const edge=data.score>=9?'MAX CONVICTION':data.score>=7?'WATCHLIST':'PASS';
