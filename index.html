@@ -348,7 +348,7 @@ function drawScoreScreen(ticker,data,t){
     ['FLAGS: ',data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,26).toUpperCase():'CLEAN',BLUE],
     ['CURRENT PRICE IS ',data.price||'--',priceCol],
     ["TODAY'S % CHANGE IS ",data.change||'--',priceCol],
-    [data.earnings&&data.earnings!=='TBD'?'NEXT CATALYST IS ':'',data.earnings&&data.earnings!=='TBD'?'ON '+data.earnings.toUpperCase():'',BLUE]
+    ['52W SURGE IS ',data.surge||'+0%',BLUE]
   ];
   leftStats.forEach(([label,val,col],i)=>{
     const ly=sY+i*sRowH;
@@ -362,7 +362,7 @@ function drawScoreScreen(ticker,data,t){
     [data.shortPctFormatted&&data.shortPctFormatted!=='N/A'?data.shortPctFormatted:null,' SHORT INTEREST'],
     [data.floatFormatted&&data.floatFormatted!=='N/A'?data.floatFormatted:null,' FLOAT'],
     [data.revenueFormatted&&data.revenueFormatted!=='N/A'&&data.revenueFormatted!=='Pre-revenue'?data.revenueFormatted:null,' REVENUE'],
-    [data.earnings&&data.earnings!=='TBD'?'ON '+data.earnings.toUpperCase():null,' EARNINGS']
+    [data.score+' / 10',' SIGNAL+ SCORE']
   ];
   let rRow=0;
   rightStats.forEach(([val,label])=>{
@@ -422,7 +422,7 @@ function drawScoreScreen(ticker,data,t){
           sc.beginPath();sc.moveTo(endX,arrowY-8);sc.lineTo(endX,arrowY-1);sc.stroke();
           sc.beginPath();sc.moveTo(endX-4,arrowY-5);sc.lineTo(endX,arrowY+1);sc.lineTo(endX+4,arrowY-5);sc.closePath();sc.fill();
           sc.shadowBlur=0;sc.font='700 11px '+HN;sc.textAlign='center';sc.textBaseline='top';
-          sc.fillText(data.surgeFormatted||'',endX,arrowY+3);
+          sc.fillText(data.surge||'',endX,arrowY+3);
         }else{
           const arrowY=Math.max(lTop+14,endY-2);
           sc.fillStyle=lineCol;sc.strokeStyle=lineCol;sc.lineWidth=1.5;sc.lineCap='round';
@@ -430,7 +430,7 @@ function drawScoreScreen(ticker,data,t){
           sc.beginPath();sc.moveTo(endX,arrowY+8);sc.lineTo(endX,arrowY+1);sc.stroke();
           sc.beginPath();sc.moveTo(endX-4,arrowY+5);sc.lineTo(endX,arrowY-1);sc.lineTo(endX+4,arrowY+5);sc.closePath();sc.fill();
           sc.shadowBlur=0;sc.font='700 11px '+HN;sc.textAlign='center';sc.textBaseline='bottom';
-          sc.fillText(data.surgeFormatted||'',endX,arrowY-3);
+          sc.fillText(data.surge||'',endX,arrowY-3);
         }
       }
     }
