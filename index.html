@@ -497,7 +497,7 @@ function drawScoreScreen(ticker,data,t){
       data.l>=1.5?'Support, stop, and macro sector structurally aligned — risk is defined':data.l>=1.0?'Partial structure — one level or macro signal needs confirmation':'No defined stop or sector alignment — risk is unstructured',
       'Float '+(data.floatFormatted||'—')+' · Short interest '+(data.shortPctFormatted||'—')+(data.plus>=1.5?' · Squeeze overlay conditions present':data.plus>=1.0?' · Partial pressure signal':' · No squeeze overlay detected')
     ];
-    const dStartY=Math.round(SH*0.46),dRowH=Math.round((SH*0.84-SH*0.46)/7);
+    const dStartY=Math.round(SH*0.40),dRowH=Math.round((SH*0.78-SH*0.40)/7);
     dLetters.forEach((ltr,i)=>{
       const dy=dStartY+i*dRowH;
       const dcol=dVals[i]>=1.5?BLUE:dVals[i]>=1.0?'#886600':'#cc4400';
@@ -516,7 +516,7 @@ function drawScoreScreen(ticker,data,t){
   const scoreA=eeo(eop(2.2,2.8));
   if(scoreA>0){
     sc.save();sc.globalAlpha=scoreA;
-    const vY=Math.round(SH*0.81);
+    const vY=Math.round(SH*0.84);
     const verdictLine=data.nStrikes>=2?'—':data.score>=7?'+':'-';
     const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=7?BLUE:'#cc4400';
     sc.fillStyle=verdictCol;sc.font='700 22px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
