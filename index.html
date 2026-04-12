@@ -417,7 +417,22 @@ function drawScoreScreen(ticker,data,t){
   }
   const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
   const names=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Catalyst Dated','Levels & Macro','Vol + Short'];
-  const startY=200,rowH=32;
+  const startY=232,rowH=32;
+  const iconY=208,iconR=9,iconSlot=Math.floor((SW-44)/7);
+  [data.s,data.i,data.g,data.n,data.a,data.l,data.plus].forEach((val,i)=>{
+    const iA=eeo(eop(0.6+i*0.1,1.0+i*0.1));if(iA<=0)return;
+    sc.save();sc.globalAlpha=iA;
+    const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
+    const cx=22+iconSlot*i+iconSlot/2;
+    sc.strokeStyle=col;sc.lineWidth=1.5;sc.shadowColor=col;sc.shadowBlur=val>=1.0?6:0;
+    sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.stroke();
+    if(val>=1.0){sc.fillStyle=col;sc.globalAlpha=iA*0.15;sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.fill();sc.globalAlpha=iA;}
+    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText(['S','I','G','N','A','L','+'][i],cx,iconY);
+    sc.shadowBlur=0;sc.restore();
+  });
+
+
+
   labels.forEach((lbl,i)=>{
     const rowA=eeo(eop(0.6+i*0.1,1.0+i*0.1));if(rowA<=0)return;
     sc.save();sc.globalAlpha=rowA;const y=startY+i*rowH,val=vals[i];
