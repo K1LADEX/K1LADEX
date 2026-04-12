@@ -338,9 +338,9 @@ function drawScoreScreen(ticker,data,t){
   const h1=eeo(eop(0,0.4));
   sc.save();sc.globalAlpha=h1;
   sc.fillStyle=INK;sc.font=`700 34px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(ticker.toUpperCase(),22,46);
-  sc.fillStyle=INK_DIM;sc.font=`400 12px ${HN}`;sc.fillText(data.name,22,66);
+  sc.fillStyle=INK_DIM;sc.font=`400 14px ${HN}`;sc.fillText(data.name,22,66);
   const priceCol=data.change&&data.change.startsWith('-')?'#ff6b6b':BLUE;
-  const footnote=data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,32).toUpperCase():'CLEAN';
+  const footnote=data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,38).toUpperCase():'CLEAN';
   const catalyst=data.earnings||'TBD';
   const panel=[
     ['FLAGS', footnote, BLUE],
@@ -348,12 +348,12 @@ function drawScoreScreen(ticker,data,t){
     ['TODAY', data.price?data.change:'—', priceCol],
     ['CATALYST', catalyst, BLUE]
   ];
-  const pStartY=82,pRowH=14;
+  const pStartY=82,pRowH=17;
   panel.forEach(([label,val,col],i)=>{
     const ly=pStartY+i*pRowH;
-    sc.fillStyle=INK_MID;sc.font=`500 9px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
+    sc.fillStyle=INK_MID;sc.font=`500 11px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
     const lbl=label+': ';const lw=sc.measureText(lbl).width;sc.fillText(lbl,22,ly);
-    sc.fillStyle=col;sc.font=`600 9px ${HN}`;sc.fillText(val,22+lw,ly);
+    sc.fillStyle=col;sc.font=`600 11px ${HN}`;sc.fillText(val,22+lw,ly);
   });
   sc.restore();
 
@@ -403,7 +403,7 @@ function drawScoreScreen(ticker,data,t){
           sc.beginPath();sc.moveTo(endX,arrowY-8);sc.lineTo(endX,arrowY-1);sc.stroke();
           sc.beginPath();sc.moveTo(endX-4,arrowY-5);sc.lineTo(endX,arrowY+1);sc.lineTo(endX+4,arrowY-5);sc.closePath();sc.fill();
           sc.shadowBlur=0;
-          sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='top';sc.fillText(data.surge,endX,arrowY+3);
+          sc.font=`700 13px ${HN}`;sc.textAlign='center';sc.textBaseline='top';sc.fillText(data.surge,endX,arrowY+3);
         }else{
           const arrowY=Math.max(lTop+14,endY-2);
           sc.fillStyle=lineCol;sc.strokeStyle=lineCol;sc.lineWidth=1.5;sc.lineCap='round';
@@ -411,11 +411,11 @@ function drawScoreScreen(ticker,data,t){
           sc.beginPath();sc.moveTo(endX,arrowY+8);sc.lineTo(endX,arrowY+1);sc.stroke();
           sc.beginPath();sc.moveTo(endX-4,arrowY+5);sc.lineTo(endX,arrowY-1);sc.lineTo(endX+4,arrowY+5);sc.closePath();sc.fill();
           sc.shadowBlur=0;
-          sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,arrowY-3);
+          sc.font=`700 13px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,arrowY-3);
         }
       }
     }
-    sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
+    sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
     sc.fillText('52W Low → Current',lLeft,lBot+12);
     sc.restore();
   }
@@ -431,7 +431,7 @@ function drawScoreScreen(ticker,data,t){
     sc.strokeStyle=col;sc.lineWidth=1.5;sc.shadowColor=col;sc.shadowBlur=val>=1.0?6:0;
     sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.stroke();
     if(val>=1.0){sc.fillStyle=col;sc.globalAlpha=iA*0.15;sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.fill();sc.globalAlpha=iA;}
-    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText(['S','I','G','N','A','L','+'][i],cx,iconY);
+    sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText(['S','I','G','N','A','L','+'][i],cx,iconY);
     sc.shadowBlur=0;sc.restore();
   });
 
@@ -441,10 +441,10 @@ function drawScoreScreen(ticker,data,t){
     const rowA=eeo(eop(0.6+i*0.1,1.0+i*0.1));if(rowA<=0)return;
     sc.save();sc.globalAlpha=rowA;const y=startY+i*rowH,val=vals[i];
     const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
-    sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(lbl,22,y);
-    sc.fillStyle=INK_MID;sc.font=`400 11px ${HN}`;sc.fillText(names[i],40,y);
+    sc.fillStyle=col;sc.font=`700 15px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(lbl,22,y);
+    sc.fillStyle=INK_MID;sc.font=`400 13px ${HN}`;sc.fillText(names[i],40,y);
     const bW=Math.round(SW*0.18),bX=SW-bW-16,bF=bW*(val/1.5);sc.fillStyle='rgba(255,255,255,0.06)';scRR(bX,y-6,bW,12,3);sc.fill();if(bF>0){sc.fillStyle=col;scRR(bX,y-6,bF,12,3);sc.fill();}
-    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-36,y);
+    sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-36,y);
     if(val>=1.0){const ck=eeo(eop(0.8+i*0.08,1.1+i*0.08));if(ck>0){sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.lineJoin='round';sc.globalAlpha=rowA*ck;sc.beginPath();sc.moveTo(30,y-3);sc.lineTo(33,y+1);sc.lineTo(38,y-5);sc.stroke();}}
     sc.restore();
   });
@@ -456,8 +456,8 @@ function drawScoreScreen(ticker,data,t){
     sc.shadowBlur=0;
     const verdictLine=data.nStrikes>=2?'DISQUALIFIED':data.score>=9?'SIGNAL+':data.score>=7?'WATCHLIST':'PASS';
     const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=9?'#1a8a3a':data.score>=7?'#886600':'#cc4400';
-    sc.fillStyle=verdictCol;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';sc.fillText(verdictLine,22,sy2+12);
-    sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.fillText('SIGNAL+ SCORE',22,sy2+26);
+    sc.fillStyle=verdictCol;sc.font=`700 15px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';sc.fillText(verdictLine,22,sy2+12);
+    sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.fillText('SIGNAL+ SCORE',22,sy2+26);
     const typeLines=data.nStrikes>=2?['Two or more active legal strikes detected.','The SMCI Rule is not a deduction.','It is a disqualification.']:data.score>=9?['Seven checkpoints. Seven cleared.','The framework found what it was built to find.']:data.score>=7?['Real signal present.','Not every gate cleared at full threshold.','The framework is watching.']:['One or more critical gates failed.','The framework requires all seven.','This is the filter working.'];
     const typeSpeed=38,typeDelay=2.6;
     let charCount=Math.floor(Math.max(0,t-typeDelay)*typeSpeed);
@@ -466,16 +466,16 @@ function drawScoreScreen(ticker,data,t){
       const line=typeLines[li];
       if(charCount<=0)break;
       const shown=line.substring(0,Math.min(charCount,line.length));
-      sc.fillStyle='rgba(255,255,255,0.45)';sc.font=`400 10px ${HN}`;sc.textAlign='left';
-      sc.save();sc.beginPath();sc.rect(22,lineY-12,SW-56,16);sc.clip();
+      sc.fillStyle='rgba(255,255,255,0.45)';sc.font=`400 12px ${HN}`;sc.textAlign='left';
+      sc.save();sc.beginPath();sc.rect(22,lineY-14,SW-56,18);sc.clip();
       sc.fillText(shown,22,lineY);sc.restore();
-      lineY+=15;
+      lineY+=17;
       charCount-=line.length;
     }
     [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
-      const dy=(sy2-4)+i*20;
-      sc.fillStyle=BLUE;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-36,dy);
-      sc.fillStyle=INK_DIM;sc.font=`400 8px ${HN}`;sc.textAlign='right';sc.fillText(label.toUpperCase(),SW-36,dy+11);
+      const dy=(sy2-4)+i*22;
+      sc.fillStyle=BLUE;sc.font=`700 13px ${HN}`;sc.textAlign='right';sc.fillText(val,SW-36,dy);
+      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='right';sc.fillText(label.toUpperCase(),SW-36,dy+11);
     });
     const gfxY=SH-160,gfxX=22,gfxW=60,gfxH=40;
     const gfxA=eeo(eop(3.2,4.0));
@@ -489,7 +489,7 @@ function drawScoreScreen(ticker,data,t){
       sc.beginPath();sc.moveTo(gfxX,gfxY+gfxH/2);sc.lineTo(gfxX+gfxW,gfxY+gfxH/2);sc.stroke();
       sc.restore();
     }
-    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.25)';sc.font=`400 8px ${HN}`;sc.textAlign='left';sc.fillText('Scanned '+data.scanTime,22,SH-22);}
+    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.25)';sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText('Scanned '+data.scanTime,22,SH-22);}
     sc.restore();
   }
   const circleA=eeo(eop(0.3,1.4));
@@ -510,7 +510,7 @@ function drawScoreScreen(ticker,data,t){
     sc.stroke();sc.shadowBlur=0;
     if(prog>0.6){sc.globalAlpha=prog*0.95;
       sc.fillStyle=INK;sc.font=`700 26px ${HN}`;sc.textAlign='center';sc.textBaseline='middle';sc.fillText(data.score,cx,cy-6);
-      sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.fillText('/ 10',cx,cy+10);
+      sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.fillText('/ 10',cx,cy+10);
     }
     sc.restore();
   }
