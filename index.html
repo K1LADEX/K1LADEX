@@ -312,12 +312,15 @@ const GREEN='#1a8a3a',BLUE='#00e5ff',INK='#ffffff',INK_MID='rgba(255,255,255,0.8
 const BG_TOP='#080b0f',BG_BOT='#0e1318',RULE='rgba(0,229,255,0.04)';
 const sc_el=document.getElementById('sc');
 const DPR=window.devicePixelRatio||1;
-const SW=Math.min(sc_el.parentElement.offsetWidth||480,480);
-const SH=sc_el.parentElement.offsetHeight||Math.round(SW*(640/360));
-sc_el.width=SW*DPR;sc_el.height=SH*DPR;
-sc_el.style.width=SW+'px';sc_el.style.height=SH+'px';
+let SW=360,SH=640;
 const sc=sc_el.getContext('2d');
-sc.scale(DPR,DPR);
+function initCanvas(){
+  SW=Math.min(sc_el.parentElement.offsetWidth||480,480);
+  SH=sc_el.parentElement.offsetHeight||Math.round(SW*(640/360));
+  sc_el.width=SW*DPR;sc_el.height=SH*DPR;
+  sc_el.style.width=SW+'px';sc_el.style.height=SH+'px';
+  sc.setTransform(DPR,0,0,DPR,0,0);
+}
 let scoreRaf=null,scoreStart=null;
 
 function scRR(x,y,w,h,r){sc.beginPath();sc.moveTo(x+r,y);sc.lineTo(x+w-r,y);sc.quadraticCurveTo(x+w,y,x+w,y+r);sc.lineTo(x+w,y+h-r);sc.quadraticCurveTo(x+w,y+h,x+w-r,y+h);sc.lineTo(x+r,y+h);sc.quadraticCurveTo(x,y+h,x,y+h-r);sc.lineTo(x,y+r);sc.quadraticCurveTo(x,y,x+r,y);sc.closePath();}
@@ -440,7 +443,7 @@ function drawScoreScreen(ticker,data,t){
     const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
     sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(lbl,22,y);
     sc.fillStyle=INK_MID;sc.font=`400 11px ${HN}`;sc.fillText(names[i],40,y);
-    const bW=44,bX=SW-82,bF=bW*(val/1.5);sc.fillStyle='rgba(255,255,255,0.06)';scRR(bX,y-6,bW,12,3);sc.fill();if(bF>0){sc.fillStyle=col;scRR(bX,y-6,bF,12,3);sc.fill();}
+    const bW=Math.round(SW*0.18),bX=SW-bW-16,bF=bW*(val/1.5);sc.fillStyle='rgba(255,255,255,0.06)';scRR(bX,y-6,bW,12,3);sc.fill();if(bF>0){sc.fillStyle=col;scRR(bX,y-6,bF,12,3);sc.fill();}
     sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-16,y);
     if(val>=1.0){const ck=eeo(eop(0.8+i*0.08,1.1+i*0.08));if(ck>0){sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.lineJoin='round';sc.globalAlpha=rowA*ck;sc.beginPath();sc.moveTo(30,y-3);sc.lineTo(33,y+1);sc.lineTo(38,y-5);sc.stroke();}}
     sc.restore();
@@ -492,6 +495,7 @@ function drawScoreScreen(ticker,data,t){
 }
 
 function runScoreAnimation(ticker,data){
+  initCanvas();
   scoreStart=null;if(scoreRaf)cancelAnimationFrame(scoreRaf);
   function loop(ts){if(!scoreStart)scoreStart=ts;const t=(ts-scoreStart)/1000;drawScoreScreen(ticker,data,t);if(t<4.5)scoreRaf=requestAnimationFrame(loop);else{drawScoreScreen(ticker,data,4.5);}}
   scoreRaf=requestAnimationFrame(loop);
