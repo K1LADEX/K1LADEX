@@ -441,43 +441,22 @@ function drawScoreScreen(ticker,data,t){
   if(iconA>0){
     const iconVals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
     const iconLetters=['S','I','G','N','A','L','+'];
-    const iconY=196,iconR=9,iconSlot=Math.floor((SW-40)/7);
+    const iconSlot=Math.floor((SW-40)/7);
+    const iconY=190;
     iconVals.forEach((val,i)=>{
       const iA=eeo(eop(0.8+i*0.08,1.2+i*0.08));if(iA<=0)return;
       sc.save();sc.globalAlpha=iA*iconA;
       const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
       const cx=20+iconSlot*i+iconSlot/2;
-      sc.strokeStyle=col;sc.lineWidth=1.5;sc.shadowColor=col;sc.shadowBlur=val>=1.0?6:0;
-      sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.stroke();
-      if(val>=1.0){sc.fillStyle=col;sc.globalAlpha=iA*iconA*0.15;sc.beginPath();sc.arc(cx,iconY,iconR,0,Math.PI*2);sc.fill();sc.globalAlpha=iA*iconA;}
-      sc.fillStyle=col;sc.font='700 11px '+HN;sc.textAlign='center';sc.textBaseline='middle';
+      sc.fillStyle='rgba(255,255,255,0.55)';sc.font='700 13px '+HN;sc.textAlign='center';sc.textBaseline='middle';
       sc.fillText(iconLetters[i],cx,iconY);
-      sc.shadowBlur=0;sc.restore();
+      const icon=val>=1.5?'✓':val>=1.0?'⚠':' ✕';
+      sc.fillStyle=col;sc.font='700 14px '+HN;sc.textAlign='center';sc.textBaseline='middle';
+      sc.fillText(icon,cx,iconY+20);
+      sc.restore();
     });
   }
-  const barA=eeo(eop(1.0,1.8));
-  if(barA>0){
-    sc.save();sc.globalAlpha=barA;
-    const barVals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
-    const colNames=['Surge','Consol.','Growth','Flags','Catalyst','Levels','Volume'];
-    const barSlot=Math.floor((SW-40)/7);
-    const hdrTop=210,hdrH=20,barMaxH=62;
-    barVals.forEach((val,i)=>{
-      const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
-      const cx=20+barSlot*i+barSlot/2;
-      const bW=Math.min(barSlot-4,38);
-      sc.strokeStyle=col;sc.lineWidth=1;sc.globalAlpha=barA;
-      scRR(cx-bW/2,hdrTop,bW,hdrH,3);sc.stroke();
-      sc.fillStyle=col;sc.globalAlpha=barA*0.12;
-      scRR(cx-bW/2,hdrTop,bW,hdrH,3);sc.fill();
-      sc.globalAlpha=barA;
-      sc.fillStyle=col;sc.font='500 8px '+HN;sc.textAlign='center';sc.textBaseline='middle';
-      sc.fillText(colNames[i],cx,hdrTop+hdrH/2);
-      const bH=Math.round((val/1.5)*barMaxH);
-      if(bH>0){sc.fillStyle=col;sc.globalAlpha=barA*0.65;scRR(cx-bW/2,hdrTop+hdrH,bW,bH,2);sc.fill();}
-      sc.globalAlpha=barA;
-    });
-    sc.restore();
+  // bars removed — icon row handles signal display
   }
   const descA=eeo(eop(1.6,2.4));
   if(descA>0){
