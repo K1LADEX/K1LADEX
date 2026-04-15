@@ -343,19 +343,19 @@ function drawScoreScreen(ticker,data,t){
   sc.fillStyle=BLUE;sc.font='600 14px '+HN;sc.textAlign='center';sc.textBaseline='middle';
   sc.fillText('#'+ticker.toUpperCase(),SW/2,52);
   const priceCol=data.change&&data.change.startsWith('-')?'#ff6b6b':BLUE;
-  const sY=82,sRowH=16;
+  const sY=82,sRowH=22;
   const leftStats=[
-    ['FLAGS: ',data.nFlags&&data.nFlags.length>0?data.nFlags[0].substring(0,26).toUpperCase():'CLEAN',BLUE],
-    ['CURRENT PRICE IS ',data.price||'--',priceCol],
-    ["TODAY'S % CHANGE IS ",data.change||'--',priceCol],
-    ['52W SURGE IS ',data.surge||'+0%',BLUE]
+    ['PRICE  ',data.price||'--',priceCol],
+    ['TODAY  ',data.change||'--',priceCol],
+    ['52W SURGE  ',data.surge||'+0%',BLUE],
+    ['NEXT CATALYST  ',data.earnings||'TBD',BLUE]
   ];
   leftStats.forEach(([label,val,col],i)=>{
     const ly=sY+i*sRowH;
-    sc.fillStyle=INK;sc.font='600 11px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
+    sc.fillStyle=INK;sc.font='700 13px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
     const lw=sc.measureText(label).width;
     sc.fillText(label,20,ly);
-    sc.fillStyle=col;sc.font='700 11px '+HN;
+    sc.fillStyle=col;sc.font='700 14px '+HN;
     sc.fillText(val,20+lw,ly);
   });
   const rightStats=[
