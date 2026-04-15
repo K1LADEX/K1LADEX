@@ -515,16 +515,16 @@ function drawScoreScreen(ticker,data,t){
   const scoreA=eeo(eop(2.2,2.8));
   if(scoreA>0){
     sc.save();sc.globalAlpha=scoreA;
-    const vY=Math.round(SH*0.76);
+    const vY=82;
     const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=7?BLUE:'#cc4400';
     const verdictWord=data.nStrikes>=2?'DISQUALIFIED':data.score>=9?'MAX CONVICTION':data.score>=7?'SIGNAL+':data.score>=5?'WATCHLIST':'PASS';
-    sc.fillStyle=verdictCol;sc.font='700 36px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
-    sc.fillText(data.score+' / 10',20,vY);
-    sc.fillStyle=INK_DIM;sc.font='400 10px '+HN;
-    sc.fillText('SIGNAL+ SCORE',20,vY+14);
-    sc.fillStyle=verdictCol;sc.font='700 13px '+HN;
-    sc.fillText(verdictWord,20,vY+30);
-    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.25)';sc.font='400 8px '+HN;sc.textAlign='left';sc.fillText('Scanned '+data.scanTime,20,vY+46);}
+    sc.fillStyle=verdictCol;sc.font='700 28px '+HN;sc.textAlign='right';sc.textBaseline='alphabetic';
+    sc.fillText(data.score+' / 10',SW-18,vY);
+    sc.fillStyle=INK_DIM;sc.font='400 9px '+HN;sc.textAlign='right';
+    sc.fillText('SIGNAL+ SCORE',SW-18,vY+13);
+    sc.fillStyle=verdictCol;sc.font='700 11px '+HN;sc.textAlign='right';
+    sc.fillText(verdictWord,SW-18,vY+26);
+    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.25)';sc.font='400 8px '+HN;sc.textAlign='left';sc.fillText('Scanned '+data.scanTime,20,vY+26);}
     sc.restore();
   }
   const ctaA=eeo(eop(2.4,3.0));
