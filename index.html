@@ -329,7 +329,7 @@ let SW=360,SH=640;
 const sc=sc_el.getContext('2d');
 function initCanvas(){
   SW=Math.min(sc_el.parentElement.offsetWidth||480,480);
-  SH=sc_el.parentElement.offsetHeight||Math.round(SW*(640/360));
+  SH=Math.round(SW*(640/360));
   sc_el.width=SW*DPR;sc_el.height=SH*DPR;
   sc_el.style.width=SW+'px';sc_el.style.height=SH+'px';
   sc.setTransform(DPR,0,0,DPR,0,0);
