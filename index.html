@@ -598,7 +598,9 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   cpSection.innerHTML = sectionHead + cpData.map(cp => {
     const cls = cp.val>=1.5?'cp-pass':cp.val>=1.0?'cp-warn':'cp-fail';
     const icon=cp.val>=1.5?'✅':cp.val>=1.0?'⚠️':'❌';
-    return '<div class="checkpoint-row" onclick="toggleCP(this)"><div class="cp-header"><span class="cp-letter '+cls+'">'+cp.letter+'</span><span class="cp-dash">—</span><span class="cp-name '+cls+'">'+cp.title+'</span><span class="cp-verdict">'+icon+'</span><span class="cp-chevron">▼</span></div><div class="cp-body"><div class="cp-desc">'+cp.desc+'</div><div class="cp-desc2">'+cp.desc2+'</div></div></div>';
+    const fullText=cpProse(cp.letter,cp.val,scoreData);
+    const htmlText=fullText.replace(/\n\n/g,'</p><p class="cp-desc">').replace(/\n/g,'<br>');
+    return '<div class="checkpoint-row" onclick="toggleCP(this)"><div class="cp-header"><span class="cp-letter '+cls+'">'+cp.letter+'</span><span class="cp-dash">—</span><span class="cp-name '+cls+'">'+cp.title+'</span><span class="cp-verdict">'+icon+'</span><span class="cp-chevron">▼</span></div><div class="cp-body"><p class="cp-desc">'+htmlText+'</p></div></div>';
   }).join('');
   cpSection.style.display = 'block';
   runScoreAnimation(ticker,scoreData);
@@ -962,9 +964,7 @@ window.addEventListener('load',function(){
 });
 
 function toggleCP(row){
-  const wasExpanded = row.classList.contains('expanded');
-  document.querySelectorAll('.checkpoint-row.expanded').forEach(function(r){r.classList.remove('expanded');});
-  if(!wasExpanded) row.classList.add('expanded');
+  row.classList.toggle('expanded');
 }
 </script>
 </body>
