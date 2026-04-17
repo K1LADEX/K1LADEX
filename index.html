@@ -43,9 +43,9 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .free-label{font-size:11px;color:rgba(0,229,255,0.5);letter-spacing:2px;margin-top:8px;text-transform:uppercase;text-align:center;}
 .price-row{display:flex;align-items:center;justify-content:center;margin-top:6px;}
 .price-pill{font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.25);border-radius:20px;padding:4px 10px;letter-spacing:0.5px;}
-.score-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.5s;z-index:20;overflow:hidden;}
+.score-overlay{position:absolute;top:0;left:0;width:100%;min-height:100%;opacity:0;pointer-events:none;transition:opacity 0.5s;z-index:20;overflow-y:auto;}
 .score-overlay.visible{opacity:1;pointer-events:all;}
-.score-canvas{width:100%;height:100%;position:absolute;top:0;left:0;}
+.score-canvas{width:100%;display:block;position:relative;}
 .back-btn{position:absolute;top:6px;left:6px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);border-radius:20px;padding:4px 10px;font-size:10px;letter-spacing:1px;color:rgba(0,229,255,0.6);cursor:pointer;text-transform:uppercase;z-index:30;}
 .cta-row{position:absolute;bottom:16px;left:28px;right:28px;display:flex;gap:0;padding:0;z-index:30;}
 .cta-subscribe{flex:1;background:transparent;border:1px solid rgba(0,229,255,0.35);border-radius:10px;padding:12px 8px;font-size:12px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#00e5ff;cursor:pointer;letter-spacing:0.5px;}
@@ -80,6 +80,18 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .btc-msg{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6;font-style:italic;}
 .btc-close{margin-top:24px;background:none;border:1px solid rgba(245,196,0,0.4);border-radius:20px;padding:6px 20px;font-size:10px;color:#f5c400;cursor:pointer;letter-spacing:2px;}
 .app-disclaimer{position:absolute;bottom:5px;width:100%;text-align:center;font-size:7.5px;color:rgba(0,229,255,0.22);letter-spacing:0.4px;z-index:10;pointer-events:none;padding:0 16px;}
+
+.checkpoint-section{background:#0e1318;padding:16px 20px 100px 20px;width:100%;box-sizing:border-box;}
+.checkpoint-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.checkpoint-row:last-child{border-bottom:none;}
+.cp-letter{font-size:22px;font-weight:700;min-width:24px;line-height:1;}
+.cp-right{display:flex;flex-direction:column;gap:3px;flex:1;}
+.cp-title{font-size:12px;font-weight:700;letter-spacing:0.05em;font-family:'Helvetica Neue',Arial,sans-serif;}
+.cp-desc{font-size:11px;font-weight:500;color:rgba(255,255,255,0.65);font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.4;}
+.cp-desc2{font-size:10px;font-weight:400;color:rgba(255,255,255,0.35);font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.4;}
+.cp-pass{color:#00e5ff;}
+.cp-warn{color:#886600;}
+.cp-fail{color:#cc4400;}
 </style>
 </head>
 <body><div id="k1-gate" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;">
@@ -125,6 +137,7 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
   </div>
   <div class="score-overlay" id="scoreOverlay">
     <canvas class="score-canvas" id="sc" ></canvas>
+    <div class="checkpoint-section" id="checkpointSection" style="display:none;"></div>
     <button class="back-btn" id="backBtn">← BACK</button>
     <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">Subscribe — $9.99 / month</button></div>
     <button class="cta-report" id="reportBtn">⬇ Download PDF Report</button>
@@ -457,39 +470,6 @@ function drawScoreScreen(ticker,data,t){
     });
   }
   // bars removed — icon row handles signal display
-  const descA=eeo(eop(1.6,2.4));
-  if(descA>0){
-    sc.save();sc.globalAlpha=descA;
-    const dVals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
-    const dLetters=['S','I','G','N','A','L','+'];
-    const dTitles=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Approaching Catalyst','Levels & Macro','Vol + Short Pressure'];
-    const surgeAmt=data.surge||'+0%';
-    const surgeLow=data.week52Low?'$'+data.week52Low.toFixed(2):'--';
-    const dDescs=[
-      'Surged '+surgeAmt+' from 52-week low of '+surgeLow,
-      data.i>=1.5?'Above 50MA, within 30% of 52W high, no new 30-day lows — all gates clear':data.i>=1.0?'2 of 3 consolidation gates cleared — monitoring closely':'Outside all three consolidation parameters',
-      data.g>=1.5?'Revenue '+(data.revenueFormatted||'growing')+' year-over-year — cash and guidance intact':data.g>=1.0?'Revenue exists — growth trajectory or cash signal is not clean':'Pre-revenue or declining — treat as speculative until filed revenue confirms',
-      data.nStrikes>=2?'SMCI Rule triggered — '+data.nStrikes+' active strikes on record':data.nStrikes===1?'One active strike on record — SMCI Rule monitoring':'No SEC, DOJ, class action, or FDA disqualifiers found',
-      data.a>=1.5?'Dated catalyst confirmed — '+(data.nextEarnings||'on calendar'):data.a>=1.0?'Catalyst window present — exact date not fully confirmed':'No dated catalyst on record — without one, this is speculation',
-      data.l>=1.5?'Support, stop, and macro sector structurally aligned — risk is defined':data.l>=1.0?'Partial structure — one level or macro signal needs confirmation':'No defined stop or sector alignment — risk is unstructured',
-      'Float '+(data.floatFormatted||'—')+' · Short interest '+(data.shortPctFormatted||'—')+(data.plus>=1.5?' · Squeeze overlay conditions present':data.plus>=1.0?' · Partial pressure signal':' · No squeeze overlay detected')
-    ];
-    const dStartY=Math.round(SH*0.43),dRowH=Math.round((SH*0.80-SH*0.43)/7);
-    dLetters.forEach((ltr,i)=>{
-      const dy=dStartY+i*dRowH;
-      const dcol=dVals[i]>=1.5?BLUE:dVals[i]>=1.0?'#886600':'#cc4400';
-      sc.fillStyle=dcol;sc.font='700 20px '+HN;sc.textAlign='left';sc.textBaseline='top';
-      sc.fillText(ltr,20,dy);
-      sc.fillStyle=dcol;sc.font='700 12px '+HN;sc.textAlign='left';sc.textBaseline='top';
-      sc.fillText(dTitles[i],46,dy+2);
-      sc.fillStyle='rgba(255,255,255,0.6)';sc.font='500 10px '+HN;
-      sc.fillText(dDescs[i],46,dy+17);
-      const dDescs2=[data.s>=1.5?surgeAmt+' from 52W low of '+surgeLow+' — validated by price.':'Not yet cleared 200%+ — Mr. Market has not yet validated this name.',data.i>=1.5?'All three gates confirmed — above 50MA, near 52W high, no 30-day lows.':data.i>=1.0?'Two of three consolidation gates clear — one condition needs confirmation.':'Price is not in a constructive base — all three gates failed.',data.g>=1.5?'Revenue '+(data.revenueFormatted||'on file')+' — cash and guidance intact.':data.g>=1.0?'Growth rate or cash runway needs closer review before full conviction.':'No filed revenue growth — speculative until filings confirm otherwise.',data.nStrikes>=2?'Score locked at 0. No other checkpoint can override this veto.':data.nStrikes===1?'Score reduced to 0.5 — one strike caps the N checkpoint.':'Clean public record — SMCI Rule search returned no disqualifying events.',data.a>=1.5?'Catalyst confirmed — '+(data.earnings||'date on file')+'.':data.a>=1.0?'Catalyst window present — exact date not fully confirmed.':'No dated catalyst on record — thesis depends on market structure alone.',data.l>=1.5?'All three L gates confirmed — price has a defined floor and sector wind.':data.l>=1.0?'One of three L gates not confirmed — partial structure only.':'No defined support, stop, or macro alignment — risk cannot be sized.',data.plus>=1.5?'Both conditions active — float compression and short exposure create mechanical upside.':data.plus>=1.0?'One condition met — partial squeeze potential present, not confirmed.':'Neither float nor short interest clears the threshold — no squeeze overlay.'];
-      sc.fillStyle='rgba(255,255,255,0.35)';sc.font='400 9px '+HN;
-      sc.fillText(dDescs2[i]||'',46,dy+29);
-    });
-    sc.restore();
-  }
   const scoreA=eeo(eop(2.2,2.8));
   if(scoreA>0){
     sc.save();sc.globalAlpha=scoreA;
@@ -593,6 +573,23 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   currentTicker=ticker;currentData=scoreData;
   document.getElementById('loadingOverlay').classList.remove('visible');
   document.getElementById('scoreOverlay').classList.add('visible');
+
+  // Populate checkpoint section
+  const cpSection = document.getElementById('checkpointSection');
+  const cpData = [
+    {letter:'S', title:'Surge 200%+', val:scoreData.s, desc:scoreData.s>=1.5?scoreData.surge+' from 52W low — validated by price.':'Not yet cleared 200%+ — Mr. Market has not yet validated this name.', desc2:scoreData.s>=1.5?'The geometric prerequisite for re-entry is satisfied.':'No other score can compensate for its absence.'},
+    {letter:'I', title:'In Consolidation', val:scoreData.i, desc:scoreData.i>=1.5?'All three gates confirmed — above 50MA, near 52W high, no 30-day lows.':scoreData.i>=1.0?'Two of three consolidation gates clear — one condition needs confirmation.':'Price is not in a constructive base — all three gates failed.', desc2:scoreData.i>=1.5?'Re-entry setups form here. The pattern is intact.':'The structure must establish and hold before this gate can pass.'},
+    {letter:'G', title:'Growth Confirmed', val:scoreData.g, desc:scoreData.g>=1.5?'Revenue '+(scoreData.revenueFormatted||'on file')+' — cash and guidance intact.':scoreData.g>=1.0?'Growth rate or cash runway needs closer review before full conviction.':'No filed revenue growth — speculative until filings confirm otherwise.', desc2:scoreData.g>=1.5?'Fundamentals are working in favor of the technical thesis.':'Fundamental risk profile is elevated.'},
+    {letter:'N', title:'No Red Flags', val:scoreData.n, desc:scoreData.nStrikes>=2?'SMCI Rule triggered — '+scoreData.nStrikes+' active strikes on record.':scoreData.nStrikes===1?'One active strike — SMCI Rule monitoring.':'Clean public record — no disqualifying events found.', desc2:scoreData.nStrikes>=2?'Full disqualification. Cannot be overridden by any other score.':'A clean N reading does not certify zero risk — it confirms no disqualifying strikes.'},
+    {letter:'A', title:'Approaching Catalyst', val:scoreData.a, desc:scoreData.a>=1.5?'Dated catalyst confirmed — '+(scoreData.earnings||'on calendar')+'.':scoreData.a>=1.0?'Catalyst window present — exact date not fully confirmed.':'No dated catalyst on record — thesis depends on market structure alone.', desc2:scoreData.a>=1.5?'Institutional repositioning and price discovery conditions are set.':'Check the IR calendar and SEC filings.'},
+    {letter:'L', title:'Levels & Macro', val:scoreData.l, desc:scoreData.l>=1.5?'All three L gates confirmed — support, stop, and sector aligned.':scoreData.l>=1.0?'One of three L gates not confirmed — partial structure only.':'No defined support, stop, or macro alignment — risk cannot be sized.', desc2:scoreData.l>=1.5?'Risk is defined. Position sizing is possible.':'No entry without a defined stop.'},
+    {letter:'+', title:'Vol + Short Pressure', val:scoreData.plus, desc:scoreData.plus>=1.5?'Both conditions active — float '+(scoreData.floatFormatted||'—')+' · short interest '+(scoreData.shortPctFormatted||'—')+'.':scoreData.plus>=1.0?'One condition met — partial squeeze potential present.':'Neither float nor short interest clears the threshold.', desc2:scoreData.plus>=1.5?'Float compression and short exposure create mechanical upside.':'The squeeze overlay — a core K1LADEX edge — is not present in this setup.'}
+  ];
+  cpSection.innerHTML = cpData.map(cp => {
+    const cls = cp.val>=1.5?'cp-pass':cp.val>=1.0?'cp-warn':'cp-fail';
+    return '<div class="checkpoint-row"><div class="cp-letter '+cls+'">'+cp.letter+'</div><div class="cp-right"><div class="cp-title '+cls+'">'+cp.title+'</div><div class="cp-desc">'+cp.desc+'</div><div class="cp-desc2">'+cp.desc2+'</div></div></div>';
+  }).join('');
+  cpSection.style.display = 'block';
   runScoreAnimation(ticker,scoreData);
 });
 
@@ -608,6 +605,7 @@ function goBack(){
   stopLoadingStages();
   document.getElementById('tickerInput').value='';
   setTimeout(function(){document.getElementById('tickerInput').focus();},300);
+  const cp=document.getElementById('checkpointSection');cp.style.display='none';cp.innerHTML='';
 }
 document.getElementById('backBtn').addEventListener('click',goBack);
 document.getElementById('backBtn').addEventListener('touchend',function(e){e.preventDefault();goBack();},{passive:false});
