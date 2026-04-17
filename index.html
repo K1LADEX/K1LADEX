@@ -101,6 +101,15 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .checkpoint-row.expanded .cp-header{margin-bottom:8px;}
 .cp-chevron{margin-left:auto;color:rgba(255,255,255,0.3);font-size:12px;transition:transform 0.25s;}
 .checkpoint-row.expanded .cp-chevron{transform:rotate(180deg);color:#c8a96e;}
+
+.score-bar{display:none;width:100%;background:#0e1318;border-top:1px solid rgba(0,229,255,0.12);border-bottom:1px solid rgba(0,229,255,0.12);padding:28px 24px;box-sizing:border-box;text-align:center;}
+.score-bar-ring{display:inline-flex;align-items:center;justify-content:center;width:110px;height:110px;border-radius:50%;border:3px solid #c8a96e;background:rgba(200,169,110,0.06);margin-bottom:12px;position:relative;}
+.score-bar-ring::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(0,229,255,0.15);}
+.score-bar-number{font-size:36px;font-weight:700;font-family:'Helvetica Neue',Arial,sans-serif;line-height:1;}
+.score-bar-denom{font-size:16px;font-weight:400;color:rgba(255,255,255,0.4);margin-left:2px;}
+.score-bar-label{font-size:9px;font-weight:500;letter-spacing:0.14em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:4px;}
+.score-bar-verdict{font-size:15px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-top:6px;}
+.score-bar-brand{font-size:9px;letter-spacing:0.18em;color:rgba(200,169,110,0.5);text-transform:uppercase;margin-top:4px;}
 </style>
 </head>
 <body><div id="k1-gate" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;">
@@ -146,6 +155,12 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
   </div>
   <div class="score-overlay" id="scoreOverlay">
     <canvas class="score-canvas" id="sc" ></canvas>
+    <div class="score-bar" id="scoreBar">
+      <div class="score-bar-label">Signal+ Score</div>
+      <div class="score-bar-ring"><div><span class="score-bar-number" id="scoreBarNumber">—</span><span class="score-bar-denom">/10</span></div></div>
+      <div class="score-bar-verdict" id="scoreBarVerdict">—</div>
+      <div class="score-bar-brand">K1LADEX Intelligence</div>
+    </div>
     <div class="checkpoint-section" id="checkpointSection" style="display:none;"></div>
     <button class="back-btn" id="backBtn">← BACK</button>
     <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">★ Subscribe</button></div>
@@ -594,6 +609,18 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     {letter:'L', title:'Levels & Macro', val:scoreData.l, desc:scoreData.l>=1.5?'All three L gates confirmed — support, stop, and sector aligned.':scoreData.l>=1.0?'One of three L gates not confirmed — partial structure only.':'No defined support, stop, or macro alignment — risk cannot be sized.', desc2:scoreData.l>=1.5?'Risk is defined. Position sizing is possible.':'No entry without a defined stop.'},
     {letter:'+', title:'Vol + Short Pressure', val:scoreData.plus, desc:scoreData.plus>=1.5?'Both conditions active — float '+(scoreData.floatFormatted||'—')+' · short interest '+(scoreData.shortPctFormatted||'—')+'.':scoreData.plus>=1.0?'One condition met — partial squeeze potential present.':'Neither float nor short interest clears the threshold.', desc2:scoreData.plus>=1.5?'Float compression and short exposure create mechanical upside.':'The squeeze overlay — a core K1LADEX edge — is not present in this setup.'}
   ];
+  // Populate score bar
+  const scoreBar = document.getElementById('scoreBar');
+  const scoreBarNumber = document.getElementById('scoreBarNumber');
+  const scoreBarVerdict = document.getElementById('scoreBarVerdict');
+  const verdictWord = scoreData.nStrikes>=2?'DISQUALIFIED':scoreData.score>=9?'MAX CONVICTION':scoreData.score>=7?'SIGNAL+':scoreData.score>=5?'WATCHLIST':'PASS';
+  const scoreCol = scoreData.nStrikes>=2?'#cc4400':scoreData.score>=7?'#00e5ff':'#cc4400';
+  scoreBarNumber.textContent = scoreData.score;
+  scoreBarNumber.style.color = scoreCol;
+  scoreBarVerdict.textContent = verdictWord;
+  scoreBarVerdict.style.color = scoreCol;
+  document.querySelector('.score-bar-ring').style.borderColor = scoreCol;
+  scoreBar.style.display = 'block';
   const sectionHead = '<div class="cp-section-label">Signal+ Checkpoints</div>';
   cpSection.innerHTML = sectionHead + cpData.map(cp => {
     const cls = cp.val>=1.5?'cp-pass':cp.val>=1.0?'cp-warn':'cp-fail';
@@ -619,6 +646,7 @@ function goBack(){
   document.getElementById('tickerInput').value='';
   setTimeout(function(){document.getElementById('tickerInput').focus();},300);
   const cp=document.getElementById('checkpointSection');cp.style.display='none';cp.innerHTML='';
+  document.getElementById('scoreBar').style.display='none';
 }
 document.getElementById('backBtn').addEventListener('click',goBack);
 document.getElementById('backBtn').addEventListener('touchend',function(e){e.preventDefault();goBack();},{passive:false});
