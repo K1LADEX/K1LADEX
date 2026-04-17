@@ -94,6 +94,13 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .cp-pass{color:#00e5ff;}
 .cp-warn{color:#ffaa00;}
 .cp-fail{color:#cc4400;}
+
+.cp-body{display:none;padding-top:8px;}
+.checkpoint-row.expanded .cp-body{display:block;}
+.cp-header{cursor:pointer;display:flex;align-items:center;gap:8px;margin-bottom:0;}
+.checkpoint-row.expanded .cp-header{margin-bottom:8px;}
+.cp-chevron{margin-left:auto;color:rgba(255,255,255,0.3);font-size:12px;transition:transform 0.25s;}
+.checkpoint-row.expanded .cp-chevron{transform:rotate(180deg);color:#c8a96e;}
 </style>
 </head>
 <body><div id="k1-gate" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;">
@@ -591,7 +598,7 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   cpSection.innerHTML = sectionHead + cpData.map(cp => {
     const cls = cp.val>=1.5?'cp-pass':cp.val>=1.0?'cp-warn':'cp-fail';
     const icon=cp.val>=1.5?'✅':cp.val>=1.0?'⚠️':'❌';
-    return '<div class="checkpoint-row"><div class="cp-header"><span class="cp-letter '+cls+'">'+cp.letter+'</span><span class="cp-dash">—</span><span class="cp-name '+cls+'">'+cp.title+'</span><span class="cp-verdict">'+icon+'</span></div><div class="cp-desc">'+cp.desc+'</div><div class="cp-desc2">'+cp.desc2+'</div></div>';
+    return '<div class="checkpoint-row" onclick="toggleCP(this)"><div class="cp-header"><span class="cp-letter '+cls+'">'+cp.letter+'</span><span class="cp-dash">—</span><span class="cp-name '+cls+'">'+cp.title+'</span><span class="cp-verdict">'+icon+'</span><span class="cp-chevron">▼</span></div><div class="cp-body"><div class="cp-desc">'+cp.desc+'</div><div class="cp-desc2">'+cp.desc2+'</div></div></div>';
   }).join('');
   cpSection.style.display = 'block';
   runScoreAnimation(ticker,scoreData);
@@ -953,6 +960,12 @@ window.addEventListener('load',function(){
   document.getElementById('ctaShare').style.opacity=0;
   updateScanLabel();
 });
+
+function toggleCP(row){
+  const wasExpanded = row.classList.contains('expanded');
+  document.querySelectorAll('.checkpoint-row.expanded').forEach(function(r){r.classList.remove('expanded');});
+  if(!wasExpanded) row.classList.add('expanded');
+}
 </script>
 </body>
 </html>
