@@ -43,7 +43,7 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .free-label{font-size:11px;color:rgba(0,229,255,0.5);letter-spacing:2px;margin-top:8px;text-transform:uppercase;text-align:center;}
 .price-row{display:flex;align-items:center;justify-content:center;margin-top:6px;}
 .price-pill{font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.25);border-radius:20px;padding:4px 10px;letter-spacing:0.5px;}
-.score-overlay{position:absolute;top:0;left:0;width:100%;min-height:100%;opacity:0;pointer-events:none;transition:opacity 0.5s;z-index:20;overflow-y:auto;}
+.score-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.5s;z-index:20;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .score-overlay.visible{opacity:1;pointer-events:all;}
 .score-canvas{width:100%;display:block;position:relative;}
 .back-btn{position:absolute;top:6px;left:6px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);border-radius:20px;padding:4px 10px;font-size:10px;letter-spacing:1px;color:rgba(0,229,255,0.6);cursor:pointer;text-transform:uppercase;z-index:30;}
