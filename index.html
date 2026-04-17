@@ -81,16 +81,18 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .btc-close{margin-top:24px;background:none;border:1px solid rgba(245,196,0,0.4);border-radius:20px;padding:6px 20px;font-size:10px;color:#f5c400;cursor:pointer;letter-spacing:2px;}
 .app-disclaimer{position:absolute;bottom:5px;width:100%;text-align:center;font-size:7.5px;color:rgba(0,229,255,0.22);letter-spacing:0.4px;z-index:10;pointer-events:none;padding:0 16px;}
 
-.checkpoint-section{background:#080b0f;padding:8px 0 120px 0;width:100%;box-sizing:border-box;}
-.checkpoint-row{padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.06);}
-.checkpoint-row:last-child{border-bottom:none;}
-.cp-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}.cp-letter{font-size:20px;font-weight:700;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.08em;}
-.cp-dash{color:rgba(255,255,255,0.3);font-size:14px;}
-.cp-name{font-size:20px;font-weight:700;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.02em;}.cp-verdict{font-size:20px;margin-left:6px;}
-.cp-desc{font-size:17px;font-weight:400;color:rgba(255,255,255,0.75);font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.6;margin-bottom:4px;}
-.cp-desc2{font-size:14px;font-weight:400;color:rgba(255,255,255,0.4);font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.5;}
+.checkpoint-section{background:#080b0f;padding:16px 16px 120px 16px;width:100%;box-sizing:border-box;}
+.cp-section-label{color:#00e5ff;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 12px 0;}
+.checkpoint-row{background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.2);border-radius:8px;padding:14px 16px;margin-bottom:10px;}
+.cp-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.cp-letter{color:#c8a96e;font-size:13px;font-weight:700;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.1em;text-transform:uppercase;}
+.cp-dash{color:rgba(255,255,255,0.25);font-size:13px;}
+.cp-name{font-size:13px;font-weight:700;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.04em;text-transform:uppercase;}
+.cp-verdict{font-size:15px;margin-left:4px;}
+.cp-desc{font-size:14px;font-weight:400;color:rgba(255,255,255,0.85);font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.6;margin-bottom:4px;}
+.cp-desc2{font-size:12px;font-weight:400;color:rgba(255,255,255,0.45);font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.5;}
 .cp-pass{color:#00e5ff;}
-.cp-warn{color:#886600;}
+.cp-warn{color:#ffaa00;}
 .cp-fail{color:#cc4400;}
 </style>
 </head>
@@ -585,7 +587,8 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     {letter:'L', title:'Levels & Macro', val:scoreData.l, desc:scoreData.l>=1.5?'All three L gates confirmed — support, stop, and sector aligned.':scoreData.l>=1.0?'One of three L gates not confirmed — partial structure only.':'No defined support, stop, or macro alignment — risk cannot be sized.', desc2:scoreData.l>=1.5?'Risk is defined. Position sizing is possible.':'No entry without a defined stop.'},
     {letter:'+', title:'Vol + Short Pressure', val:scoreData.plus, desc:scoreData.plus>=1.5?'Both conditions active — float '+(scoreData.floatFormatted||'—')+' · short interest '+(scoreData.shortPctFormatted||'—')+'.':scoreData.plus>=1.0?'One condition met — partial squeeze potential present.':'Neither float nor short interest clears the threshold.', desc2:scoreData.plus>=1.5?'Float compression and short exposure create mechanical upside.':'The squeeze overlay — a core K1LADEX edge — is not present in this setup.'}
   ];
-  cpSection.innerHTML = cpData.map(cp => {
+  const sectionHead = '<div class="cp-section-label">Signal+ Checkpoints</div>';
+  cpSection.innerHTML = sectionHead + cpData.map(cp => {
     const cls = cp.val>=1.5?'cp-pass':cp.val>=1.0?'cp-warn':'cp-fail';
     const icon=cp.val>=1.5?'✅':cp.val>=1.0?'⚠️':'❌';
     return '<div class="checkpoint-row"><div class="cp-header"><span class="cp-letter '+cls+'">'+cp.letter+'</span><span class="cp-dash">—</span><span class="cp-name '+cls+'">'+cp.title+'</span><span class="cp-verdict">'+icon+'</span></div><div class="cp-desc">'+cp.desc+'</div><div class="cp-desc2">'+cp.desc2+'</div></div>';
