@@ -427,7 +427,7 @@ async function runScan(){
   }).join('');
   cpSection.style.display = 'block';
   runScoreAnimation(ticker,scoreData);
-});
+}
 
 document.getElementById('goBtn').addEventListener('click',function(){runScan();});
 document.getElementById('goBtn').addEventListener('touchend',function(e){e.preventDefault();e.stopPropagation();runScan();},{passive:false});
