@@ -497,7 +497,7 @@ function startLoadingStages(){
 function stopLoadingStages(){if(loadStageTimer){clearInterval(loadStageTimer);loadStageTimer=null;}}
 
 // ── GO BUTTON ────────────────────────────────────────────────
-document.getElementById('goBtn').addEventListener('click',async function(){
+async function runScan(){
   const ticker=document.getElementById('tickerInput').value.trim().toUpperCase();
   if(!ticker)return;
 
@@ -575,9 +575,9 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   runScoreAnimation(ticker,scoreData);
 });
 
-document.getElementById('tickerInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('goBtn').click();});
-document.getElementById('tickerInput').addEventListener('keyup',function(e){if(e.key==='Enter')document.getElementById('goBtn').click();});
-document.getElementById('goBtn').addEventListener('touchend',function(e){e.preventDefault();document.getElementById('goBtn').click();},{passive:false});
+document.getElementById('goBtn').addEventListener('click',function(){runScan();});
+document.getElementById('goBtn').addEventListener('touchend',function(e){e.preventDefault();e.stopPropagation();runScan();},{passive:false});
+document.getElementById('tickerInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();runScan();}});
 
 function goBack(){
   document.getElementById('scoreOverlay').classList.remove('visible');
