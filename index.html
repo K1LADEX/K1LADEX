@@ -476,10 +476,12 @@ function drawScoreScreen(ticker,data,t){
 }
 
 function runScoreAnimation(ticker,data){
-  initCanvas();
   scoreStart=null;if(scoreRaf)cancelAnimationFrame(scoreRaf);
-  function loop(ts){if(!scoreStart)scoreStart=ts;const t=(ts-scoreStart)/1000;drawScoreScreen(ticker,data,t);if(t<4.5)scoreRaf=requestAnimationFrame(loop);else{drawScoreScreen(ticker,data,4.5);}}
-  scoreRaf=requestAnimationFrame(loop);
+  setTimeout(function(){
+    initCanvas();
+    function loop(ts){if(!scoreStart)scoreStart=ts;const t=(ts-scoreStart)/1000;drawScoreScreen(ticker,data,t);if(t<4.5)scoreRaf=requestAnimationFrame(loop);else{drawScoreScreen(ticker,data,4.5);}}
+    scoreRaf=requestAnimationFrame(loop);
+  },50);
 }
 
 let currentTicker='',currentData=null;
