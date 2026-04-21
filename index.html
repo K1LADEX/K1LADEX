@@ -183,7 +183,7 @@ try {
   function pr(t,s,e){return Math.max(0,Math.min(1,(t-s)/(e-s)));}
   function aiLoop(ts){
     if(!st)st=ts;var t=(ts-st)/1000;
-    if(t>=T6){ctx.clearRect(0,0,CW,CH);canvas.style.opacity='0';setTimeout(function(){// wait for overlay transitioncanvas.style.height='0';canvas.style.margin='0';var rw=document.getElementById('revealWrap');rw.style.overflow='hidden';var h=rw.offsetHeight;rw.style.transition='height 0.35s ease,margin 0.35s ease,opacity 0.35s ease';rw.style.height=h+'px';rw.offsetHeight;rw.style.height='0';rw.style.marginBottom='0';rw.style.opacity='0';},350);return;}
+    if(t>=T6){ctx.clearRect(0,0,CW,CH);canvas.style.opacity='0';setTimeout(function(){canvas.style.height='0';canvas.style.margin='0';var rw=document.getElementById('revealWrap');rw.style.overflow='hidden';var h=rw.offsetHeight;rw.style.transition='height 0.35s ease,margin 0.35s ease,opacity 0.35s ease';rw.style.height=h+'px';rw.offsetHeight;rw.style.height='0';rw.style.marginBottom='0';rw.style.opacity='0';},350);return;}
     ctx.clearRect(0,0,CW,CH);var fade=t>=T5?1-pr(t,T5,T6):1;var holdAI2=t>=T3&&t<T4;var pulse=holdAI2?(0.5+0.5*Math.sin((t-T3)*14)):0;
     ctx.shadowColor='#00e5ff';ctx.shadowBlur=holdAI2?(5+pulse*14):2;ctx.fillStyle=BRIGHT;ctx.globalAlpha=fade;
     for(var i=0;i<P.length;i++){var p=P[i],px,py;
