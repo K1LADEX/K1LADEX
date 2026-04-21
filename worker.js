@@ -217,5 +217,34 @@ async function debugMetrics(ticker) {
 }
 
 async function checkN(ticker) {
-  return { strikes: 0, flags: ["No active legal flags — manual review recommended"], score: 1.5, splitDate: null };
+  const flags = [];
+  let strikes = 0;
+
+  const searches = [
+    { terms: `${ticker} "class action"`, label: 'Class action lawsuit' },
+    { terms: `${ticker} "SEC investigation" OR "SEC enforcement"`, label: 'SEC investigation' },
+    { terms: `${ticker} "FDA warning letter"`, label: 'FDA warning letter' },
+    { terms: `${ticker} "securities fraud"`, label: 'Securities fraud allegation' },
+    { terms: `${ticker} "Department of Justice" OR "DOJ investigation"`, label: 'DOJ investigation' },
+  ];
+
+  try {
+    for (const s of searches) {
+      const url = `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(s.terms)}&dateRange=custom&startdt=${new Date(Date.now()-2*365*24*3600*1000).toISOString().split('T')[0]}&enddt=${new Date().toISOString().split('T')[0]}&hits.hits._source=period_of_report,display_names,file_date,form_type`;
+      const r = await fetch(url, { headers: { 'User-Agent': 'K1LADEX/1.0' } });
+      const data = await r.json();
+      const hits = data?.hits?.total?.value || 0;
+      if (hits > 0) {
+        strikes++;
+        flags.push(`${s.label} — ${hits} filing(s) found on EDGAR`);
+      }
+    }
+  } catch(e) {
+    flags.push('Legal scan error: ' + e.message);
+    return { strikes: 0, flags, score: 0.75, splitDate: null };
+  }
+
+  if (strikes === 0) return { strikes: 0, flags: ['No disqualifying legal flags found on EDGAR'], score: 1.5, splitDate: null };
+  if (strikes === 1) return { strikes: 1, flags, score: 0.5, splitDate: null };
+  return { strikes, flags, score: 0, splitDate: null };
 }
