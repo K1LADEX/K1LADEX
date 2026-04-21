@@ -515,7 +515,7 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     stopLoadingStages();
     currentTicker='MVIS';currentData=mvisData;
     document.getElementById('loadingOverlay').classList.remove('visible');
-    document.getElementById('scoreOverlay').classList.add('visible');
+    const so=document.getElementById('scoreOverlay');so.classList.add('visible');so.scrollTop=0;
     runScoreAnimation('MVIS',mvisData);
     document.getElementById('tickerInput').value='';
     return;
@@ -536,7 +536,7 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   }
   currentTicker=ticker;currentData=scoreData;
   document.getElementById('loadingOverlay').classList.remove('visible');
-  document.getElementById('scoreOverlay').classList.add('visible');
+  const soEl=document.getElementById('scoreOverlay');soEl.classList.add('visible');soEl.scrollTop=0;
 
   // Populate checkpoint section
   const cpSection = document.getElementById('checkpointSection');
