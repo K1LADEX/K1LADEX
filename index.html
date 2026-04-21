@@ -588,13 +588,13 @@ function goBack(){
   if(scoreRaf)cancelAnimationFrame(scoreRaf);
   stopLoadingStages();
   document.getElementById('tickerInput').value='';
-  setTimeout(function(){// wait for overlay transitiondocument.getElementById('tickerInput').focus();},300);
+  setTimeout(function(){document.getElementById('tickerInput').focus();},300);
   const cp=document.getElementById('checkpointSection');cp.style.display='none';cp.innerHTML='';
-  document.getElementById('scoreBar').style.display='none';
+  document.getElementById('scoreBar').style.display='';
 }
 document.getElementById('backBtn').addEventListener('click',goBack);
 document.getElementById('backBtn').addEventListener('touchend',function(e){e.preventDefault();goBack();},{passive:false});
-document.getElementById('btcCloseBtn').addEventListener('click',function(){document.getElementById('btcOverlay').classList.remove('visible');document.getElementById('tickerInput').value='';setTimeout(function(){// wait for overlay transitiondocument.getElementById('tickerInput').focus();},300);});
+document.getElementById('btcCloseBtn').addEventListener('click',function(){document.getElementById('btcOverlay').classList.remove('visible');document.getElementById('tickerInput').value='';setTimeout(function(){document.getElementById('tickerInput').focus();},300);});
 
 
 // ── PDF ──────────────────────────────────────────────────────
