@@ -61,6 +61,16 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .loading-dot:nth-child(3){animation-delay:0.4s;}
 @keyframes pulse{0%,100%{opacity:0.25;transform:scale(0.8);}50%{opacity:1;transform:scale(1.2);}}
 .loading-label{font-size:10px;color:rgba(0,229,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-top:16px;}
+.paywall-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,7,13,0.95);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:50;}
+.paywall-overlay.visible{opacity:1;pointer-events:all;}
+.paywall-box{background:#0e1318;border:1px solid rgba(0,229,255,0.2);border-radius:16px;padding:32px 28px 28px;width:300px;text-align:center;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.paywall-logo{font-size:28px;font-weight:700;color:#fff;letter-spacing:1px;}
+.paywall-sub{font-size:10px;color:#00e5ff;letter-spacing:3px;margin-top:4px;}
+.paywall-divider{height:1px;background:rgba(0,229,255,0.1);margin:16px 0;}
+.paywall-msg{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;}
+.paywall-tagline{font-size:13px;color:rgba(255,255,255,0.5);font-style:italic;margin-bottom:4px;}
+.paywall-btn-primary{width:100%;background:transparent;border:1px solid rgba(0,229,255,0.35);border-radius:10px;padding:14px;font-size:13px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#080b0f;cursor:pointer;letter-spacing:0.5px;margin-bottom:10px;}
+.paywall-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:16px;color:rgba(0,229,255,0.5);cursor:pointer;padding:4px 8px;}
 .btc-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#080b0f;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:60;}
 .btc-overlay.visible{opacity:1;pointer-events:all;}
 .btc-box{border:2px solid #f5c400;border-radius:16px;padding:40px 32px;width:300px;text-align:center;box-shadow:0 0 40px rgba(245,196,0,0.15);}
@@ -102,7 +112,23 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .score-bar-brand{font-size:9px;letter-spacing:0.18em;color:rgba(200,169,110,0.5);text-transform:uppercase;margin-top:4px;}
 </style>
 </head>
-<div class="screen" id="screen">
+<body><div id="k1-gate" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;">
+  <div style="color:#fff;font-size:1.4rem;letter-spacing:0.2em;margin-bottom:8px;">K1LADEX</div>
+  <div style="color:#888;font-size:0.75rem;letter-spacing:0.15em;margin-bottom:32px;">INTELLIGENCE PLATFORM</div>
+  <input id="k1-input" type="password" placeholder="ACCESS CODE" style="background:#111;border:1px solid #333;color:#fff;padding:12px 20px;font-family:monospace;letter-spacing:0.2em;text-align:center;font-size:1rem;outline:none;width:220px;margin-bottom:12px;" />
+  <p style="font-size:0.75rem; color:#888; text-align:center; letter-spacing:0.05em;">Try free — use code <strong style="color:#f0c040;">DEX</strong></p>
+  <p style="font-size:0.75rem; color:#888; margin-top:4px; text-align:center; letter-spacing:0.05em;">3 free scans included</p>
+  <div id="k1-error" style="color:#ff4444;font-size:0.75rem;margin-top:12px;letter-spacing:0.1em;"></div>
+</div>
+<script>
+  if(sessionStorage.getItem('k1access')==='true'){document.getElementById('k1-gate').style.display='none';}
+  document.getElementById('k1-input').addEventListener('keydown',function(e){if(e.key==='Enter')k1check();});
+  function k1check(){
+    const v=document.getElementById('k1-input').value.toUpperCase().trim();
+    if(v==='LAZYGATE'||v==='DAD'||v==='DEX'){sessionStorage.setItem('k1access','true');document.getElementById('k1-gate').style.display='none';}
+    else{document.getElementById('k1-error').textContent='INVALID ACCESS CODE';}
+  }
+</script><div class="screen" id="screen">
   <div class="bg-grid"></div>
   <div class="border-ring"></div>
   <div class="logo-wrap">
@@ -119,6 +145,7 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
       <input class="ticker-input" id="tickerInput" placeholder="AAPL" maxlength="5" autocomplete="off" spellcheck="false"/>
       <button class="go-btn" id="goBtn">→</button>
     </div>
+    <div class="free-label" id="freeLabel">3 FREE SCANS REMAINING</div>
   </div>
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-ticker" id="loadingTicker">—</div>
@@ -136,9 +163,23 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
     </div>
     <div class="checkpoint-section" id="checkpointSection" style="display:none;"></div>
     <button class="back-btn" id="backBtn">← BACK</button>
+    <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">★ Subscribe</button></div>
     <button class="cta-report" id="reportBtn">⬇ Download PDF Report</button>
-    <div class="cta-share" id="ctaShare">Share this score — K1LADEX Intelligence</div>
+    <div class="cta-share" id="ctaShare">Share this score · 3 free scans remaining</div>
   </div>
+  <div class="paywall-overlay" id="paywallOverlay">
+    <div class="paywall-box">
+      <div class="paywall-logo">K1LADEX</div>
+      <div class="paywall-sub">INTELLIGENCE FRAMEWORK</div>
+      <div class="paywall-divider"></div>
+      <div class="paywall-msg">You've used your 3 free scans.</div>
+      <div class="paywall-tagline">Finally know what you're doing.</div>
+      <div class="paywall-divider"></div>
+      <button class="paywall-btn-primary" id="paywallSubscribeBtn">★ Subscribe</button>
+      <button class="paywall-close" id="paywallCloseBtn">✕</button>
+    </div>
+  </div>
+  <div class="btc-overlay" id="btcOverlay">
     <div class="btc-box">
       <div class="btc-crown">👑</div>
       <div class="btc-logo">K1LADEX</div>
@@ -481,6 +522,18 @@ function runScoreAnimation(ticker,data){
   scoreRaf=requestAnimationFrame(loop);
 }
 
+// ── SCAN COUNTER ─────────────────────────────────────────────
+const FREE_SCANS=3;
+let scansUsed=0;
+try{scansUsed=parseInt(localStorage.getItem('k1ladex_scans')||'0');}catch(e){}
+function updateScanLabel(){
+  const r=Math.max(0,FREE_SCANS-scansUsed);
+  var fl=document.getElementById('freeLabel');
+  if(r>0){fl.textContent=r+' FREE SCAN'+(r===1?'':'S')+' REMAINING';}
+  else{fl.innerHTML='<span style="font-size:15px;font-weight:700;display:block;letter-spacing:1px;">FREE SCANS USED</span><span style="font-size:10px;display:block;margin-top:3px;letter-spacing:2px;">$9.99/MO FOR UNLIMITED</span>';}
+  document.getElementById('ctaShare').textContent='Share this score · '+r+' free scan'+(r===1?'':'s')+' remaining';
+}
+function showPaywall(){document.getElementById('paywallOverlay').classList.add('visible');}
 let currentTicker='',currentData=null;
 
 // ── LOADING STAGES ────────────────────────────────────────────
@@ -503,6 +556,9 @@ document.getElementById('goBtn').addEventListener('click',async function(){
 
   // MVIS — permanent monument override
   if(ticker==='MVIS'){
+    scansUsed++;
+    try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}
+    updateScanLabel();
     const mvisData={name:'MicroVision',score:2.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'8%',float:'180M',revenue:'$7M TTM',earnings:'May 15, 2026',rec:'-',verdict:'MONUMENT — NOT A POSITION',col:'#cc0000',price:'',change:''};
     const now=new Date();
     mvisData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
@@ -520,6 +576,11 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     return;
   }
 
+  // Reset code
+  if(ticker==='KLDX'){scansUsed=0;try{localStorage.setItem('k1ladex_scans','0');}catch(e){}updateScanLabel();document.getElementById('tickerInput').value='';return;}
+
+  if(scansUsed>=FREE_SCANS){showPaywall();return;}
+  scansUsed++;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
   document.getElementById('loadingTicker').textContent=ticker;
   document.getElementById('loadingOverlay').classList.add('visible');
   startLoadingStages();
@@ -529,7 +590,7 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   stopLoadingStages();
   if(!scoreData){
     document.getElementById('loadingOverlay').classList.remove('visible');
-    
+    scansUsed--;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
     alert(ticker+'\n\nNo data returned. Verify the ticker symbol and try again.');
     document.getElementById('tickerInput').value='';return;
   }
@@ -591,6 +652,14 @@ document.getElementById('backBtn').addEventListener('click',goBack);
 document.getElementById('backBtn').addEventListener('touchend',function(e){e.preventDefault();goBack();},{passive:false});
 document.getElementById('btcCloseBtn').addEventListener('click',function(){document.getElementById('btcOverlay').classList.remove('visible');document.getElementById('tickerInput').value='';setTimeout(function(){document.getElementById('tickerInput').focus();},300);});
 
+const STRIPE='https://buy.stripe.com/eVqdRb1PY8t3cRae4vcMM04';
+document.getElementById('subscribeBtn').addEventListener('click',function(){window.open(STRIPE,'_blank');});
+document.getElementById('subscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(STRIPE,'_blank');},{passive:false});
+document.getElementById('paywallSubscribeBtn').addEventListener('click',function(){window.open(STRIPE,'_blank');});
+document.getElementById('paywallSubscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(STRIPE,'_blank');},{passive:false});
+function closePaywall(){document.getElementById('paywallOverlay').classList.remove('visible');}
+document.getElementById('paywallCloseBtn').addEventListener('click',closePaywall);
+document.getElementById('paywallCloseBtn').addEventListener('touchend',function(e){e.preventDefault();closePaywall();},{passive:false});
 
 // ── PDF ──────────────────────────────────────────────────────
 function cpProse(letter,val,d,ticker){
@@ -919,6 +988,7 @@ window.addEventListener('load',function(){
   document.getElementById('ctaRow').style.opacity=0;
   document.getElementById('reportBtn').style.opacity=0;
   document.getElementById('ctaShare').style.opacity=0;
+  updateScanLabel();
 });
 
 function toggleCP(row){

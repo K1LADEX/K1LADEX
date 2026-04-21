@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="K1LADEX">
-<meta name="theme-color" content="#080b0f">
+<meta name="theme-color" content="#080e1a">
 <title>K1LADEX — AI² Intelligence</title>
 <meta property="og:title" content="K1LADEX — AI-Powered Stock Scoring. Seven Checkpoints.">
 <meta property="og:description" content="K1LADEX scores any stock through 7 checkpoints — built from real losses and real wins by a retail investor who paid attention.">
@@ -17,51 +17,60 @@
 <meta name="twitter:title" content="K1LADEX — AI-Powered Stock Scoring. Seven Checkpoints.">
 <meta name="twitter:description" content="K1LADEX scores any stock through 7 checkpoints — built from real losses and real wins by a retail investor who paid attention.">
 <meta name="twitter:image" content="https://k1ladex.com/og-image.jpg">
-<meta name="description" content="K1LADEX is AI-powered investor intelligence built on the SIGNAL+ framework. Seven checkpoints. One verdict. Geometric opportunities identified before the crowd arrives. Not financial advice.">
 <meta name="keywords" content="stock scoring, AI investing, retail investor, SIGNAL+, K1LADEX">
 <meta name="author" content="K1LADEX">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;-webkit-overflow-scrolling:touch;}
-body{background:#080b0f;display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:-webkit-fill-available;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
-.screen{width:100vw;height:100vh;height:-webkit-fill-available;max-width:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.bg-grid{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,229,255,0.04) 39px,rgba(0,229,255,0.04) 40px);}
-.border-ring{position:absolute;top:12px;bottom:12px;left:16px;right:16px;border:1px solid rgba(0,229,255,0.12);border-radius:20px;pointer-events:none;}
+body{background:#080e1a;display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:-webkit-fill-available;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
+.screen{width:100vw;height:100vh;height:-webkit-fill-available;max-width:480px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.bg-grid{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(100,200,255,0.04) 39px,rgba(100,200,255,0.04) 40px);}
+.border-ring{position:absolute;top:12px;bottom:12px;left:16px;right:16px;border:1px solid rgba(100,200,255,0.12);border-radius:20px;pointer-events:none;}
 .logo-wrap{text-align:center;margin-bottom:4px;}
 .logo-text{font-size:46px;font-weight:700;color:#fff;letter-spacing:1px;}
-.logo-sub{font-size:12px;font-weight:600;color:#00e5ff;letter-spacing:3.5px;margin-top:5px;}
+.logo-sub{font-size:12px;font-weight:600;color:#64c8ff;letter-spacing:3.5px;margin-top:5px;}
 #ai2c{display:block;width:300px;height:86px;margin:2px auto;transition:height 0.4s ease,margin 0.4s ease,opacity 0.3s ease;}
 .reveal-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;opacity:1;margin-bottom:18px;}
 .tagline{font-size:17px;font-weight:400;color:rgba(255,255,255,0.8);text-align:center;}
-.arrow-label{font-size:13px;font-weight:600;color:#00e5ff;letter-spacing:0.5px;}
+.arrow-label{font-size:13px;font-weight:600;color:#64c8ff;letter-spacing:0.5px;}
 .input-area{display:flex;flex-direction:column;align-items:center;}
 .ticker-input-wrap{display:flex;align-items:center;gap:10px;}
-.ticker-input{background:rgba(0,229,255,0.06);border:2px solid #00e5ff;border-radius:8px;padding:12px 18px;font-size:28px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#fff;width:160px;text-align:center;text-transform:uppercase;letter-spacing:4px;outline:none;}
-.ticker-input::placeholder{color:rgba(0,229,255,0.3);font-size:18px;letter-spacing:2px;}
-.go-btn{background:#00e5ff;border:1px solid rgba(0,229,255,0.35);border-radius:8px;padding:12px 20px;font-size:18px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#080b0f;cursor:pointer;transition:background 0.2s;}
+.ticker-input{background:rgba(100,200,255,0.06);border:2px solid #64c8ff;border-radius:8px;padding:12px 18px;font-size:28px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#fff;width:160px;text-align:center;text-transform:uppercase;letter-spacing:4px;outline:none;}
+.ticker-input::placeholder{color:rgba(100,200,255,0.3);font-size:18px;letter-spacing:2px;}
+.go-btn{background:#64c8ff;border:none;border-radius:8px;padding:12px 20px;font-size:18px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#080e1a;cursor:pointer;transition:background 0.2s;}
 .go-btn:hover{background:#4ab8f0;}
-.free-label{font-size:11px;color:rgba(0,229,255,0.5);letter-spacing:2px;margin-top:8px;text-transform:uppercase;text-align:center;}
+.free-label{font-size:11px;color:rgba(100,200,255,0.5);letter-spacing:2px;margin-top:8px;text-transform:uppercase;text-align:center;}
 .price-row{display:flex;align-items:center;justify-content:center;margin-top:6px;}
-.price-pill{font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.25);border-radius:20px;padding:4px 10px;letter-spacing:0.5px;}
-.score-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.5s;z-index:20;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#080b0f;}
+.price-pill{font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(100,200,255,0.06);border:1px solid rgba(100,200,255,0.25);border-radius:20px;padding:4px 10px;letter-spacing:0.5px;}
+.score-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.5s;z-index:20;overflow:hidden;}
 .score-overlay.visible{opacity:1;pointer-events:all;}
-.score-canvas{width:100%;display:block;position:relative;}
-.back-btn{position:absolute;top:6px;left:6px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);border-radius:20px;padding:4px 10px;font-size:10px;letter-spacing:1px;color:rgba(0,229,255,0.6);cursor:pointer;text-transform:uppercase;z-index:30;}
-.cta-row{position:relative;display:flex;justify-content:center;padding:8px 24px 16px 24px;z-index:30;}
-.cta-subscribe{background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.25);border-radius:20px;padding:6px 14px;font-size:10px;font-weight:600;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:rgba(0,229,255,0.7);cursor:pointer;letter-spacing:0.8px;}
-.cta-share{position:relative;text-align:center;font-size:11px;color:rgba(0,229,255,0.6);letter-spacing:1px;z-index:30;pointer-events:auto;cursor:pointer;padding:8px 24px 8px 24px;}
-.cta-report{display:none;}
-.loading-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.3s;z-index:25;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#080b0f;}
+.score-canvas{width:100%;height:100%;position:absolute;top:0;left:0;}
+.back-btn{position:absolute;top:10px;right:10px;background:rgba(100,200,255,0.08);border:1px solid rgba(100,200,255,0.2);border-radius:20px;padding:4px 10px;font-size:10px;letter-spacing:1px;color:rgba(100,200,255,0.6);cursor:pointer;text-transform:uppercase;z-index:30;}
+.cta-row{position:absolute;bottom:68px;left:0;width:100%;display:flex;gap:8px;padding:0 16px;z-index:30;}
+.cta-subscribe{flex:1;background:#64c8ff;border:none;border-radius:8px;padding:11px 8px;font-size:11px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#080e1a;cursor:pointer;letter-spacing:0.5px;}
+.cta-share{position:absolute;bottom:20px;width:100%;text-align:center;font-size:9px;color:rgba(100,200,255,0.4);letter-spacing:1px;z-index:30;pointer-events:none;}
+.cta-report{position:absolute;bottom:46px;left:16px;right:16px;background:transparent;border:none;padding:0;font-size:10px;font-weight:500;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#64c8ff;cursor:pointer;letter-spacing:1px;text-align:center;text-decoration:underline;opacity:0;z-index:30;}
+.loading-overlay{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity 0.3s;z-index:25;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#080e1a;}
 .loading-overlay.visible{opacity:1;pointer-events:all;}
 .loading-ticker{font-size:38px;font-weight:700;color:#fff;letter-spacing:4px;margin-bottom:6px;}
-.loading-sub{font-size:12px;color:rgba(0,229,255,0.6);margin-bottom:28px;letter-spacing:1px;}
+.loading-sub{font-size:12px;color:rgba(100,200,255,0.6);margin-bottom:28px;letter-spacing:1px;}
 .loading-dots{display:flex;gap:10px;}
-.loading-dot{width:10px;height:10px;border-radius:50%;background:#00e5ff;animation:pulse 1.2s ease-in-out infinite;}
+.loading-dot{width:10px;height:10px;border-radius:50%;background:#64c8ff;animation:pulse 1.2s ease-in-out infinite;}
 .loading-dot:nth-child(2){animation-delay:0.2s;}
 .loading-dot:nth-child(3){animation-delay:0.4s;}
 @keyframes pulse{0%,100%{opacity:0.25;transform:scale(0.8);}50%{opacity:1;transform:scale(1.2);}}
-.loading-label{font-size:10px;color:rgba(0,229,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-top:16px;}
-.btc-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#080b0f;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:60;}
+.loading-label{font-size:10px;color:rgba(100,200,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-top:16px;}
+.paywall-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,7,13,0.95);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:50;}
+.paywall-overlay.visible{opacity:1;pointer-events:all;}
+.paywall-box{background:#0d1726;border:1px solid rgba(100,200,255,0.2);border-radius:16px;padding:32px 28px 28px;width:300px;text-align:center;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.paywall-logo{font-size:28px;font-weight:700;color:#fff;letter-spacing:1px;}
+.paywall-sub{font-size:10px;color:#64c8ff;letter-spacing:3px;margin-top:4px;}
+.paywall-divider{height:1px;background:rgba(100,200,255,0.1);margin:16px 0;}
+.paywall-msg{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;}
+.paywall-tagline{font-size:13px;color:rgba(255,255,255,0.5);font-style:italic;margin-bottom:4px;}
+.paywall-btn-primary{width:100%;background:#64c8ff;border:none;border-radius:10px;padding:14px;font-size:13px;font-weight:700;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#080e1a;cursor:pointer;letter-spacing:0.5px;margin-bottom:10px;}
+.paywall-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:16px;color:rgba(100,200,255,0.5);cursor:pointer;padding:4px 8px;}
+.btc-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#080e1a;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:60;}
 .btc-overlay.visible{opacity:1;pointer-events:all;}
 .btc-box{border:2px solid #f5c400;border-radius:16px;padding:40px 32px;width:300px;text-align:center;box-shadow:0 0 40px rgba(245,196,0,0.15);}
 .btc-crown{font-size:48px;margin-bottom:12px;}
@@ -69,40 +78,24 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
 .btc-sub{font-size:10px;color:#f5c400;letter-spacing:3px;margin-bottom:24px;}
 .btc-msg{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6;font-style:italic;}
 .btc-close{margin-top:24px;background:none;border:1px solid rgba(245,196,0,0.4);border-radius:20px;padding:6px 20px;font-size:10px;color:#f5c400;cursor:pointer;letter-spacing:2px;}
-.app-disclaimer{position:absolute;bottom:5px;width:100%;text-align:center;font-size:7.5px;color:rgba(0,229,255,0.22);letter-spacing:0.4px;z-index:10;pointer-events:none;padding:0 16px;}
-
-.checkpoint-section{background:#080b0f;padding:16px 16px 120px 16px;width:100%;box-sizing:border-box;}
-.cp-section-label{color:#00e5ff;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 12px 0;}
-.checkpoint-row{background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.2);border-radius:8px;padding:14px 16px;margin-bottom:10px;}
-.cp-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.cp-letter{color:#c8a96e;font-size:13px;font-weight:700;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.1em;text-transform:uppercase;}
-.cp-dash{color:rgba(255,255,255,0.25);font-size:13px;}
-.cp-name{font-size:13px;font-weight:700;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.04em;text-transform:uppercase;}
-.cp-verdict{font-size:15px;margin-left:4px;}
-.cp-desc{font-size:14px;font-weight:400;color:rgba(255,255,255,0.85);font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.6;margin-bottom:4px;}
-.cp-desc2{font-size:12px;font-weight:400;color:rgba(255,255,255,0.45);font-family:'Helvetica Neue',Arial,sans-serif;line-height:1.5;}
-.cp-pass{color:#00e5ff;}
-.cp-warn{color:#ffaa00;}
-.cp-fail{color:#cc4400;}
-
-.cp-body{display:none;padding-top:8px;}
-.checkpoint-row.expanded .cp-body{display:block;}
-.cp-header{cursor:pointer;display:flex;align-items:center;gap:8px;margin-bottom:0;}
-.checkpoint-row.expanded .cp-header{margin-bottom:8px;}
-.cp-chevron{margin-left:auto;color:rgba(255,255,255,0.3);font-size:12px;transition:transform 0.25s;}
-.checkpoint-row.expanded .cp-chevron{transform:rotate(180deg);color:#c8a96e;}
-
-.score-bar{display:none;width:100%;background:#0e1318;border-top:1px solid rgba(0,229,255,0.12);border-bottom:1px solid rgba(0,229,255,0.12);padding:28px 24px;box-sizing:border-box;text-align:center;}
-.score-bar-ring{display:inline-flex;align-items:center;justify-content:center;width:110px;height:110px;border-radius:50%;border:3px solid #c8a96e;background:rgba(200,169,110,0.06);margin-bottom:12px;position:relative;}
-.score-bar-ring::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(0,229,255,0.15);}
-.score-bar-number{font-size:36px;font-weight:700;font-family:'Helvetica Neue',Arial,sans-serif;line-height:1;}
-.score-bar-denom{font-size:16px;font-weight:400;color:rgba(255,255,255,0.4);margin-left:2px;}
-.score-bar-label{font-size:9px;font-weight:500;letter-spacing:0.14em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:4px;}
-.score-bar-verdict{font-size:15px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-top:6px;}
-.score-bar-brand{font-size:9px;letter-spacing:0.18em;color:rgba(200,169,110,0.5);text-transform:uppercase;margin-top:4px;}
 </style>
 </head>
-<div class="screen" id="screen">
+<body><div id="k1-gate" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;">
+  <div style="color:#fff;font-size:1.4rem;letter-spacing:0.2em;margin-bottom:8px;">K1LADEX</div>
+  <div style="color:#888;font-size:0.75rem;letter-spacing:0.15em;margin-bottom:32px;">INTELLIGENCE PLATFORM</div>
+  <input id="k1-input" type="password" placeholder="ACCESS CODE" style="background:#111;border:1px solid #333;color:#fff;padding:12px 20px;font-family:monospace;letter-spacing:0.2em;text-align:center;font-size:1rem;outline:none;width:220px;margin-bottom:12px;" />
+  <button onclick="k1check()" style="background:#fff;color:#000;border:none;padding:10px 32px;font-family:monospace;letter-spacing:0.15em;cursor:pointer;font-size:0.85rem;">ENTER</button>
+  <div id="k1-error" style="color:#ff4444;font-size:0.75rem;margin-top:12px;letter-spacing:0.1em;"></div>
+</div>
+<script>
+  if(sessionStorage.getItem('k1access')==='true'){document.getElementById('k1-gate').style.display='none';}
+  document.getElementById('k1-input').addEventListener('keydown',function(e){if(e.key==='Enter')k1check();});
+  function k1check(){
+    const v=document.getElementById('k1-input').value.toUpperCase().trim();
+    if(v==='LAZYGATE'||v==='DAD'||v==='DEX'){sessionStorage.setItem('k1access','true');document.getElementById('k1-gate').style.display='none';}
+    else{document.getElementById('k1-error').textContent='INVALID ACCESS CODE';}
+  }
+</script><div class="screen" id="screen">
   <div class="bg-grid"></div>
   <div class="border-ring"></div>
   <div class="logo-wrap">
@@ -119,6 +112,7 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
       <input class="ticker-input" id="tickerInput" placeholder="AAPL" maxlength="5" autocomplete="off" spellcheck="false"/>
       <button class="go-btn" id="goBtn">→</button>
     </div>
+    <div class="free-label" id="freeLabel">3 FREE SCANS REMAINING</div>
   </div>
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-ticker" id="loadingTicker">—</div>
@@ -127,18 +121,25 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
     <div class="loading-label">K1LADEX AI² scanning</div>
   </div>
   <div class="score-overlay" id="scoreOverlay">
-    <canvas class="score-canvas" id="sc" ></canvas>
-    <div class="score-bar" id="scoreBar">
-      <div class="score-bar-label">Signal+ Score</div>
-      <div class="score-bar-ring"><div><span class="score-bar-number" id="scoreBarNumber">—</span><span class="score-bar-denom">/10</span></div></div>
-      <div class="score-bar-verdict" id="scoreBarVerdict">—</div>
-      <div class="score-bar-brand">K1LADEX Intelligence</div>
-    </div>
-    <div class="checkpoint-section" id="checkpointSection" style="display:none;"></div>
+    <canvas class="score-canvas" id="sc" width="360" height="640"></canvas>
     <button class="back-btn" id="backBtn">← BACK</button>
+    <div class="cta-row" id="ctaRow" style="opacity:0"><button class="cta-subscribe" id="subscribeBtn">Subscribe — $9.99 / month</button></div>
     <button class="cta-report" id="reportBtn">⬇ Download PDF Report</button>
-    <div class="cta-share" id="ctaShare">Share this score — K1LADEX Intelligence</div>
+    <div class="cta-share" id="ctaShare">Share this score · 3 free scans remaining</div>
   </div>
+  <div class="paywall-overlay" id="paywallOverlay">
+    <div class="paywall-box">
+      <div class="paywall-logo">K1LADEX</div>
+      <div class="paywall-sub">INTELLIGENCE FRAMEWORK</div>
+      <div class="paywall-divider"></div>
+      <div class="paywall-msg">You've used your 3 free scans.</div>
+      <div class="paywall-tagline">Finally know what you're doing.</div>
+      <div class="paywall-divider"></div>
+      <button class="paywall-btn-primary" id="paywallSubscribeBtn">Subscribe — $9.99 / month</button>
+      <button class="paywall-close" id="paywallCloseBtn">✕</button>
+    </div>
+  </div>
+  <div class="btc-overlay" id="btcOverlay">
     <div class="btc-box">
       <div class="btc-crown">👑</div>
       <div class="btc-logo">K1LADEX</div>
@@ -147,7 +148,6 @@ body{background:#080b0f;display:flex;align-items:center;justify-content:center;m
       <button class="btc-close" id="btcCloseBtn">BACK TO STOCKS</button>
     </div>
   </div>
-  <div class="app-disclaimer">K1LADEX is not a registered investment advisor. Not financial advice. &nbsp;&middot;&nbsp; &copy; 2026 K1LADEX. Copyrighted March 21, 2026.</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -158,7 +158,7 @@ try {
   const canvas=document.getElementById('ai2c');
   const ctx=canvas.getContext('2d');
   const CW=canvas.width,CH=canvas.height;
-  const BRIGHT='#00e5ff';
+  const BRIGHT='#64c8ff';
   function makeWordCloud(texts,step){
     const off=document.createElement('canvas');off.width=CW;off.height=CH;
     const oc=off.getContext('2d');
@@ -184,7 +184,7 @@ try {
     if(!st)st=ts;var t=(ts-st)/1000;
     if(t>=T6){ctx.clearRect(0,0,CW,CH);canvas.style.opacity='0';setTimeout(function(){canvas.style.height='0';canvas.style.margin='0';var rw=document.getElementById('revealWrap');rw.style.overflow='hidden';var h=rw.offsetHeight;rw.style.transition='height 0.35s ease,margin 0.35s ease,opacity 0.35s ease';rw.style.height=h+'px';rw.offsetHeight;rw.style.height='0';rw.style.marginBottom='0';rw.style.opacity='0';},350);return;}
     ctx.clearRect(0,0,CW,CH);var fade=t>=T5?1-pr(t,T5,T6):1;var holdAI2=t>=T3&&t<T4;var pulse=holdAI2?(0.5+0.5*Math.sin((t-T3)*14)):0;
-    ctx.shadowColor='#00e5ff';ctx.shadowBlur=holdAI2?(5+pulse*14):2;ctx.fillStyle=BRIGHT;ctx.globalAlpha=fade;
+    ctx.shadowColor='#64c8ff';ctx.shadowBlur=holdAI2?(5+pulse*14):2;ctx.fillStyle=BRIGHT;ctx.globalAlpha=fade;
     for(var i=0;i<P.length;i++){var p=P[i],px,py;
       if(t<T1){var g=eo(pr(t,T0,T1));px=lerp(p.ox,p.wx,g);py=lerp(p.oy,p.wy,g);}
       else if(t<T2){px=p.wx;py=p.wy;}
@@ -252,16 +252,7 @@ function scoreFromLiveData(ticker,d){
   }
   let n=typeof d.nScore==='number'?d.nScore:1.5;
   const strikes=d.nStrikes||0;
-  if(strikes>=2){n=0;}
-  else if(d.splitDate){
-    const splitMs=new Date(d.splitDate).getTime();
-    const monthsAgo=(Date.now()-splitMs)/(30*24*3600*1000);
-    if(!isNaN(monthsAgo)&&monthsAgo<=24){
-      n=Math.max(0.5,n-0.5);
-      d.nFlags=Array.isArray(d.nFlags)?d.nFlags:[];
-      d.nFlags=['⚠️ Reverse split '+d.splitDate+' — within 24 months',...d.nFlags];
-    }
-  }
+  if(strikes>=2)n=0;
   const a=d.nextEarnings?1.5:0;
   let l=1.0;
   if(d.currentPrice&&d.week52Low){
@@ -280,13 +271,13 @@ function scoreFromLiveData(ticker,d){
   if(megaFloat&&!highShort)plus=0;
   const raw=s+i+g+n+a+l+plus;
   const score=Math.round(Math.min(10,raw)*10)/10;
-  let rec=score>=9?'+':score>=7?'+':'-';
-  if(strikes>=2)rec='-';
+  let rec=score>=9?'BUY':score>=7?'HOLD':'PASS';
+  if(strikes>=2)rec='PASS';
   let verdict;
   if(strikes>=2){verdict='SMCI RULE — 2+ LEGAL STRIKES';}
   else if(d.nFlags&&d.nFlags.length>0&&n<1.5){verdict=d.nFlags[0].substring(0,38).toUpperCase();}
-  else{verdict=score>=7?'+':'-';}
-  const col=score>=9?'#1a8a3a':score>=7?'#886600':'#cc4400';
+  else{verdict=score>=9?'MAXIMUM CONVICTION':score>=7?'WATCHLIST CANDIDATE':score>=5?'MONITOR ONLY':'FAILED SIGNAL+ — PASS';}
+  const col=rec==='BUY'?'#1a8a3a':rec==='HOLD'?'#886600':'#cc4400';
   const now=new Date();
   const scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   return{name:d.name||ticker,score,s,i,g,n,a,l,plus,surge:d.surgeFormatted||'—',short:d.shortPctFormatted||'N/A',float:d.floatFormatted||'N/A',revenue:d.revenueFormatted||'N/A',earnings:d.nextEarnings||'TBD',rec,verdict,col,price:d.price,change:d.change,scanTime,
@@ -302,21 +293,35 @@ function scoreFromLiveData(ticker,d){
     highShort:highShort,tightFloat:tightFloat,megaFloat:megaFloat};
 }
 
+// ── FALLBACK SCORES ──────────────────────────────────────────
+const FALLBACK_SCORES={
+  'ONDS':{name:'Ondas Holdings',score:9,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.0,plus:1.0,surge:'+248%',short:'35%',float:'8.2M',revenue:'$38-41M guided',earnings:'May 14, 2026',rec:'BUY',verdict:'CROWN CANDIDATE',col:'#1a8a3a'},
+  'GSAT':{name:'Globalstar',score:8.5,s:1.5,i:1.5,g:1.0,n:1.5,a:1.0,l:1.0,plus:1.0,surge:'+272%',short:'12%',float:'1.2B',revenue:'$280-305M guided',earnings:'Apr 30, 2026',rec:'HOLD',verdict:'APPLE CONSTELLATION CATALYST',col:'#1a8a3a'},
+  'LWLG':{name:'Lightwave Logic',score:5.75,s:1.5,i:1.0,g:0.5,n:0.75,a:1.0,l:1.0,plus:0.0,surge:'+816%',short:'6%',float:'131M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'HOLD',verdict:'CEO SELLING FLAG — DO NOT ADD',col:'#886600'},
+  'IBRX':{name:'ImmunityBio',score:7.0,s:1.5,i:1.0,g:1.0,n:1.0,a:1.5,l:1.0,plus:0.0,surge:'+303%',short:'18%',float:'15M',revenue:'$118M TTM',earnings:'May 8, 2026',rec:'HOLD',verdict:'FDA CATALYST WATCH',col:'#886600'},
+  'DNN':{name:'Denison Mines',score:7.0,s:1.0,i:1.0,g:1.0,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+116%',short:'4%',float:'620M',revenue:'Pre-revenue',earnings:'May 11, 2026',rec:'HOLD',verdict:'URANIUM — PHOENIX ISR UNDERWAY',col:'#886600'},
+  'PL':{name:'Planet Labs',score:9.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.5,l:1.5,plus:0.5,surge:'+380%',short:'28%',float:'14M',revenue:'$240M TTM',earnings:'Jun 4, 2026',rec:'BUY',verdict:'DEFENSE INTELLIGENCE — LEVI STRAUSS',col:'#1a8a3a'},
+  'TSEM':{name:'Tower Semiconductor',score:9.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.5,plus:1.0,surge:'+285%',short:'3%',float:'160M',revenue:'$1.4B TTM',earnings:'Apr 28, 2026',rec:'BUY',verdict:'SILICON PHOTONICS FOUNDRY',col:'#1a8a3a'},
+  'RCAT':{name:'Red Cat Holdings',score:8.5,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.5,surge:'+460%',short:'22%',float:'28M',revenue:'$38-41M guided',earnings:'Jun 12, 2026',rec:'HOLD',verdict:'RE-SCORE WHEN LEGAL CLEARS',col:'#886600'},
+  'GLNG':{name:'Golar LNG',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+180%',short:'8%',float:'95M',revenue:'$580M TTM',earnings:'May 20, 2026',rec:'HOLD',verdict:'FLOATING LNG — ENTRY $42-46',col:'#1a8a3a'},
+  'ERAS':{name:'Erasca',score:8.0,s:1.5,i:1.5,g:1.0,n:1.5,a:1.5,l:1.0,plus:0.0,surge:'+290%',short:'15%',float:'120M',revenue:'Pre-revenue',earnings:'May 7, 2026',rec:'BUY',verdict:'PRECISION ONCOLOGY — PHASE 1',col:'#1a8a3a'},
+  'NVDA':{name:'Nvidia',score:8.0,s:1.5,i:1.5,g:1.5,n:1.5,a:1.0,l:1.0,plus:0.0,surge:'+620%',short:'1.1%',float:'2.4B',revenue:'$130B TTM',earnings:'May 28, 2026',rec:'HOLD',verdict:'AI KING — WATCH EARNINGS',col:'#1a8a3a'},
+  'CODA':{name:'Coda Octopus',score:8.25,s:1.5,i:1.5,g:1.5,n:1.5,a:1.25,l:1.0,plus:0.0,surge:'+310%',short:'12%',float:'15M',revenue:'$25M TTM',earnings:'Jun 17, 2026',rec:'BUY',verdict:'UNDERWATER DEFENSE INFRASTRUCTURE',col:'#1a8a3a'},
+  'SMCI':{name:'Super Micro Computer',score:4.5,s:1.5,i:0.0,g:1.0,n:0.0,a:0.5,l:1.0,plus:0.5,surge:'+280%',short:'14%',float:'580M',revenue:'$14B TTM',earnings:'May 6, 2026',rec:'PASS',verdict:'ACCOUNTING FLAGS — SMCI RULE',col:'#cc4400'},
+  'GME':{name:'GameStop',score:3.0,s:1.0,i:0.0,g:0.0,n:1.0,a:0.5,l:0.5,plus:0.0,surge:'+65%',short:'12%',float:'305M',revenue:'$1.1B TTM',earnings:'Mar 26, 2026',rec:'PASS',verdict:'NO THESIS — MEME ONLY',col:'#cc4400'},
+  'NKLA':{name:'Nikola',score:1.5,s:0.0,i:0.0,g:0.0,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'18%',float:'320M',revenue:'$48M TTM',earnings:'May 2026',rec:'PASS',verdict:'FRAUD HISTORY — AUTOMATIC FAIL',col:'#cc0000'},
+  'PLTR':{name:'Palantir Technologies',score:8.0,s:1.5,i:1.5,g:1.5,n:1.0,a:1.0,l:1.0,plus:0.5,surge:'+520%',short:'3.4%',float:'2.1B',revenue:'$2.8B TTM',earnings:'May 5, 2026',rec:'HOLD',verdict:'DEFENSE AI PLATFORM',col:'#1a8a3a'},
+  'NOW':{name:'ServiceNow',score:3,s:0.0,i:0.0,g:1.5,n:0.0,a:1.5,l:0.0,plus:0.0,surge:'+5%',short:'0.9%',float:'1.05B',revenue:'$13.28B TTM',earnings:'Apr 22, 2026',rec:'PASS',verdict:'SMCI RULE — 2+ DOJ ITEMS',col:'#cc4400'},
+  'DPRO':{name:'Draganfly',score:5.5,s:1.0,i:1.0,g:0.5,n:1.0,a:1.0,l:0.5,plus:0.5,surge:'+180%',short:'98%',float:'12M',revenue:'$4M TTM',earnings:'May 28, 2026',rec:'WATCH',verdict:'SHAKEDOWN SCOUT — 98% SHORT',col:'#886600'},
+  'SPY':{name:'SPDR S&P 500 ETF',score:6.0,s:1.5,i:1.0,g:1.5,n:1.5,a:0.0,l:1.0,plus:0.0,surge:'+180%',short:'0.2%',float:'N/A',revenue:'N/A',earnings:'N/A',rec:'HOLD',verdict:'BROAD MARKET INDEX',col:'#886600'},
+};
 
 // ── SCORE CANVAS ─────────────────────────────────────────────
-const GREEN='#1a8a3a',BLUE='#00e5ff',INK='#ffffff',INK_MID='rgba(255,255,255,0.85)',INK_DIM='rgba(255,255,255,0.45)';
-const BG_TOP='#080b0f',BG_BOT='#0e1318',RULE='rgba(0,229,255,0.04)';
+const SW=360,SH=640;
+const GREEN='#1a8a3a',BLUE='#64c8ff',INK='#ffffff',INK_MID='rgba(255,255,255,0.85)',INK_DIM='rgba(255,255,255,0.45)';
+const BG_TOP='#080e1a',BG_BOT='#0d1726',RULE='rgba(100,200,255,0.04)';
 const sc_el=document.getElementById('sc');
-const DPR=window.devicePixelRatio||1;
-let SW=360,SH=640;
 const sc=sc_el.getContext('2d');
-function initCanvas(){
-  SW=sc_el.parentElement.offsetWidth||window.innerWidth;
-  SH=230;
-  sc_el.width=SW*DPR;sc_el.height=SH*DPR;
-  sc_el.style.width=SW+'px';sc_el.style.height=SH+'px';
-  sc.setTransform(DPR,0,0,DPR,0,0);
-}
 let scoreRaf=null,scoreStart=null;
 
 function scRR(x,y,w,h,r){sc.beginPath();sc.moveTo(x+r,y);sc.lineTo(x+w-r,y);sc.quadraticCurveTo(x+w,y,x+w,y+r);sc.lineTo(x+w,y+h-r);sc.quadraticCurveTo(x+w,y+h,x+w-r,y+h);sc.lineTo(x+r,y+h);sc.quadraticCurveTo(x,y+h,x,y+h-r);sc.lineTo(x,y+r);sc.quadraticCurveTo(x,y,x+r,y);sc.closePath();}
@@ -325,57 +330,34 @@ function surgeY(xf){if(xf<0.12)return 0.82+xf*0.08;if(xf<0.25)return 0.83-(xf-0.
 function drawScoreScreen(ticker,data,t){
   const eop=(s,e)=>Math.max(0,Math.min(1,(t-s)/(e-s)));
   const eeo=(v)=>1-Math.pow(1-v,3);
-  const GOLD='#c8a96e';
   const g=sc.createLinearGradient(0,0,0,SH);g.addColorStop(0,BG_TOP);g.addColorStop(1,BG_BOT);
   sc.fillStyle=g;sc.fillRect(0,0,SW,SH);
   sc.strokeStyle=RULE;sc.lineWidth=0.5;
-  
+  for(let y=0;y<SH;y+=40){sc.beginPath();sc.moveTo(0,y);sc.lineTo(SW,y);sc.stroke();}
   const ringA=eeo(eop(0,0.3));
-  
+  if(ringA>0){sc.save();sc.globalAlpha=ringA*0.15;sc.strokeStyle=BLUE;sc.lineWidth=1;sc.beginPath();sc.roundRect(12,10,SW-24,SH-20,16);sc.stroke();sc.restore();}
   const h1=eeo(eop(0,0.4));
   sc.save();sc.globalAlpha=h1;
-  sc.fillStyle=GOLD;sc.font='700 24px '+HN;sc.textAlign='center';sc.textBaseline='middle';
-  sc.fillText((data.name||ticker).toUpperCase(),SW/2,32);
-  sc.fillStyle=BLUE;sc.font='600 14px '+HN;sc.textAlign='center';sc.textBaseline='middle';
-  sc.fillText('#'+ticker.toUpperCase(),SW/2,52);
+  sc.fillStyle=INK;sc.font=`700 34px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(ticker.toUpperCase(),22,46);
+  sc.fillStyle=INK_DIM;sc.font=`400 12px ${HN}`;sc.fillText(data.name,22,66);
   const priceCol=data.change&&data.change.startsWith('-')?'#ff6b6b':BLUE;
-  const sY=82,sRowH=22;
-  const leftStats=[
-    ['PRICE  ',data.price||'--',priceCol],
-    ['TODAY  ',data.change||'--',priceCol],
-    ['52W SURGE  ',data.surge||'+0%',BLUE],
-    ['NEXT CATALYST  ',data.earnings||'TBD',BLUE]
-  ];
-  leftStats.forEach(([label,val,col],i)=>{
-    const ly=sY+i*sRowH;
-    sc.fillStyle=INK;sc.font='700 13px '+HN;sc.textAlign='left';sc.textBaseline='alphabetic';
-    const lw=sc.measureText(label).width;
-    sc.fillText(label,20,ly);
-    sc.fillStyle=col;sc.font='700 14px '+HN;
-    sc.fillText(val,20+lw,ly);
-  });
-  const rightStats=[
-    [data.shortPctFormatted&&data.shortPctFormatted!=='N/A'?data.shortPctFormatted:null,' SHORT INTEREST'],
-    [data.floatFormatted&&data.floatFormatted!=='N/A'?data.floatFormatted:null,' FLOAT'],
-    [data.revenueFormatted&&data.revenueFormatted!=='N/A'&&data.revenueFormatted!=='Pre-revenue'?data.revenueFormatted:null,' REVENUE'],
-  ];
-  let rRow=0;
-  rightStats.forEach(([val,label])=>{
-    if(!val)return;
-    const ly=sY+rRow*sRowH;rRow++;
-    sc.textBaseline='alphabetic';
-    sc.fillStyle=INK;sc.font='600 11px '+HN;sc.textAlign='right';
-    const labelW=sc.measureText(label).width;
-    sc.fillText(label,SW-18,ly);
-    sc.fillStyle=BLUE;sc.font='700 11px '+HN;sc.textAlign='right';
-    sc.fillText(val,SW-18-labelW,ly);
-  });
+  sc.fillStyle=priceCol;sc.font=`700 16px ${HN}`;sc.textAlign='right';sc.fillText(data.price||'',SW-22,46);
+  sc.fillStyle=INK_DIM;sc.font=`400 11px ${HN}`;sc.fillText(data.price?data.change:'See Robinhood for price',SW-22,66);
   sc.restore();
+  const recA=eeo(eop(0.2,0.7));
+  if(recA>0){sc.save();sc.globalAlpha=recA;
+    const recCol=data.rec==='BUY'?'#1a8a3a':data.rec==='HOLD'?'#886600':'#cc4400';
+    const recBg=data.rec==='BUY'?'rgba(26,138,58,0.15)':data.rec==='HOLD'?'rgba(136,102,0,0.15)':'rgba(204,68,0,0.15)';
+    sc.fillStyle=recBg;scRR(22,82,SW-44,38,8);sc.fill();sc.strokeStyle=recCol;sc.lineWidth=1.5;scRR(22,82,SW-44,38,8);sc.stroke();
+    sc.fillStyle=recCol;sc.font=`700 18px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(data.rec,36,101);
+    if(data.rec==='PASS'){const rW=sc.measureText('PASS').width,sP=eeo(eop(0.5,1.1));if(sP>0){sc.strokeStyle='#e63030';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#e63030';sc.shadowBlur=6;sc.globalAlpha=recA*sP;sc.beginPath();sc.moveTo(34,101);sc.lineTo(34+rW*sP,101);sc.stroke();sc.shadowBlur=0;}}
+    if(data.rec==='BUY'){const cP=eeo(eop(0.5,1.2));if(cP>0){const cX=36+sc.measureText('BUY').width+10,cY=101,cS=14;const lx=cX-cS*0.4,ly=cY,mx=cX-cS*0.05,my=cY+cS*0.42,rx=cX+cS*0.55,ry=cY-cS*0.38;const p1=Math.min(cP/0.4,1),p2=Math.max((cP-0.4)/0.6,0);sc.strokeStyle='#1a8a3a';sc.lineWidth=2.8;sc.lineCap='round';sc.lineJoin='round';sc.shadowColor='#1a8a3a';sc.shadowBlur=8;sc.globalAlpha=recA*cP;if(p1>0){sc.beginPath();sc.moveTo(lx,ly);sc.lineTo(lx+(mx-lx)*p1,ly+(my-ly)*p1);sc.stroke();}if(p2>0){sc.beginPath();sc.moveTo(mx,my);sc.lineTo(mx+(rx-mx)*p2,my+(ry-my)*p2);sc.stroke();}sc.shadowBlur=0;}}
+    sc.globalAlpha=recA;sc.fillStyle=INK_MID;sc.font=`600 11px ${HN}`;sc.textAlign='right';sc.fillText(data.verdict,SW-36,101);sc.restore();}
   const lineA=eeo(eop(0.4,1.2));
   if(lineA>0){
     sc.save();sc.globalAlpha=lineA;
-    const lTop=136,lBot=178,lLeft=20,lRight=SW-20,lW=SW-40,lH=lBot-lTop;
-    sc.fillStyle='rgba(0,229,255,0.04)';sc.fillRect(lLeft,lTop,lW,lH);
+    const lTop=130,lBot=178,lLeft=22,lRight=SW-22,lW=SW-44,lH=lBot-lTop;
+    sc.fillStyle='rgba(100,200,255,0.04)';sc.fillRect(lLeft,lTop,lW,lH);
     const lp=eeo(eop(0.5,1.8));
     const candles=data.candles&&data.candles.length>2?data.candles:null;
     const isDown=data.score<7;
@@ -416,58 +398,59 @@ function drawScoreScreen(ticker,data,t){
           sc.shadowColor=lineCol;sc.shadowBlur=6;
           sc.beginPath();sc.moveTo(endX,arrowY-8);sc.lineTo(endX,arrowY-1);sc.stroke();
           sc.beginPath();sc.moveTo(endX-4,arrowY-5);sc.lineTo(endX,arrowY+1);sc.lineTo(endX+4,arrowY-5);sc.closePath();sc.fill();
-          sc.shadowBlur=0;sc.font='700 11px '+HN;sc.textAlign='center';sc.textBaseline='top';
-          sc.fillText(data.surge||'',endX,arrowY+3);
+          sc.shadowBlur=0;
+          sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='top';sc.fillText(data.surge,endX,arrowY+3);
         }else{
           const arrowY=Math.max(lTop+14,endY-2);
           sc.fillStyle=lineCol;sc.strokeStyle=lineCol;sc.lineWidth=1.5;sc.lineCap='round';
           sc.shadowColor=lineCol;sc.shadowBlur=6;
           sc.beginPath();sc.moveTo(endX,arrowY+8);sc.lineTo(endX,arrowY+1);sc.stroke();
           sc.beginPath();sc.moveTo(endX-4,arrowY+5);sc.lineTo(endX,arrowY-1);sc.lineTo(endX+4,arrowY+5);sc.closePath();sc.fill();
-          sc.shadowBlur=0;sc.font='700 11px '+HN;sc.textAlign='center';sc.textBaseline='bottom';
-          sc.fillText(data.surge||'',endX,arrowY-3);
+          sc.shadowBlur=0;
+          sc.font=`700 11px ${HN}`;sc.textAlign='center';sc.textBaseline='bottom';sc.fillText(data.surge,endX,arrowY-3);
         }
       }
     }
-    sc.fillStyle='rgba(255,255,255,0.3)';sc.font='400 9px '+HN;sc.textAlign='left';sc.textBaseline='bottom';
-    sc.fillText('52W Low → Current',lLeft+4,Math.max(lTop+14,Math.min(lBot-6,endY-8)));
+    sc.fillStyle=INK_DIM;sc.font=`400 9px ${HN}`;sc.textAlign='left';sc.textBaseline='alphabetic';
+    sc.fillText('52W Low → Current',lLeft,lBot+12);
     sc.restore();
   }
-  const iconA=eeo(eop(0.8,1.4));
-  if(iconA>0){
-    const iconVals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
-    const iconLetters=['S','I','G','N','A','L','+'];
-    const iconSlot=Math.floor((SW-40)/7);
-    const iconY=190;
-    iconVals.forEach((val,i)=>{
-      const iA=eeo(eop(0.8+i*0.08,1.2+i*0.08));if(iA<=0)return;
-      sc.save();sc.globalAlpha=iA*iconA;
-      const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
-      const cx=20+iconSlot*i+iconSlot/2;
-      sc.fillStyle='rgba(255,255,255,0.55)';sc.font='700 13px '+HN;sc.textAlign='center';sc.textBaseline='middle';
-      sc.fillText(iconLetters[i],cx,iconY);
-      const icon=val>=1.5?'✓':val>=1.0?'⚠':' ✕';
-      sc.fillStyle=col;sc.font='700 14px '+HN;sc.textAlign='center';sc.textBaseline='middle';
-      sc.fillText(icon,cx,iconY+20);
-      sc.restore();
-    });
-  }
-  // bars removed — icon row handles signal display
-  const scoreA=eeo(eop(2.2,2.8));
+  const labels=['S','I','G','N','A','L','+'],vals=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
+  const names=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Catalyst Dated','Levels & Macro','Vol + Short'];
+  const startY=200,rowH=32;
+  labels.forEach((lbl,i)=>{
+    const rowA=eeo(eop(0.6+i*0.1,1.0+i*0.1));if(rowA<=0)return;
+    sc.save();sc.globalAlpha=rowA;const y=startY+i*rowH,val=vals[i];
+    const col=val>=1.5?BLUE:val>=1.0?'#886600':'#cc4400';
+    sc.fillStyle=col;sc.font=`700 13px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.fillText(lbl,22,y);
+    sc.fillStyle=INK_MID;sc.font=`400 11px ${HN}`;sc.fillText(names[i],40,y);
+    const bW=52,bX=SW-82,bF=bW*(val/1.5);sc.fillStyle='rgba(255,255,255,0.06)';scRR(bX,y-6,bW,12,3);sc.fill();if(bF>0){sc.fillStyle=col;scRR(bX,y-6,bF,12,3);sc.fill();}
+    sc.fillStyle=col;sc.font=`700 11px ${HN}`;sc.textAlign='right';sc.fillText(val.toFixed(1),SW-20,y);
+    if(val>=1.0){const ck=eeo(eop(0.8+i*0.08,1.1+i*0.08));if(ck>0){sc.strokeStyle=BLUE;sc.lineWidth=1.5;sc.lineCap='round';sc.lineJoin='round';sc.globalAlpha=rowA*ck;sc.beginPath();sc.moveTo(30,y-3);sc.lineTo(33,y+1);sc.lineTo(38,y-5);sc.stroke();}}
+    sc.restore();
+  });
+  const divY=startY+7*rowH+4;
+  sc.save();sc.globalAlpha=eeo(eop(1.6,2.0))*0.15;sc.strokeStyle=BLUE;sc.lineWidth=0.7;sc.beginPath();sc.moveTo(20,divY);sc.lineTo(SW-20,divY);sc.stroke();sc.restore();
+  const scoreA=eeo(eop(1.7,2.2));
   if(scoreA>0){
-    sc.save();sc.globalAlpha=scoreA;
-    const vY=82;
-    const verdictCol=data.nStrikes>=2?'#cc4400':data.score>=7?BLUE:'#cc4400';
-    const verdictWord=data.nStrikes>=2?'DISQUALIFIED':data.score>=9?'MAX CONVICTION':data.score>=7?'SIGNAL+':data.score>=5?'WATCHLIST':'PASS';
-    sc.fillStyle=verdictCol;sc.font='700 28px '+HN;sc.textAlign='right';sc.textBaseline='alphabetic';
-    sc.fillText(data.score+' / 10',SW-18,vY);
-    sc.fillStyle=INK_DIM;sc.font='400 9px '+HN;sc.textAlign='right';
-    sc.fillText('SIGNAL+ SCORE',SW-18,vY+13);
-    sc.fillStyle=verdictCol;sc.font='700 11px '+HN;sc.textAlign='right';
-    sc.fillText(verdictWord,SW-18,vY+26);
-    if(data.scanTime){sc.fillStyle='rgba(0,229,255,0.25)';sc.font='400 8px '+HN;sc.textAlign='left';sc.fillText('Scanned '+data.scanTime,20,vY+26);}
+    sc.save();sc.globalAlpha=scoreA;const sy2=divY+22;
+    sc.fillStyle=data.col;sc.font=`700 44px ${HN}`;sc.textAlign='left';sc.textBaseline='middle';sc.shadowColor=data.col;sc.shadowBlur=14*scoreA;sc.fillText(data.score,22,sy2);
+    const snW=sc.measureText(String(data.score)).width;sc.shadowBlur=0;
+    sc.fillStyle=INK_DIM;sc.font=`400 18px ${HN}`;sc.fillText('/10',22+snW+4,sy2+4);
+    [['Short Interest',data.short],['Float',data.float],['Revenue',data.revenue],['Earnings',data.earnings]].forEach(([label,val],i)=>{
+      const dy=(sy2-18)+i*20;
+      sc.fillStyle=INK_DIM;sc.font=`400 10px ${HN}`;sc.textAlign='left';sc.fillText(label,130,dy);
+      sc.fillStyle=INK;sc.font=`600 11px ${HN}`;sc.fillText(val,130,dy+12);
+      if(label==='Short Interest'&&val==='N/A'){
+        sc.fillStyle='rgba(100,200,255,0.5)';sc.font=`400 8px ${HN}`;sc.textAlign='left';
+        sc.fillText('← coming soon',170,dy+12);
+      }
+    });
+    if(data.scanTime){sc.fillStyle='rgba(100,200,255,0.35)';sc.font=`400 9px ${HN}`;sc.textAlign='center';sc.fillText('Scanned '+data.scanTime,SW/2,SH-32);}
     sc.restore();
   }
+  const circleA=eeo(eop(2.1,3.2));
+  if(circleA>0){const sy2=divY+22,cx=42,cy=sy2,rx=40,ry=32,prog=Math.min(circleA,1);sc.save();sc.strokeStyle='#f5c400';sc.lineWidth=3;sc.lineCap='round';sc.shadowColor='#f5c400';sc.shadowBlur=10*prog;sc.globalAlpha=prog*0.95;sc.beginPath();const steps=120,drawn=Math.floor(steps*prog);for(let i=0;i<=drawn;i++){const angle=(i/steps)*Math.PI*2.15-Math.PI*0.65;if(i===0)sc.moveTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);else sc.lineTo(cx+Math.cos(angle)*rx,cy+Math.sin(angle)*ry);}sc.stroke();sc.shadowBlur=0;sc.restore();}
   const ctaA=eeo(eop(2.4,3.0));
   document.getElementById('ctaRow').style.opacity=ctaA>0?ctaA:0;
   document.getElementById('reportBtn').style.opacity=ctaA>0?ctaA:0;
@@ -475,12 +458,23 @@ function drawScoreScreen(ticker,data,t){
 }
 
 function runScoreAnimation(ticker,data){
-  initCanvas();
   scoreStart=null;if(scoreRaf)cancelAnimationFrame(scoreRaf);
   function loop(ts){if(!scoreStart)scoreStart=ts;const t=(ts-scoreStart)/1000;drawScoreScreen(ticker,data,t);if(t<4.5)scoreRaf=requestAnimationFrame(loop);else{drawScoreScreen(ticker,data,4.5);}}
   scoreRaf=requestAnimationFrame(loop);
 }
 
+// ── SCAN COUNTER ─────────────────────────────────────────────
+const FREE_SCANS=3;
+let scansUsed=0;
+try{scansUsed=parseInt(localStorage.getItem('k1ladex_scans')||'0');}catch(e){}
+function updateScanLabel(){
+  const r=Math.max(0,FREE_SCANS-scansUsed);
+  var fl=document.getElementById('freeLabel');
+  if(r>0){fl.textContent=r+' FREE SCAN'+(r===1?'':'S')+' REMAINING';}
+  else{fl.innerHTML='<span style="font-size:15px;font-weight:700;display:block;letter-spacing:1px;">FREE SCANS USED</span><span style="font-size:10px;display:block;margin-top:3px;letter-spacing:2px;">$9.99/MO FOR UNLIMITED</span>';}
+  document.getElementById('ctaShare').textContent='Share this score · '+r+' free scan'+(r===1?'':'s')+' remaining';
+}
+function showPaywall(){document.getElementById('paywallOverlay').classList.add('visible');}
 let currentTicker='',currentData=null;
 
 // ── LOADING STAGES ────────────────────────────────────────────
@@ -503,7 +497,10 @@ document.getElementById('goBtn').addEventListener('click',async function(){
 
   // MVIS — permanent monument override
   if(ticker==='MVIS'){
-    const mvisData={name:'MicroVision',score:2.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'8%',float:'180M',revenue:'$7M TTM',earnings:'May 15, 2026',rec:'-',verdict:'MONUMENT — NOT A POSITION',col:'#cc0000',price:'',change:''};
+    scansUsed++;
+    try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}
+    updateScanLabel();
+    const mvisData={name:'MicroVision',score:2.0,s:0.0,i:0.0,g:0.5,n:0.5,a:0.5,l:0.5,plus:0.0,surge:'+12%',short:'8%',float:'180M',revenue:'$7M TTM',earnings:'May 15, 2026',rec:'PASS',verdict:'MONUMENT — NOT A POSITION',col:'#cc0000',price:'',change:''};
     const now=new Date();
     mvisData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     document.getElementById('loadingTicker').textContent='MVIS';
@@ -520,6 +517,11 @@ document.getElementById('goBtn').addEventListener('click',async function(){
     return;
   }
 
+  // Reset code
+  if(ticker==='KLDX'){scansUsed=0;try{localStorage.setItem('k1ladex_scans','0');}catch(e){}updateScanLabel();document.getElementById('tickerInput').value='';return;}
+
+  if(scansUsed>=FREE_SCANS){showPaywall();return;}
+  scansUsed++;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
   document.getElementById('loadingTicker').textContent=ticker;
   document.getElementById('loadingOverlay').classList.add('visible');
   startLoadingStages();
@@ -528,47 +530,21 @@ document.getElementById('goBtn').addEventListener('click',async function(){
   await new Promise(resolve=>setTimeout(resolve,3000));
   stopLoadingStages();
   if(!scoreData){
-    document.getElementById('loadingOverlay').classList.remove('visible');
-    
-    alert(ticker+'\n\nNo data returned. Verify the ticker symbol and try again.');
-    document.getElementById('tickerInput').value='';return;
+    if(FALLBACK_SCORES[ticker]){
+      scoreData=Object.assign({},FALLBACK_SCORES[ticker]);
+      const now=new Date();
+      scoreData.scanTime=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      try{const lp=await fetchLivePrice(ticker);if(lp){scoreData.price=lp.price;scoreData.change=lp.change;}}catch(e){}
+    }else{
+      document.getElementById('loadingOverlay').classList.remove('visible');
+      scansUsed--;try{localStorage.setItem('k1ladex_scans',scansUsed);}catch(e){}updateScanLabel();
+      alert(ticker+'\n\nNo data returned. Check the ticker symbol and try again.');
+      document.getElementById('tickerInput').value='';return;
+    }
   }
   currentTicker=ticker;currentData=scoreData;
   document.getElementById('loadingOverlay').classList.remove('visible');
   document.getElementById('scoreOverlay').classList.add('visible');
-
-  // Populate checkpoint section
-  const cpSection = document.getElementById('checkpointSection');
-  const cpData = [
-    {letter:'S', title:'Surge 200%+', val:scoreData.s, desc:scoreData.s>=1.5?scoreData.surge+' from 52W low — validated by price.':'Not yet cleared 200%+ — Mr. Market has not yet validated this name.', desc2:scoreData.s>=1.5?'The geometric prerequisite for re-entry is satisfied.':'No other score can compensate for its absence.'},
-    {letter:'I', title:'In Consolidation', val:scoreData.i, desc:scoreData.i>=1.5?'All three gates confirmed — above 50MA, near 52W high, no 30-day lows.':scoreData.i>=1.0?'Two of three consolidation gates clear — one condition needs confirmation.':'Price is not in a constructive base — all three gates failed.', desc2:scoreData.i>=1.5?'Re-entry setups form here. The pattern is intact.':'The structure must establish and hold before this gate can pass.'},
-    {letter:'G', title:'Growth Confirmed', val:scoreData.g, desc:scoreData.g>=1.5?'Revenue '+(scoreData.revenueFormatted||'on file')+' — cash and guidance intact.':scoreData.g>=1.0?'Growth rate or cash runway needs closer review before full conviction.':'No filed revenue growth — speculative until filings confirm otherwise.', desc2:scoreData.g>=1.5?'Fundamentals are working in favor of the technical thesis.':'Fundamental risk profile is elevated.'},
-    {letter:'N', title:'No Red Flags', val:scoreData.n, desc:scoreData.nStrikes>=2?'SMCI Rule triggered — '+scoreData.nStrikes+' active strikes on record.':scoreData.nStrikes===1?'One active strike — SMCI Rule monitoring.':'Clean public record — no disqualifying events found.', desc2:scoreData.nStrikes>=2?'Full disqualification. Cannot be overridden by any other score.':'A clean N reading does not certify zero risk — it confirms no disqualifying strikes.'},
-    {letter:'A', title:'Approaching Catalyst', val:scoreData.a, desc:scoreData.a>=1.5?'Dated catalyst confirmed — '+(scoreData.earnings||'on calendar')+'.':scoreData.a>=1.0?'Catalyst window present — exact date not fully confirmed.':'No dated catalyst on record — thesis depends on market structure alone.', desc2:scoreData.a>=1.5?'Institutional repositioning and price discovery conditions are set.':'Check the IR calendar and SEC filings.'},
-    {letter:'L', title:'Levels & Macro', val:scoreData.l, desc:scoreData.l>=1.5?'All three L gates confirmed — support, stop, and sector aligned.':scoreData.l>=1.0?'One of three L gates not confirmed — partial structure only.':'No defined support, stop, or macro alignment — risk cannot be sized.', desc2:scoreData.l>=1.5?'Risk is defined. Position sizing is possible.':'No entry without a defined stop.'},
-    {letter:'+', title:'Vol + Short Pressure', val:scoreData.plus, desc:scoreData.plus>=1.5?'Both conditions active — float '+(scoreData.floatFormatted||'—')+' · short interest '+(scoreData.shortPctFormatted||'—')+'.':scoreData.plus>=1.0?'One condition met — partial squeeze potential present.':'Neither float nor short interest clears the threshold.', desc2:scoreData.plus>=1.5?'Float compression and short exposure create mechanical upside.':'The squeeze overlay — a core K1LADEX edge — is not present in this setup.'}
-  ];
-  // Populate score bar
-  const scoreBar = document.getElementById('scoreBar');
-  const scoreBarNumber = document.getElementById('scoreBarNumber');
-  const scoreBarVerdict = document.getElementById('scoreBarVerdict');
-  const verdictWord = scoreData.nStrikes>=2?'DISQUALIFIED':scoreData.score>=9?'MAX CONVICTION':scoreData.score>=7?'SIGNAL+':scoreData.score>=5?'WATCHLIST':'PASS';
-  const scoreCol = scoreData.nStrikes>=2?'#cc4400':scoreData.score>=7?'#00e5ff':'#cc4400';
-  scoreBarNumber.textContent = scoreData.score;
-  scoreBarNumber.style.color = scoreCol;
-  scoreBarVerdict.textContent = verdictWord;
-  scoreBarVerdict.style.color = scoreCol;
-  document.querySelector('.score-bar-ring').style.borderColor = scoreCol;
-  scoreBar.style.display = 'block';
-  const sectionHead = '<div class="cp-section-label">Signal+ Checkpoints</div>';
-  cpSection.innerHTML = sectionHead + cpData.map(cp => {
-    const cls = cp.val>=1.5?'cp-pass':cp.val>=1.0?'cp-warn':'cp-fail';
-    const icon=cp.val>=1.5?'✅':cp.val>=1.0?'⚠️':'❌';
-    const fullText=cpProse(cp.letter,cp.val,scoreData,currentTicker);
-    const htmlText=fullText.replace(/\n\n/g,'</p><p class="cp-desc">').replace(/\n/g,'<br>');
-    return '<div class="checkpoint-row" onclick="toggleCP(this)"><div class="cp-header"><span class="cp-letter '+cls+'">'+cp.letter+'</span><span class="cp-dash">—</span><span class="cp-name '+cls+'">'+cp.title+'</span><span class="cp-verdict">'+icon+'</span><span class="cp-chevron">▼</span></div><div class="cp-body"><p class="cp-desc">'+htmlText+'</p></div></div>';
-  }).join('');
-  cpSection.style.display = 'block';
   runScoreAnimation(ticker,scoreData);
 });
 
@@ -584,102 +560,21 @@ function goBack(){
   stopLoadingStages();
   document.getElementById('tickerInput').value='';
   setTimeout(function(){document.getElementById('tickerInput').focus();},300);
-  const cp=document.getElementById('checkpointSection');cp.style.display='none';cp.innerHTML='';
-  document.getElementById('scoreBar').style.display='none';
 }
 document.getElementById('backBtn').addEventListener('click',goBack);
 document.getElementById('backBtn').addEventListener('touchend',function(e){e.preventDefault();goBack();},{passive:false});
 document.getElementById('btcCloseBtn').addEventListener('click',function(){document.getElementById('btcOverlay').classList.remove('visible');document.getElementById('tickerInput').value='';setTimeout(function(){document.getElementById('tickerInput').focus();},300);});
 
+const STRIPE='https://buy.stripe.com/eVqdRb1PY8t3cRae4vcMM04';
+document.getElementById('subscribeBtn').addEventListener('click',function(){window.open(STRIPE,'_blank');});
+document.getElementById('subscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(STRIPE,'_blank');},{passive:false});
+document.getElementById('paywallSubscribeBtn').addEventListener('click',function(){window.open(STRIPE,'_blank');});
+document.getElementById('paywallSubscribeBtn').addEventListener('touchend',function(e){e.preventDefault();window.open(STRIPE,'_blank');},{passive:false});
+function closePaywall(){document.getElementById('paywallOverlay').classList.remove('visible');}
+document.getElementById('paywallCloseBtn').addEventListener('click',closePaywall);
+document.getElementById('paywallCloseBtn').addEventListener('touchend',function(e){e.preventDefault();closePaywall();},{passive:false});
 
 // ── PDF ──────────────────────────────────────────────────────
-function cpProse(letter,val,d,ticker){
-  const t=ticker,nn=x=>(x!==null&&x!==undefined)?x:null;
-  if(letter==='S'){
-    const sv=nn(d.surgeVal),lo=nn(d.week52Low),cp2=nn(d.currentPrice);
-    const det=sv!=null&&lo!=null&&cp2!=null
-      ?'\n\n52-week low: $'+lo.toFixed(2)+'\nCurrent price: $'+cp2.toFixed(2)+'\nMeasured surge: '+sv.toFixed(0)+'% from the low.'
-      :'\n\nRecorded 52-week surge: '+d.surge+'.';
-    if(val>=1.5)return t+' has cleared the S checkpoint with a confirmed surge of '+d.surge+' from its 52-week low — well above the 200% minimum threshold.'+det+'\n\nThe initial launch phase is complete. A name that has not surged 200%+ has not yet been validated by the market. '+t+' has been. The geometric prerequisite for re-entry is satisfied.';
-    if(val>=0.75)return t+' has moved '+d.surge+' from its 52-week low — meaningful, but short of the 200% minimum for full S activation.'+det+'\n\nMarket interest is present. The geometric threshold is not yet independently satisfied. A partial score of 0.75 is assigned. Monitor for continuation toward 200%.';
-    return t+'\'s 52-week move of '+d.surge+' does not clear the 200% threshold.'+det+'\n\nThis checkpoint is binary. No other score can compensate for its absence. The name has not completed the initial launch phase that SIGNAL+ requires before re-entry is considered.';
-  }
-  if(letter==='I'){
-    const g1=d.iGate52H!=null?d.iGate52H:(val>=1.0);
-    const g2=d.iGate50MA!=null?d.iGate50MA:(val>=1.0);
-    const g3=d.iGateNo30d!=null?d.iGateNo30d:(val>=1.5);
-    const cp2=nn(d.currentPrice),h52=nn(d.week52High),ma=nn(d.ma50);
-    const passed=[g1,g2,g3].filter(Boolean).length;
-    let g1t='Gate 1 — Within 30% of 52-week high: '+(g1?'PASS':'FAIL');
-    if(h52&&cp2)g1t+=' (price $'+cp2.toFixed(2)+', threshold $'+(h52*0.70).toFixed(2)+', high $'+h52.toFixed(2)+')';
-    let g2t='Gate 2 — Above 50-day moving average: '+(g2?'PASS':'FAIL');
-    if(ma&&cp2)g2t+=' (price $'+cp2.toFixed(2)+', MA $'+ma.toFixed(2)+')';
-    const g3t='Gate 3 — No new 30-day lows: '+(g3?'PASS':'FAIL');
-    const gText='\n\n'+g1t+'\n'+g2t+'\n'+g3t+'\n\n'+passed+' of 3 gates satisfied.';
-    if(val>=1.5)return t+' is in confirmed consolidation, clearing all three I checkpoint gates.'+gText+'\n\nThis is the geometric rest zone SIGNAL+ requires: holding above the moving average, coiling near highs, no 30-day breakdown. Re-entry setups form here. The pattern is intact.';
-    if(val>=0.75)return t+' is partially consolidating, passing '+passed+' of 3 gates.'+gText+'\n\nBase-building is visible but the tight coiling structure required for a clean signal has not fully formed. Do not enter while a gate is failing. Monitor for resolution.';
-    return t+' has failed the consolidation checkpoint, passing only '+passed+' of 3 gates.'+gText+'\n\nThe stock is not in a constructive rest pattern. No re-entry should be considered. The structure must establish and hold before this gate can pass.';
-  }
-  if(letter==='G'){
-    const rg=nn(d.revenueGrowth),hc=d.hasCash;
-    let det='\n\nRevenue (TTM): '+d.revenue+'.';
-    if(rg!==null)det+='\nRevenue growth (YoY): '+(rg*100).toFixed(1)+'%.';
-    if(hc!=null)det+='\nCash position: '+(hc?'Confirmed positive.':'Not confirmed positive.');
-    if(val>=1.5)return t+' clears the G checkpoint with confirmed revenue of '+d.revenue+', growth above the 5% YoY threshold, and positive cash positioning.'+det+'\n\nThe business is not pre-revenue speculation. Revenue is real, growing, and supported by cash. Fundamentals are working in favor of the technical thesis, not against it.';
-    if(val>=1.0)return t+' shows positive revenue of '+d.revenue+' with measurable growth — but below the 5% threshold or without full cash confirmation.'+det+'\n\nReal top-line numbers are present, removing the most dangerous category of speculative risk. Growth is directionally correct. G scores 1.0: a passing grade with limited conviction, not a disqualifier.';
-    return t+' is pre-revenue or generating negative growth.'+det+'\n\nThe G checkpoint does not fully activate without consistently growing top-line revenue. A floor of 0.5 is assigned — the checkpoint is acknowledged but not confirmed. Fundamental risk profile is elevated.';
-  }
-  if(letter==='N'){
-    const flags=d.nFlags||[],strikes=d.nStrikes!=null?d.nStrikes:(val===0?2:0);
-    let det='\n\nActive legal strike count: '+strikes+(strikes>=2?' — SMCI RULE TRIGGERED.':'.');
-    const realFlags=flags.filter(f=>strikes>0||(!f.toLowerCase().includes('unavailable')&&!f.toLowerCase().includes('legal scan')));
-    det+=realFlags.length>0?'\n\nFlags identified:\n'+realFlags.map((f,i)=>'  '+(i+1)+'. '+f).join('\n'):'\n\nNo flags identified. Regulatory record is clean.';
-    if(val>=1.5)return 'No disqualifying legal or regulatory flags have been identified for '+t+'. The N checkpoint verifies the company is not subject to the SMCI Rule, which permanently disqualifies any name carrying 2+ active legal strikes.'+det+'\n\n'+t+' passes cleanly. A clean N reading does not certify zero risk — it confirms no disqualifying strikes exist in the scan record.';
-    return t+' has triggered the K1LADEX SMCI Rule.'+det+'\n\nThis is a full disqualification, not a deduction. Names with active legal exposure carry tail risks that pattern recognition cannot price. A PASS is locked in regardless of all other checkpoint scores. The name is removed from consideration until all active strikes are fully and verifiably resolved.';
-  }
-  if(letter==='A'){
-    const ea=d.earnings;
-    let daysText='';
-    if(ea&&ea!=='TBD'){const ed=new Date(ea);if(!isNaN(ed)){const diff=Math.ceil((ed-new Date())/86400000);daysText=diff>0?' That is '+diff+' calendar days from the scan date.':diff===0?' That is today.':' Note: that date has passed — verify the current earnings calendar.';}}
-    if(val>=1.5)return t+' has a confirmed upcoming catalyst on the calendar: next earnings scheduled for '+ea+'.'+daysText+'\n\nCatalysts are the ignition events that convert consolidation into directional movement. A known, datable event forces institutional repositioning and creates the price discovery conditions SIGNAL+ is designed to front-run. Checkpoint fully confirmed. The question is not whether the catalyst exists — it does — but whether the other six checkpoints are sufficiently aligned to act ahead of it.';
-    return 'No confirmed upcoming catalyst has been identified for '+t+'. Earnings on record: '+ea+'.'+daysText+'\n\nThe A checkpoint requires a specific, datable event capable of forcing price discovery. Without one, price movement must come from market structure alone — lower urgency, lower conviction. A scores zero until a catalyst is confirmed. Check the company\'s IR calendar and SEC filings.';
-  }
-  if(letter==='L'){
-    const cp2=nn(d.currentPrice),lo=nn(d.week52Low),hi=nn(d.week52High),ma=nn(d.ma50);
-    let det='';
-    if(cp2&&lo){
-      const dist=((cp2-lo)/lo*100);
-      det='\n\nCurrent price: $'+cp2.toFixed(2)+'\n52-week low (support floor): $'+lo.toFixed(2)+'\nDistance from low: '+dist.toFixed(1)+'%';
-      if(hi)det+='\n52-week high: $'+hi.toFixed(2)+' ('+((hi-cp2)/hi*100).toFixed(1)+'% above current)';
-      if(ma)det+='\n50-day MA: $'+ma.toFixed(2)+' — price is '+(cp2>ma?'+'+((cp2-ma)/ma*100).toFixed(1)+'% above':((cp2-ma)/ma*100).toFixed(1)+'% below');
-    }else{det='\n\nCurrent price: '+(d.price||'—')+'\n52-week surge: '+d.surge;}
-    if(val>=1.5)return t+' is trading more than 25% above its 52-week low, confirming constructive macro positioning.'+det+'\n\nThe 52-week low is the primary technical support reference. L checkpoint fully confirmed.';
-    if(val>=1.0)return t+' is trading between 5–25% above its 52-week low — a neutral but acceptable macro position.'+det+'\n\nThe stock has recovered from the floor but has not achieved decisive separation. L scores 1.0: technically passing, not maximum conviction. Position sizing should reflect the neutral reading. A move beyond 25% distance would upgrade this checkpoint.';
-    return t+' is trading within 5% of its 52-week low — a structurally weak price position.'+det+'\n\nThe stock is hugging its floor, compressing risk/reward. A stop near the 52-week low leaves almost no tolerance on a name that has already established that level as significant support. L scores 0.5. Wait for decisive separation before reconsidering entry.';
-  }
-  if(letter==='+'){
-    const sp=nn(d.shortPct),fs=nn(d.floatShares);
-    const hs=d.highShort!=null?d.highShort:(sp&&sp>0.10);
-    const tf=d.tightFloat!=null?d.tightFloat:(fs&&fs<30000000);
-    const mf=d.megaFloat!=null?d.megaFloat:(fs&&fs>100000000);
-    const fsStr=fs?Math.round(fs/1e5)/10+'M shares':'N/A';
-    let det='\n\nShort interest: '+d.short+(sp?' ('+((sp)*100).toFixed(1)+'% of float)':'')+
-      '\nFloat: '+d.float+(fs?' ('+fsStr+')':'')+
-      '\nHigh short >10%: '+(hs?'YES':'NO')+
-      '\nTight float <30M shares: '+(tf?'YES':'NO')+
-      '\nMega float >100M (suppressive): '+(mf?'YES':'NO')+
-      '\nSqueeze overlay: '+(val>=1.5?'FULL — both conditions confirmed':val>=0.75?'PARTIAL — one condition confirmed':'ABSENT');
-    if(val>=1.5)return t+' exhibits both elevated short interest ('+d.short+') and a tight float ('+d.float+') — the highest-conviction + checkpoint configuration.'+det+'\n\nA compressed float limits available supply. Elevated short interest means those short positions must eventually be covered — into a rising price on limited shares. These two forces combine to create the squeeze overlay: mechanical amplification of any catalyst-driven move. Both conditions are confirmed.';
-    if(val>=0.75){
-      if(hs&&!tf)return t+' carries elevated short interest of '+d.short+' — above the 10% threshold for partial + activation.'+det+'\n\nThe float ('+d.float+') does not qualify as tight. However, significant short exposure creates real squeeze potential on any upward catalyst. Partial + score of 0.75. One ignition event away from a forced unwind.';
-      return t+' has a tight float of '+d.float+', creating supply compression without elevated short interest ('+d.short+').'+det+'\n\nLimited share supply means modest demand increases produce outsized price moves. The squeeze overlay is partial — short interest component absent — but float-driven scarcity is confirmed. Partial + score of 0.75.';
-    }
-    return 'Neither elevated short interest nor a tight float are confirmed for '+t+'.'+det+'\n\n'+(mf?'The mega float ('+d.float+') is actively suppressive — large share supply absorbs demand without generating squeeze conditions. ':'')+'The + amplifier is absent. '+t+' may qualify on other checkpoints, but the squeeze overlay — a core K1LADEX edge — is not present in this setup.';
-  }
-  return '';
-}
-
-
 function generateReport(ticker,data){
   const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'pt',format:'letter'});
   const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight(),M=54,CW=pw-M*2;
@@ -687,7 +582,7 @@ function generateReport(ticker,data){
   // ── PALETTE: white paper, blue + dark ink ─────────────────
   const W=[255,255,255],INK=[20,28,48],INK2=[85,100,125];
   const B=[0,108,200],BLT=[230,241,254],RUL=[205,218,232],NV=[8,32,80];
-  const recCol=data.score>=9?[0,128,60]:data.score>=7&&data.score<9?[155,108,0]:[172,48,0];
+  const recCol=data.rec==='BUY'?[0,128,60]:data.rec==='HOLD'?[155,108,0]:[172,48,0];
   function cpCol(v){return v>=1.5?B:v>=1.0?[155,108,0]:[172,48,0];}
   // ── LAYOUT HELPERS ────────────────────────────────────────
   function hdr(n){
@@ -750,7 +645,7 @@ function generateReport(ticker,data){
   y=sec(y,'K1LADEX SIGNAL+ SCORECARD',ticker+' · '+data.rec+' · '+data.score+'/10');
   doc.setFont('helvetica','bold');doc.setFontSize(58);doc.setTextColor(...B);doc.text(String(data.score),M,y+68);
   doc.setFont('helvetica','normal');doc.setFontSize(20);doc.setTextColor(...INK2);doc.text('/10',M+72,y+68);
-  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...recCol);doc.text('Verdict: '+data.rec,M+110,y+46);
+  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...recCol);doc.text('Recommendation: '+data.rec,M+110,y+46);
   doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...INK2);doc.text(data.verdict,M+110,y+62);y+=90;
   const lbls=['S','I','G','N','A','L','+'],vls=[data.s,data.i,data.g,data.n,data.a,data.l,data.plus];
   const fN=['Surge 200%+','In Consolidation','Growth Confirmed','No Red Flags','Approaching Catalyst','Levels & Macro','Volume + Short Pressure'];
@@ -771,6 +666,93 @@ function generateReport(ticker,data){
    ['52W Surge',data.surge,'Float',data.float],
    ['Revenue (TTM)',data.revenue,'Next Earnings',data.earnings]
   ].forEach(([l1,v1,l2,v2],i)=>dataRow(l1,v1,l2,v2,y+i*34,i%2===0));
+
+  // ── CHECKPOINT PROSE (data-driven) ────────────────────────
+  function cpProse(letter,val,d){
+    const t=ticker,nn=x=>(x!==null&&x!==undefined)?x:null;
+    if(letter==='S'){
+      const sv=nn(d.surgeVal),lo=nn(d.week52Low),cp2=nn(d.currentPrice);
+      const det=sv!=null&&lo!=null&&cp2!=null
+        ?'\n\n52-week low: $'+lo.toFixed(2)+'\nCurrent price: $'+cp2.toFixed(2)+'\nMeasured surge: '+sv.toFixed(0)+'% from the low.'
+        :'\n\nRecorded 52-week surge: '+d.surge+'.';
+      if(val>=1.5)return t+' has cleared the S checkpoint with a confirmed surge of '+d.surge+' from its 52-week low — well above the 200% minimum threshold.'+det+'\n\nThe initial launch phase is complete. A name that has not surged 200%+ has not yet been validated by the market. '+t+' has been. The geometric prerequisite for re-entry is satisfied.';
+      if(val>=0.75)return t+' has moved '+d.surge+' from its 52-week low — meaningful, but short of the 200% minimum for full S activation.'+det+'\n\nMarket interest is present. The geometric threshold is not yet independently satisfied. A partial score of 0.75 is assigned. Monitor for continuation toward 200%.';
+      return t+'\'s 52-week move of '+d.surge+' does not clear the 200% threshold.'+det+'\n\nThis checkpoint is binary. No other score can compensate for its absence. The name has not completed the initial launch phase that SIGNAL+ requires before re-entry is considered.';
+    }
+    if(letter==='I'){
+      const g1=d.iGate52H!=null?d.iGate52H:(val>=1.0);
+      const g2=d.iGate50MA!=null?d.iGate50MA:(val>=1.0);
+      const g3=d.iGateNo30d!=null?d.iGateNo30d:(val>=1.5);
+      const cp2=nn(d.currentPrice),h52=nn(d.week52High),ma=nn(d.ma50);
+      const passed=[g1,g2,g3].filter(Boolean).length;
+      let g1t='Gate 1 — Within 30% of 52-week high: '+(g1?'PASS':'FAIL');
+      if(h52&&cp2)g1t+=' (price $'+cp2.toFixed(2)+', threshold $'+(h52*0.70).toFixed(2)+', high $'+h52.toFixed(2)+')';
+      let g2t='Gate 2 — Above 50-day moving average: '+(g2?'PASS':'FAIL');
+      if(ma&&cp2)g2t+=' (price $'+cp2.toFixed(2)+', MA $'+ma.toFixed(2)+')';
+      const g3t='Gate 3 — No new 30-day lows: '+(g3?'PASS':'FAIL');
+      const gText='\n\n'+g1t+'\n'+g2t+'\n'+g3t+'\n\n'+passed+' of 3 gates satisfied.';
+      if(val>=1.5)return t+' is in confirmed consolidation, clearing all three I checkpoint gates.'+gText+'\n\nThis is the geometric rest zone SIGNAL+ requires: holding above the moving average, coiling near highs, no 30-day breakdown. Re-entry setups form here. The pattern is intact.';
+      if(val>=0.75)return t+' is partially consolidating, passing '+passed+' of 3 gates.'+gText+'\n\nBase-building is visible but the tight coiling structure required for a clean signal has not fully formed. Do not enter while a gate is failing. Monitor for resolution.';
+      return t+' has failed the consolidation checkpoint, passing only '+passed+' of 3 gates.'+gText+'\n\nThe stock is not in a constructive rest pattern. No re-entry should be considered. The structure must establish and hold before this gate can pass.';
+    }
+    if(letter==='G'){
+      const rg=nn(d.revenueGrowth),hc=d.hasCash;
+      let det='\n\nRevenue (TTM): '+d.revenue+'.';
+      if(rg!==null)det+='\nRevenue growth (YoY): '+(rg*100).toFixed(1)+'%.';
+      if(hc!=null)det+='\nCash position: '+(hc?'Confirmed positive.':'Not confirmed positive.');
+      if(val>=1.5)return t+' clears the G checkpoint with confirmed revenue of '+d.revenue+', growth above the 5% YoY threshold, and positive cash positioning.'+det+'\n\nThe business is not pre-revenue speculation. Revenue is real, growing, and supported by cash. Fundamentals are working in favor of the technical thesis, not against it.';
+      if(val>=1.0)return t+' shows positive revenue of '+d.revenue+' with measurable growth — but below the 5% threshold or without full cash confirmation.'+det+'\n\nReal top-line numbers are present, removing the most dangerous category of speculative risk. Growth is directionally correct. G scores 1.0: a passing grade with limited conviction, not a disqualifier.';
+      return t+' is pre-revenue or generating negative growth.'+det+'\n\nThe G checkpoint does not fully activate without consistently growing top-line revenue. A floor of 0.5 is assigned — the checkpoint is acknowledged but not confirmed. Fundamental risk profile is elevated.';
+    }
+    if(letter==='N'){
+      const flags=d.nFlags||[],strikes=d.nStrikes!=null?d.nStrikes:(val===0?2:0);
+      let det='\n\nActive legal strike count: '+strikes+(strikes>=2?' — SMCI RULE TRIGGERED.':'.');
+      const realFlags=flags.filter(f=>strikes>0||(!f.toLowerCase().includes('unavailable')&&!f.toLowerCase().includes('legal scan')));
+      det+=realFlags.length>0?'\n\nFlags identified:\n'+realFlags.map((f,i)=>'  '+(i+1)+'. '+f).join('\n'):'\n\nNo flags identified. Regulatory record is clean.';
+      if(val>=1.5)return 'No disqualifying legal or regulatory flags have been identified for '+t+'. The N checkpoint verifies the company is not subject to the SMCI Rule, which permanently disqualifies any name carrying 2+ active legal strikes.'+det+'\n\n'+t+' passes cleanly. A clean N reading does not certify zero risk — it confirms no disqualifying strikes exist in the scan record.';
+      return t+' has triggered the K1LADEX SMCI Rule.'+det+'\n\nThis is a full disqualification, not a deduction. Names with active legal exposure carry tail risks that pattern recognition cannot price. A PASS is locked in regardless of all other checkpoint scores. The name is removed from consideration until all active strikes are fully and verifiably resolved.';
+    }
+    if(letter==='A'){
+      const ea=d.earnings;
+      let daysText='';
+      if(ea&&ea!=='TBD'){const ed=new Date(ea);if(!isNaN(ed)){const diff=Math.ceil((ed-new Date())/86400000);daysText=diff>0?' That is '+diff+' calendar days from the scan date.':diff===0?' That is today.':' Note: that date has passed — verify the current earnings calendar.';}}
+      if(val>=1.5)return t+' has a confirmed upcoming catalyst on the calendar: next earnings scheduled for '+ea+'.'+daysText+'\n\nCatalysts are the ignition events that convert consolidation into directional movement. A known, datable event forces institutional repositioning and creates the price discovery conditions SIGNAL+ is designed to front-run. Checkpoint fully confirmed. The question is not whether the catalyst exists — it does — but whether the other six checkpoints are sufficiently aligned to act ahead of it.';
+      return 'No confirmed upcoming catalyst has been identified for '+t+'. Earnings on record: '+ea+'.'+daysText+'\n\nThe A checkpoint requires a specific, datable event capable of forcing price discovery. Without one, price movement must come from market structure alone — lower urgency, lower conviction. A scores zero until a catalyst is confirmed. Check the company\'s IR calendar and SEC filings.';
+    }
+    if(letter==='L'){
+      const cp2=nn(d.currentPrice),lo=nn(d.week52Low),hi=nn(d.week52High),ma=nn(d.ma50);
+      let det='';
+      if(cp2&&lo){
+        const dist=((cp2-lo)/lo*100);
+        det='\n\nCurrent price: $'+cp2.toFixed(2)+'\n52-week low (support floor): $'+lo.toFixed(2)+'\nDistance from low: '+dist.toFixed(1)+'%';
+        if(hi)det+='\n52-week high: $'+hi.toFixed(2)+' ('+((hi-cp2)/hi*100).toFixed(1)+'% above current)';
+        if(ma)det+='\n50-day MA: $'+ma.toFixed(2)+' — price is '+(cp2>ma?'+'+((cp2-ma)/ma*100).toFixed(1)+'% above':((cp2-ma)/ma*100).toFixed(1)+'% below');
+      }else{det='\n\nCurrent price: '+(d.price||'—')+'\n52-week surge: '+d.surge;}
+      if(val>=1.5)return t+' is trading more than 25% above its 52-week low, confirming constructive macro positioning.'+det+'\n\nThe 52-week low is the primary technical support reference. L checkpoint fully confirmed.';
+      if(val>=1.0)return t+' is trading between 5–25% above its 52-week low — a neutral but acceptable macro position.'+det+'\n\nThe stock has recovered from the floor but has not achieved decisive separation. L scores 1.0: technically passing, not maximum conviction. Position sizing should reflect the neutral reading. A move beyond 25% distance would upgrade this checkpoint.';
+      return t+' is trading within 5% of its 52-week low — a structurally weak price position.'+det+'\n\nThe stock is hugging its floor, compressing risk/reward. A stop near the 52-week low leaves almost no tolerance on a name that has already established that level as significant support. L scores 0.5. Wait for decisive separation before reconsidering entry.';
+    }
+    if(letter==='+'){
+      const sp=nn(d.shortPct),fs=nn(d.floatShares);
+      const hs=d.highShort!=null?d.highShort:(sp&&sp>0.10);
+      const tf=d.tightFloat!=null?d.tightFloat:(fs&&fs<30000000);
+      const mf=d.megaFloat!=null?d.megaFloat:(fs&&fs>100000000);
+      const fsStr=fs?Math.round(fs/1e5)/10+'M shares':'N/A';
+      let det='\n\nShort interest: '+d.short+(sp?' ('+((sp)*100).toFixed(1)+'% of float)':'')+
+        '\nFloat: '+d.float+(fs?' ('+fsStr+')':'')+
+        '\nHigh short >10%: '+(hs?'YES':'NO')+
+        '\nTight float <30M shares: '+(tf?'YES':'NO')+
+        '\nMega float >100M (suppressive): '+(mf?'YES':'NO')+
+        '\nSqueeze overlay: '+(val>=1.5?'FULL — both conditions confirmed':val>=0.75?'PARTIAL — one condition confirmed':'ABSENT');
+      if(val>=1.5)return t+' exhibits both elevated short interest ('+d.short+') and a tight float ('+d.float+') — the highest-conviction + checkpoint configuration.'+det+'\n\nA compressed float limits available supply. Elevated short interest means those short positions must eventually be covered — into a rising price on limited shares. These two forces combine to create the squeeze overlay: mechanical amplification of any catalyst-driven move. Both conditions are confirmed.';
+      if(val>=0.75){
+        if(hs&&!tf)return t+' carries elevated short interest of '+d.short+' — above the 10% threshold for partial + activation.'+det+'\n\nThe float ('+d.float+') does not qualify as tight. However, significant short exposure creates real squeeze potential on any upward catalyst. Partial + score of 0.75. One ignition event away from a forced unwind.';
+        return t+' has a tight float of '+d.float+', creating supply compression without elevated short interest ('+d.short+').'+det+'\n\nLimited share supply means modest demand increases produce outsized price moves. The squeeze overlay is partial — short interest component absent — but float-driven scarcity is confirmed. Partial + score of 0.75.';
+      }
+      return 'Neither elevated short interest nor a tight float are confirmed for '+t+'.'+det+'\n\n'+(mf?'The mega float ('+d.float+') is actively suppressive — large share supply absorbs demand without generating squeeze conditions. ':'')+'The + amplifier is absent. '+t+' may qualify on other checkpoints, but the squeeze overlay — a core K1LADEX edge — is not present in this setup.';
+    }
+    return '';
+  }
 
   // ── PAGES 3–9: ONE PER CHECKPOINT ─────────────────────────
   const cpDefs=[
@@ -808,7 +790,7 @@ dp:[['Revenue (TTM)',data.revenue],['Growth YoY',data.revenueGrowth!=null?(data.
     // analysis
     y=sec(y,'ANALYSIS');
     doc.setFont('helvetica','normal');doc.setFontSize(9.5);doc.setTextColor(...INK);
-    const pLines=doc.splitTextToSize(cpProse(cp.letter,cp.val,data,ticker),CW);
+    const pLines=doc.splitTextToSize(cpProse(cp.letter,cp.val,data),CW);
     doc.text(pLines,M,y);y+=pLines.length*13.5+16;
     // supporting data
     y=sec(y,'SUPPORTING DATA');
@@ -841,8 +823,8 @@ dp:[['Revenue (TTM)',data.revenue],['Growth YoY',data.revenueGrowth!=null?(data.
   y+=62;rule(y);y+=16;
   y=sec(y,'OVERALL ASSESSMENT');
   let vp='';
-  if(data.score>=9)vp=ticker+' has achieved a K1LADEX SIGNAL+ score of '+data.score+'/10 — a SIGNAL+ positive result. Every critical checkpoint has been evaluated and the setup satisfies the geometric and fundamental requirements of the framework. Surge confirmed at '+data.surge+'. Consolidation intact. Revenue of '+data.revenue+' growing. Regulatory record clean. Catalyst on the calendar for '+data.earnings+'. Price levels constructive. Squeeze dynamics present (short interest: '+data.short+', float: '+data.float+'). This is the configuration the framework was built to find. Position sizing, entry level, and stop discipline remain the trader\'s responsibility.';
-  else if(data.score>=7&&data.score<9)vp=ticker+' has scored '+data.score+'/10 — a WATCHLIST. The setup shows real promise but has not cleared every checkpoint at the threshold required for a SIGNAL+. One or more gates are scoring partial, limiting the overall signal. The name is worth watching with discipline. Review the failing gate on the checkpoint pages. Re-scan when conditions change.';
+  if(data.rec==='BUY')vp=ticker+' has achieved a K1LADEX SIGNAL+ score of '+data.score+'/10 — a BUY recommendation. Every critical checkpoint has been evaluated and the setup satisfies the geometric and fundamental requirements of the framework. Surge confirmed at '+data.surge+'. Consolidation intact. Revenue of '+data.revenue+' growing. Regulatory record clean. Catalyst on the calendar for '+data.earnings+'. Price levels constructive. Squeeze dynamics present (short interest: '+data.short+', float: '+data.float+'). This is the configuration the framework was built to find. Position sizing, entry level, and stop discipline remain the trader\'s responsibility.';
+  else if(data.rec==='HOLD')vp=ticker+' has scored '+data.score+'/10 — a HOLD. The setup shows real promise but has not cleared every checkpoint at the threshold required for maximum conviction. One or more gates are scoring partial, limiting the overall signal. The name is worth watching with discipline. Review the failing gate on the checkpoint pages. If partial readings resolve in the bull direction, this upgrades to a BUY on the next scan. Do not chase. Wait for confirmation.';
   else vp=ticker+' has scored '+data.score+'/10 — a PASS. The SIGNAL+ framework requires a minimum threshold across all seven checkpoints before a name is actionable. This scan identified one or more critical failures that disqualify the setup at this time. Passing is discipline. The K1LADEX edge is built on selectivity — not every scan needs to be a trade. Review the checkpoint pages for specific failure points and what must change before this name is reconsidered.';
   doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...INK);
   const vpL=doc.splitTextToSize(vp,CW);doc.text(vpL,M,y);y+=vpL.length*14+18;
@@ -906,24 +888,13 @@ dp:[['Revenue (TTM)',data.revenue],['Growth YoY',data.revenueGrowth!=null?(data.
 
 document.getElementById('reportBtn').addEventListener('click',function(){if(!currentData)return;try{generateReport(currentTicker,currentData);}catch(e){alert('PDF error: '+e.message);}});
 document.getElementById('reportBtn').addEventListener('touchend',function(e){e.preventDefault();if(!currentData)return;try{generateReport(currentTicker,currentData);}catch(e){alert('PDF error: '+e.message);}},{passive:false});
-function shareScore(){
-  if(!currentTicker||!currentData)return;
-  const txt=currentTicker+' scored '+currentData.score+'/10 on K1LADEX SIGNAL+. app.k1ladex.com';
-  if(navigator.share){navigator.share({title:'K1LADEX — '+currentTicker,text:txt,url:'https://app.k1ladex.com'}).catch(function(){});}
-  else{navigator.clipboard.writeText(txt).then(function(){document.getElementById('ctaShare').textContent='Copied to clipboard ✓';setTimeout(function(){document.getElementById('ctaShare').textContent='Share this score · '+document.getElementById('ctaShare').textContent.split('·')[1];},2000);}).catch(function(){});}
-}
-document.getElementById('ctaShare').addEventListener('click',shareScore);
-document.getElementById('ctaShare').addEventListener('touchend',function(e){e.preventDefault();shareScore();},{passive:false});
 
 window.addEventListener('load',function(){
   document.getElementById('ctaRow').style.opacity=0;
   document.getElementById('reportBtn').style.opacity=0;
   document.getElementById('ctaShare').style.opacity=0;
+  updateScanLabel();
 });
-
-function toggleCP(row){
-  row.classList.toggle('expanded');
-}
 </script>
 </body>
 </html>
