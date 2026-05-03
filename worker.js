@@ -163,10 +163,12 @@ async function fullScan(ticker) {
     const name     = (profile.name||ticker).replace(/,?\s*(Inc\.?|Corp\.?|Ltd\.?|LLC\.?|PLC\.?)$/gi,'').trim();
 
     // ── VERDICT LOGIC ────────────────────────────────────────
-    const floatOver1B = floatShares && floatShares > 1e9;
+    // P2: Checkpoint Zero — shares outstanding must be confirmed before float gate
+    const sharesConfirmed = floatShares !== null;
+    const floatOver100M = sharesConfirmed && floatShares > 100e6;
     let totalScore = null;
     let rec, verdict, col;
-    if (floatOver1B) {
+    if (floatOver100M) {
       rec = 'WRONG INSTRUMENT';
       verdict = 'Wrong instrument. K1LADEX is built for geometric moves.';
       col = '#4a6888';
@@ -231,6 +233,7 @@ async function checkN(ticker) {
     { terms: `"${ticker}" "FDA warning letter"`, label: 'FDA warning letter' },
     { terms: `"${ticker}" "securities fraud" "shareholders"`, label: 'Securities fraud allegation' },
     { terms: `"${ticker}" "Department of Justice" "investigation"`, label: 'DOJ investigation' },
+    { terms: `"${ticker}" "424B5"`, label: 'ATM offering (424B5)' },
   ];
 
   try {
