@@ -119,6 +119,7 @@ async function fullScan(ticker) {
     const ma50          = m['50DayMA'];
     const floatShares   = FLOAT_TABLE[ticker] || (profile.shareOutstanding ? profile.shareOutstanding * 1e6 : null);
     let shortPct        = m.shortInterestPercentOfFloat ? m.shortInterestPercentOfFloat/100 : null;
+    let instOwnershipPctFV = null;
     if (shortPct === null) {
       try {
         const fvRes = await fetch(`https://finviz.com/quote.ashx?t=${ticker}`, {
@@ -127,6 +128,8 @@ async function fullScan(ticker) {
         const fvHtml = await fvRes.text();
         const fvMatch = fvHtml.match(/Short Float<\/a><\/div><\/td><td[^>]*>.*?([\d.]+)%/);
         if (fvMatch) shortPct = parseFloat(fvMatch[1]) / 100;
+        const fvInstMatch = fvHtml.match(/Inst Own<\/a><\/div><\/td><td[^>]*>.*?([\d.]+)%/);
+        if (fvInstMatch) instOwnershipPctFV = parseFloat(fvInstMatch[1]);
       } catch (_) { /* leave shortPct as null */ }
     }
     const totalRevenue  = m.revenuePerShareTTM && profile.shareOutstanding ? m.revenuePerShareTTM * profile.shareOutstanding * 1e6 : null;
@@ -159,7 +162,7 @@ async function fullScan(ticker) {
     try { instOwnershipSafe = instOwnership; } catch(e) { instOwnershipSafe = null; }
     const instList = (instOwnershipSafe?.ownership || []).sort((a,b) => b.share - a.share);
     const totalInstShares = instList.reduce((sum, h) => sum + (h.share || 0), 0);
-    const instOwnershipPct = floatShares && totalInstShares ? Math.min((totalInstShares / floatShares) * 100, 100) : null;
+    const instOwnershipPct = instOwnershipPctFV;
     const instDirection = instList.length ? instList.reduce((sum, h) => sum + (h.change || 0), 0) : 0;
     const largestHolder = instList.length ? instList[0].name : null;
     const totalHolders = instList.length;
