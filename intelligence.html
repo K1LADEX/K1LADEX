@@ -233,6 +233,7 @@
 
   <div id="catalystWrap"></div>
   <div class="cash-card" id="cashCard"></div>
+  <div class="cash-card" id="instCard"></div>
 
   <div class="signal-card">
     <div class="signal-card-header">
@@ -468,6 +469,30 @@ function renderCard(d, ticker) {
   cashCard.innerHTML = `
     <div class="cash-card-header"><div class="cash-card-title">Cash Intelligence</div></div>
     <div class="cash-grid">${cashItems.map(item => `
+      <div class="cash-item">
+        <div class="cash-item-label">${item.label}</div>
+        <div class="cash-item-value ${item.cls}">${item.value}</div>
+        <div class="cash-item-sub">${item.sub}</div>
+      </div>`).join('')}
+    </div>`;
+
+  // Institutional Ownership Block
+  const instCard = document.getElementById('instCard');
+  const instPct = d.instOwnershipPct !== null && d.instOwnershipPct !== undefined ? d.instOwnershipPct.toFixed(1) + '%' : 'N/A';
+  const instPctCls = d.instOwnershipPct >= 70 ? 'green' : d.instOwnershipPct >= 40 ? 'gold' : 'red';
+  const instDir = d.instDirection > 0 ? '↑ Increasing' : d.instDirection < 0 ? '↓ Decreasing' : '→ Neutral';
+  const instDirCls = d.instDirection > 0 ? 'green' : d.instDirection < 0 ? 'red' : 'gold';
+  const instHolder = d.largestHolder || 'N/A';
+  const instHolders = d.totalHolders !== null && d.totalHolders !== undefined ? d.totalHolders.toString() : 'N/A';
+  const instItems = [
+    { label: 'Inst. Ownership', value: instPct, cls: instPctCls, sub: '>70% = smart money confirmed' },
+    { label: 'Direction', value: instDir, cls: instDirCls, sub: 'QoQ change across all holders' },
+    { label: 'Largest Holder', value: instHolder, cls: 'green', sub: 'Top institutional position' },
+    { label: 'Total Holders', value: instHolders, cls: 'green', sub: 'Institutional filers on record' },
+  ];
+  instCard.innerHTML = `
+    <div class="cash-card-header"><div class="cash-card-title">Institutional Ownership</div></div>
+    <div class="cash-grid">${instItems.map(item => `
       <div class="cash-item">
         <div class="cash-item-label">${item.label}</div>
         <div class="cash-item-value ${item.cls}">${item.value}</div>
