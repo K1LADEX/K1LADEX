@@ -301,9 +301,12 @@ function scoreSignal(d) {
   results.push({ letter:'G', label:'Growth Confirmed', sub:gSub, score:gScore, ind:gInd });
   total += gScore;
 
-  // N — No Red Flags (passive until active search fix ships — P3)
-  results.push({ letter:'N', label:'No Red Flags', sub:'Passive — active search fix queued (P3)', score:1.5, ind:'pass' });
-  total += 1.5;
+  // N — No Red Flags (from Worker EDGAR search)
+  const nScore = (d.nScore !== undefined && d.nScore !== null) ? d.nScore : 1.5;
+  const nInd = nScore >= 1.5 ? 'pass' : nScore >= 0.5 ? 'warn' : 'fail';
+  const nSub = (d.nFlags && d.nFlags.length) ? d.nFlags[0] : 'No disqualifying flags found';
+  results.push({ letter:'N', label:'No Red Flags', sub:nSub, ind:nInd, score:nScore });
+  total += nScore;
 
   // A — Approaching Catalyst
   let aScore = d.nextEarnings ? 1.5 : 0;
@@ -413,7 +416,7 @@ function renderCard(d, ticker) {
   // Catalyst
   const cw = document.getElementById('catalystWrap');
   if (d.nextEarnings) {
-    const days = d.earningsDaysOut || '—';
+    const days = d.nextEarnings ? Math.max(0, Math.ceil((new Date(d.nextEarnings) - new Date()) / (1000*60*60*24))) : '—';
     cw.innerHTML = `<div class="catalyst-banner"><div class="cat-icon">📅</div><div class="cat-body"><div class="cat-label">Approaching Catalyst</div><div class="cat-event">Earnings Report</div><div class="cat-date">${d.nextEarnings}</div></div><div class="cat-days-block"><div class="cat-days">${days}</div><div class="cat-days-label">days</div></div></div>`;
   } else {
     cw.innerHTML = '<div class="no-catalyst">No upcoming catalyst on record</div>';
@@ -449,10 +452,10 @@ function renderCard(d, ticker) {
   } else {
     document.getElementById('scoreNum').textContent = scored.total.toFixed(1);
     document.getElementById('scoreNote').textContent =
-      scored.total >= 9 ? 'Maximum conviction zone' :
-      scored.total >= 7.5 ? 'Above personal entry threshold' :
-      scored.total >= 7 ? 'Meets minimum — run deep dive before entry' :
-      'Below minimum threshold — pass or watchlist';
+      scored.total >= 9 ? '' :
+      scored.total >= 7.5 ? '' :
+      scored.total >= 7 ? '' :
+      '';
   }
 
   document.getElementById('edgarBtn').href = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${ticker}&type=10-K&dateb=&owner=include&count=40`;

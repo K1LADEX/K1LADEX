@@ -221,11 +221,11 @@ async function checkN(ticker) {
   let strikes = 0;
 
   const searches = [
-    { terms: `${ticker} "class action"`, label: 'Class action lawsuit' },
-    { terms: `${ticker} "SEC investigation" OR "SEC enforcement"`, label: 'SEC investigation' },
-    { terms: `${ticker} "FDA warning letter"`, label: 'FDA warning letter' },
-    { terms: `${ticker} "securities fraud"`, label: 'Securities fraud allegation' },
-    { terms: `${ticker} "Department of Justice" OR "DOJ investigation"`, label: 'DOJ investigation' },
+    { terms: `"${ticker}" "class action" "securities"`, label: 'Class action lawsuit' },
+    { terms: `"${ticker}" "SEC investigation" OR "${ticker}" "SEC enforcement action"`, label: 'SEC investigation' },
+    { terms: `"${ticker}" "FDA warning letter"`, label: 'FDA warning letter' },
+    { terms: `"${ticker}" "securities fraud" "shareholders"`, label: 'Securities fraud allegation' },
+    { terms: `"${ticker}" "Department of Justice" "investigation"`, label: 'DOJ investigation' },
   ];
 
   try {
