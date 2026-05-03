@@ -129,6 +129,10 @@ async function fullScan(ticker) {
     const totalRevenue  = m.revenuePerShareTTM && profile.shareOutstanding ? m.revenuePerShareTTM * profile.shareOutstanding * 1e6 : null;
     const revenueGrowth = m.revenueGrowthTTMYoy ? m.revenueGrowthTTMYoy/100 : null;
     const totalCash     = m.cashAndCashEquivalentsAnnual ?? m.cashAndEquivalentsAnnual ?? m.totalCashAnnual ?? m.freeCashFlowAnnual ?? null;
+    const cashFlowPerShare = m.cashFlowPerShareTTM ?? null;
+    const cashPerShare   = m.cashPerSharePerShareAnnual ?? null;
+    const currentRatio   = m.currentRatioAnnual ?? m.currentRatioQuarterly ?? null;
+    const debtToEquity   = m['totalDebt/totalEquityAnnual'] ?? m['totalDebt/totalEquityQuarterly'] ?? null;
 
     let nextEarnings = null;
     const now = Date.now()/1000;
@@ -184,6 +188,7 @@ async function fullScan(ticker) {
       cashFormatted: totalCash?'$'+fmt(totalCash,1e9,'B'):'N/A',
       revenueFormatted: totalRevenue?'$'+fmt(totalRevenue,1e9,'B')+' TTM':'Pre-revenue',
       nextEarnings,
+      cashFlowPerShare, cashPerShare, currentRatio, debtToEquity,
       nScore, nStrikes, nFlags, splitDate: nSplitDate,
       rec, verdict, col
     }), {headers:CORS});
