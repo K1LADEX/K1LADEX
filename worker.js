@@ -92,16 +92,16 @@ const FLOAT_TABLE = {
 
 async function fullScan(ticker) {
   try {
-    const [quoteRes, profileRes, metricsRes, earningsRes, candleRes] = await Promise.all([
+    const [quoteRes, profileRes, metricsRes, earningsRes, candleRes, instOwnershipRes] = await Promise.all([
       fetch(`https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_API_KEY}`),
       fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${ticker}&token=${FINNHUB_API_KEY}`),
       fetch(`https://finnhub.io/api/v1/stock/metric?symbol=${ticker}&metric=all&token=${FINNHUB_API_KEY}`),
-      fetch(`https://finnhub.io/api/v1/stock/institutional-ownership?symbol=${ticker}&token=${FINNHUB_API_KEY}`),
       fetch(`https://finnhub.io/api/v1/calendar/earnings?symbol=${ticker}&from=${new Date().toISOString().split('T')[0]}&to=${new Date(Date.now()+180*24*60*60*1000).toISOString().split('T')[0]}&token=${FINNHUB_API_KEY}`),
-      fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=D&from=${Math.floor((Date.now()-30*24*60*60*1000)/1000)}&to=${Math.floor(Date.now()/1000)}&token=${FINNHUB_API_KEY}`)
+      fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=D&from=${Math.floor((Date.now()-30*24*60*60*1000)/1000)}&to=${Math.floor(Date.now()/1000)}&token=${FINNHUB_API_KEY}`),
+      fetch(`https://finnhub.io/api/v1/stock/institutional-ownership?symbol=${ticker}&token=${FINNHUB_API_KEY}`)
     ]);
 
-    const [quote, profile, metrics, earnings, candle, instOwnershipRes] = await Promise.all([
+    const [quote, profile, metrics, earnings, candle, instOwnership] = await Promise.all([
       quoteRes.json(), profileRes.json(), metricsRes.json(),
       earningsRes.json(), candleRes.json(), instOwnershipRes.json()
     ]);
@@ -153,7 +153,7 @@ async function fullScan(ticker) {
     }
 
     // Institutional ownership
-    const instList = (instOwnershipRes?.ownership || []).sort((a,b) => b.share - a.share);
+    const instList = (instOwnership?.ownership || []).sort((a,b) => b.share - a.share);
     const totalInstShares = instList.reduce((sum, h) => sum + (h.share || 0), 0);
     const instOwnershipPct = floatShares && totalInstShares ? Math.min((totalInstShares / floatShares) * 100, 100) : null;
     const instDirection = instList.length ? instList.reduce((sum, h) => sum + (h.change || 0), 0) : 0;
