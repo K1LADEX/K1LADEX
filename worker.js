@@ -101,10 +101,12 @@ async function fullScan(ticker) {
       fetch(`https://finnhub.io/api/v1/stock/institutional-ownership?symbol=${ticker}&token=${FINNHUB_API_KEY}`)
     ]);
 
-    const [quote, profile, metrics, earnings, candle, instOwnership] = await Promise.all([
+    const [quote, profile, metrics, earnings, candle] = await Promise.all([
       quoteRes.json(), profileRes.json(), metricsRes.json(),
-      earningsRes.json(), candleRes.json(), instOwnershipRes.json()
+      earningsRes.json(), candleRes.json()
     ]);
+    let instOwnership = null;
+    try { instOwnership = await instOwnershipRes.json(); } catch(e) { instOwnership = null; }
 
     if (!quote.c) throw new Error('No Finnhub data');
 
@@ -153,7 +155,9 @@ async function fullScan(ticker) {
     }
 
     // Institutional ownership
-    const instList = (instOwnership?.ownership || []).sort((a,b) => b.share - a.share);
+    let instOwnershipSafe = null;
+    try { instOwnershipSafe = instOwnership; } catch(e) { instOwnershipSafe = null; }
+    const instList = (instOwnershipSafe?.ownership || []).sort((a,b) => b.share - a.share);
     const totalInstShares = instList.reduce((sum, h) => sum + (h.share || 0), 0);
     const instOwnershipPct = floatShares && totalInstShares ? Math.min((totalInstShares / floatShares) * 100, 100) : null;
     const instDirection = instList.length ? instList.reduce((sum, h) => sum + (h.change || 0), 0) : 0;
