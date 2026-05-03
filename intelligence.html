@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>K1LADEX Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0a0a0f; --surface:#13131a; --border:#2a2a38;
+    --green:#00d084; --red:#ff4757; --pencil:#ff3b3b;
+    --pencil-glow:rgba(255,59,59,0.3); --gold:#f0c040;
+    --text:#e8e8f0; --muted:#6b6b80; --accent:#7c6fff;
+  }
+  body { background:var(--bg); color:var(--text); font-family:'DM Mono',monospace; min-height:100vh; max-width:430px; margin:0 auto; overflow-x:hidden; }
+
+  .topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
+  .brand { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; letter-spacing:2px; }
+  .brand span { color:var(--pencil); }
+  .top-right { display:flex; align-items:center; gap:10px; }
+  .live-badge { display:flex; align-items:center; gap:5px; font-size:10px; font-weight:600; letter-spacing:1px; color:var(--green); background:rgba(0,208,132,0.1); border:1px solid rgba(0,208,132,0.3); padding:4px 10px; border-radius:20px; }
+  .live-dot { width:6px; height:6px; background:var(--green); border-radius:50%; animation:livePulse 1.5s infinite; }
+  @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)} }
+  .top-score { font-family:'Caveat',cursive; font-size:20px; font-weight:700; color:var(--pencil); opacity:0; transition:opacity 0.5s; filter:drop-shadow(0 0 6px var(--pencil-glow)); min-width:44px; text-align:right; }
+  .top-score.visible { opacity:1; }
+
+  .search-wrap { padding:12px 18px; background:var(--surface); border-bottom:1px solid var(--border); }
+  .search-row { display:flex; gap:8px; }
+  .ticker-input { flex:1; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'Syne',sans-serif; font-size:16px; font-weight:700; letter-spacing:2px; padding:10px 14px; text-transform:uppercase; outline:none; transition:border-color 0.2s; }
+  .ticker-input::placeholder { color:var(--muted); font-weight:400; letter-spacing:1px; font-size:13px; text-transform:none; }
+  .ticker-input:focus { border-color:var(--accent); }
+  .scan-btn { background:var(--accent); border:none; border-radius:8px; color:white; font-family:'Syne',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; padding:10px 18px; cursor:pointer; white-space:nowrap; }
+  .scan-btn:active { opacity:0.8; }
+  .scan-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+  .state-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px; text-align:center; gap:14px; }
+  .empty-icon { font-size:36px; opacity:0.4; }
+  .empty-text { font-size:12px; color:var(--muted); line-height:1.8; }
+  .state-loading { display:none; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px; gap:16px; }
+  .state-loading.active { display:flex; }
+  .loader { width:40px; height:40px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading-text { font-size:11px; color:var(--muted); letter-spacing:1px; }
+  .state-error { display:none; flex-direction:column; align-items:center; justify-content:center; padding:60px 24px; text-align:center; gap:12px; }
+  .state-error.active { display:flex; }
+  .error-text { font-size:12px; color:var(--red); }
+
+  .card-wrap { display:none; padding:16px; flex-direction:column; gap:12px; }
+  .card-wrap.active { display:flex; }
+
+  .stock-header { display:flex; align-items:flex-start; justify-content:space-between; }
+  .ticker-display { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; line-height:1; }
+  .company-name { font-size:10px; color:var(--muted); letter-spacing:1.5px; margin-top:4px; text-transform:uppercase; }
+  .price-block { text-align:right; }
+  .price-display { font-family:'Syne',sans-serif; font-size:28px; font-weight:700; line-height:1; }
+  .price-change { font-size:12px; margin-top:4px; }
+  .price-change.up { color:var(--green); }
+  .price-change.down { color:var(--red); }
+
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; position:relative; overflow:visible; }
+  .stat-label { font-size:9px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
+  .stat-value { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; line-height:1; }
+  .stat-value.green { color:var(--green); }
+  .stat-value.red { color:var(--red); }
+  .stat-value.gold { color:var(--gold); }
+  .stat-sub { font-size:9px; color:var(--muted); margin-top:3px; }
+
+  .pencil-circle-svg { position:absolute; top:-8px; left:-8px; width:calc(100% + 16px); height:calc(100% + 16px); pointer-events:none; overflow:visible; }
+  .draw-circle { stroke-dasharray:300; stroke-dashoffset:300; transition:stroke-dashoffset 0.8s ease; }
+  .draw-circle.drawn { stroke-dashoffset:0; }
+
+  .catalyst-banner { background:rgba(240,192,64,0.06); border:1px solid rgba(240,192,64,0.2); border-radius:10px; padding:12px 14px; display:flex; align-items:center; gap:12px; }
+  .cat-icon { font-size:20px; flex-shrink:0; }
+  .cat-body { flex:1; }
+  .cat-label { font-size:9px; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:3px; }
+  .cat-event { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; }
+  .cat-date { font-size:10px; color:var(--muted); margin-top:2px; }
+  .cat-days-block { text-align:center; flex-shrink:0; }
+  .cat-days { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--gold); line-height:1; }
+  .cat-days-label { font-size:9px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+  .no-catalyst { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:11px; color:var(--muted); text-align:center; }
+
+  .signal-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .signal-card-header { padding:14px 16px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .signal-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:3px; color:var(--accent); text-transform:uppercase; }
+  .signal-score-inline { font-family:'Caveat',cursive; font-size:24px; font-weight:700; color:var(--pencil); opacity:0; transition:opacity 0.4s; filter:drop-shadow(0 0 6px var(--pencil-glow)); }
+  .signal-score-inline.visible { opacity:1; }
+
+  .checkpoint { display:flex; align-items:center; gap:12px; padding:11px 16px; border-bottom:1px solid rgba(42,42,56,0.5); opacity:0; transform:translateX(-8px); transition:opacity 0.35s, transform 0.35s; }
+  .checkpoint:last-child { border-bottom:none; }
+  .checkpoint.visible { opacity:1; transform:translateX(0); }
+  .cp-letter { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; width:18px; color:var(--muted); flex-shrink:0; }
+  .cp-body { flex:1; min-width:0; }
+  .cp-label { font-size:11px; color:var(--text); }
+  .cp-sub { font-size:9px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cp-indicator { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:13px; opacity:0; transition:opacity 0.3s 0.15s; }
+  .checkpoint.visible .cp-indicator { opacity:1; }
+  .cp-indicator.pass { background:rgba(0,208,132,0.15); border:1px solid rgba(0,208,132,0.4); color:var(--green); }
+  .cp-indicator.warn { background:rgba(240,192,64,0.12); border:1px solid rgba(240,192,64,0.35); color:var(--gold); }
+  .cp-indicator.fail { background:rgba(255,71,87,0.12); border:1px solid rgba(255,71,87,0.35); color:var(--red); }
+  .cp-score-val { font-family:'Caveat',cursive; font-size:16px; font-weight:700; width:28px; text-align:center; flex-shrink:0; opacity:0; transition:opacity 0.3s 0.2s; }
+  .checkpoint.visible .cp-score-val { opacity:1; }
+  .cp-score-val.full { color:var(--green); }
+  .cp-score-val.half { color:var(--gold); }
+  .cp-score-val.zero { color:var(--red); }
+
+  .lazygate-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; opacity:0; transform:translateY(8px); transition:opacity 0.4s, transform 0.4s; }
+  .lazygate-card.visible { opacity:1; transform:translateY(0); }
+  .lazygate-header { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .lazygate-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
+  .gate-status { font-size:10px; color:var(--green); letter-spacing:1px; }
+  .lazygate-rule { display:flex; align-items:flex-start; gap:10px; padding:9px 16px; font-size:11px; color:var(--muted); border-bottom:1px solid rgba(42,42,56,0.4); }
+  .lazygate-rule:last-child { border-bottom:none; }
+  .lazygate-rule.active { color:var(--text); }
+  .rule-num { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; color:var(--accent); width:14px; flex-shrink:0; margin-top:1px; }
+
+  .final-score { background:var(--surface); border:1px solid rgba(255,59,59,0.25); border-radius:12px; padding:20px 16px; text-align:center; opacity:0; transform:translateY(8px); transition:opacity 0.4s, transform 0.4s; position:relative; overflow:hidden; }
+  .final-score::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--pencil),transparent); }
+  .final-score.visible { opacity:1; transform:translateY(0); }
+  .score-label { font-size:9px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+  .score-display { display:flex; align-items:baseline; justify-content:center; gap:2px; margin-bottom:10px; }
+  .score-number { font-family:'Caveat',cursive; font-size:64px; font-weight:700; color:var(--pencil); line-height:1; filter:drop-shadow(0 0 16px var(--pencil-glow)); }
+  .score-max { font-family:'Syne',sans-serif; font-size:18px; color:var(--muted); font-weight:600; }
+  .score-note { font-size:10px; color:var(--muted); margin-top:4px; }
+
+  .kill-screen { background:rgba(255,71,87,0.06); border:1px solid rgba(255,71,87,0.3); border-radius:12px; padding:20px 16px; text-align:center; opacity:0; transform:translateY(8px); transition:opacity 0.4s, transform 0.4s; }
+  .kill-screen.visible { opacity:1; transform:translateY(0); }
+  .kill-label { font-size:9px; color:var(--red); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+  .kill-reason { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--red); }
+  .kill-sub { font-size:10px; color:var(--muted); margin-top:6px; }
+
+  .edgar-btn { display:block; width:100%; padding:14px; background:rgba(240,192,64,0.08); border:1px solid rgba(240,192,64,0.3); border-radius:10px; color:var(--gold); font-family:'Syne',sans-serif; font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; text-align:center; cursor:pointer; text-decoration:none; opacity:0; transition:opacity 0.4s, background 0.2s; }
+  .edgar-btn.visible { opacity:1; }
+  .edgar-btn:active { background:rgba(240,192,64,0.15); }
+
+  .replay-btn { display:block; width:100%; padding:12px; background:transparent; border:1px solid var(--border); border-radius:10px; color:var(--muted); font-family:'DM Mono',monospace; font-size:11px; cursor:pointer; text-align:center; margin-bottom:32px; }
+  .replay-btn:active { color:var(--text); border-color:var(--text); }
+
+  .pencil-dot { position:fixed; width:8px; height:8px; background:var(--pencil); border-radius:50%; pointer-events:none; opacity:0; transition:opacity 0.3s; transform:translate(-50%,-50%); z-index:999; box-shadow:0 0 10px var(--pencil-glow); }
+  .pencil-dot.active { opacity:1; }
+</style>
+</head>
+<body>
+
+<div class="pencil-dot" id="pencilDot"></div>
+
+<div class="topbar">
+  <div class="brand">K1<span>L</span>ADEX</div>
+  <div class="top-right">
+    <div class="top-score" id="topScore"></div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <div class="search-row">
+    <input class="ticker-input" id="tickerInput" type="text" placeholder="Enter ticker..." maxlength="6" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="scan-btn" id="scanBtn">SCAN</button>
+  </div>
+</div>
+
+<div class="state-empty" id="stateEmpty">
+  <div class="empty-icon">📡</div>
+  <div class="empty-text">Enter a ticker above.<br>K1LADEX reads the footnotes.</div>
+</div>
+
+<div class="state-loading" id="stateLoading">
+  <div class="loader"></div>
+  <div class="loading-text">SCANNING...</div>
+</div>
+
+<div class="state-error" id="stateError">
+  <div class="error-text" id="errorText">No data returned.</div>
+</div>
+
+<div class="card-wrap" id="cardWrap">
+
+  <div class="stock-header">
+    <div>
+      <div class="ticker-display" id="dispTicker"></div>
+      <div class="company-name" id="dispName"></div>
+    </div>
+    <div class="price-block">
+      <div class="price-display" id="dispPrice"></div>
+      <div class="price-change" id="dispChange"></div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Float</div>
+      <div class="stat-value" id="dispFloat"></div>
+      <div class="stat-sub" id="dispFloatSub"></div>
+      <svg class="pencil-circle-svg" viewBox="0 0 116 66" preserveAspectRatio="none">
+        <ellipse cx="58" cy="33" rx="54" ry="29" fill="none" stroke="#ff3b3b" stroke-width="2" class="draw-circle" id="floatCircle" stroke-linecap="round" opacity="0.8" transform="rotate(-3,58,33)"/>
+      </svg>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Short Interest</div>
+      <div class="stat-value" id="dispSI"></div>
+      <div class="stat-sub" id="dispSISub"></div>
+      <svg class="pencil-circle-svg" viewBox="0 0 116 66" preserveAspectRatio="none">
+        <ellipse cx="58" cy="33" rx="54" ry="29" fill="none" stroke="#ff3b3b" stroke-width="2.5" class="draw-circle" id="siCircle" stroke-linecap="round" opacity="0.9" transform="rotate(4,58,33)"/>
+      </svg>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Revenue YoY</div>
+      <div class="stat-value" id="dispRev"></div>
+      <div class="stat-sub" id="dispRevSub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">52W Surge</div>
+      <div class="stat-value" id="dispSurge"></div>
+      <div class="stat-sub" id="dispSurgeSub"></div>
+    </div>
+  </div>
+
+  <div id="catalystWrap"></div>
+
+  <div class="signal-card">
+    <div class="signal-card-header">
+      <div class="signal-title">S · I · G · N · A · L · +</div>
+      <div class="signal-score-inline" id="inlineScore"></div>
+    </div>
+    <div id="checkpoints"></div>
+  </div>
+
+  <div class="lazygate-card" id="lazygateCard">
+    <div class="lazygate-header">
+      <div class="lazygate-title">LazyGate</div>
+      <div class="gate-status">ACTIVE ↗</div>
+    </div>
+    <div id="lazygateRules"></div>
+  </div>
+
+  <div class="final-score" id="finalScore">
+    <div class="score-label">K1LADEX Signal Score</div>
+    <div class="score-display">
+      <div class="score-number" id="scoreNum"></div>
+      <div class="score-max">/10</div>
+    </div>
+    <div class="score-note" id="scoreNote"></div>
+  </div>
+
+  <div class="kill-screen" id="killScreen">
+    <div class="kill-label">Checkpoint Zero — Killed</div>
+    <div class="kill-reason" id="killReason"></div>
+    <div class="kill-sub" id="killSub"></div>
+  </div>
+
+  <a class="edgar-btn" id="edgarBtn" target="_blank">View SEC Filings on EDGAR</a>
+  <button class="replay-btn" id="replayBtn">↺ Replay Analysis</button>
+
+</div>
+
+<script>
+const WORKER = 'https://k1ladex-prices.robertasloss.workers.dev';
+let _lastScored = null;
+
+// SCORING
+function scoreSignal(d) {
+  const results = [];
+  let total = 0;
+  let killed = null;
+
+  // Float kill switch
+  if (d.floatShares && d.floatShares > 100e6) {
+    killed = { reason: 'Float Kill Switch', sub: `${(d.floatShares/1e6).toFixed(1)}M shares — exceeds 100M ceiling` };
+    return { results, total: 0, killed };
+  }
+
+  // S — Surge
+  const surge = d.surgeVal || 0;
+  let sScore = surge >= 200 ? 1.5 : surge >= 100 ? 1.0 : 0;
+  let sInd = surge >= 200 ? 'pass' : surge >= 100 ? 'warn' : 'fail';
+  results.push({ letter:'S', label:'Surge', sub: surge > 0 ? `+${surge.toFixed(0)}% from 52W low` : 'Data unavailable', score:sScore, ind:sInd });
+  total += sScore;
+
+  // I — Integrity (3 gates)
+  let iGates = 0;
+  let iDetail = '';
+  if (d.week52High && d.currentPrice) {
+    const pctFromHigh = (d.week52High - d.currentPrice) / d.week52High * 100;
+    if (pctFromHigh <= 30) { iGates++; iDetail = 'within 30% of 52W high'; }
+    else { iDetail = `${pctFromHigh.toFixed(0)}% below 52W high`; }
+  }
+  if (d.ma50 && d.currentPrice && d.currentPrice >= d.ma50) iGates++;
+  if (!d.newLow30d) iGates++;
+  let iScore = iGates >= 2 ? 1.5 : iGates === 1 ? 1.0 : 0;
+  let iInd = iGates >= 2 ? 'pass' : iGates === 1 ? 'warn' : 'fail';
+  results.push({ letter:'I', label:'In Consolidation', sub:`${iGates}/3 gates — ${iDetail || 'checking levels'}`, score:iScore, ind:iInd });
+  total += iScore;
+
+  // G — Growth
+  let gScore, gInd, gSub;
+  if (d.revenueGrowth > 0 && d.totalRevenue > 0) { gScore=1.5; gInd='pass'; gSub=`+${(d.revenueGrowth*100).toFixed(0)}% YoY · ${d.revenueFormatted||''}`; }
+  else if (d.totalRevenue > 0) { gScore=1.0; gInd='warn'; gSub='Revenue present · growth flat'; }
+  else { gScore=0; gInd='fail'; gSub='Pre-revenue or no data'; }
+  results.push({ letter:'G', label:'Growth Confirmed', sub:gSub, score:gScore, ind:gInd });
+  total += gScore;
+
+  // N — No Red Flags (passive until active search fix ships — P3)
+  results.push({ letter:'N', label:'No Red Flags', sub:'Passive — active search fix queued (P3)', score:1.5, ind:'pass' });
+  total += 1.5;
+
+  // A — Approaching Catalyst
+  let aScore = d.nextEarnings ? 1.5 : 0;
+  let aInd = d.nextEarnings ? 'pass' : 'fail';
+  results.push({ letter:'A', label:'Approaching Catalyst', sub: d.nextEarnings ? `Earnings ${d.nextEarnings}` : 'No catalyst on calendar', score:aScore, ind:aInd });
+  total += aScore;
+
+  // L — Levels & Macro (warn — requires human verification)
+  results.push({ letter:'L', label:'Levels & Macro', sub:'Support + sector ETF — verify in Robinhood', score:1.0, ind:'warn' });
+  total += 1.0;
+
+  // + — Short Interest & Float
+  const hasFloat = d.floatShares && d.floatShares < 30e6;
+  const hasSI = d.shortPct && d.shortPct > 0.10;
+  let plusScore = (hasFloat && hasSI) ? 1.0 : (hasFloat || hasSI) ? 0.5 : 0;
+  let plusInd = (hasFloat && hasSI) ? 'pass' : (hasFloat || hasSI) ? 'warn' : 'fail';
+  results.push({ letter:'+', label:'Volume & Short Pressure', sub:`SI ${d.shortPct?(d.shortPct*100).toFixed(1)+'%':'N/A'} · Float ${d.floatFormatted||'N/A'}`, score:plusScore, ind:plusInd });
+  total += plusScore;
+
+  return { results, total: Math.min(parseFloat(total.toFixed(1)), 10), killed: null };
+}
+
+// ANIMATION
+let anims = [];
+function t(fn, ms) { anims.push(setTimeout(fn, ms)); }
+function clearAnims() { anims.forEach(clearTimeout); anims = []; }
+
+function resetCard() {
+  document.querySelectorAll('.draw-circle').forEach(e => e.classList.remove('drawn'));
+  document.querySelectorAll('.checkpoint').forEach(e => e.classList.remove('visible'));
+  ['lazygateCard','finalScore','killScreen','edgarBtn','inlineScore','topScore'].forEach(id => {
+    document.getElementById(id).classList.remove('visible');
+  });
+  document.getElementById('pencilDot').classList.remove('active');
+}
+
+function runAnimation(scored) {
+  clearAnims();
+  resetCard();
+  const dot = document.getElementById('pencilDot');
+  t(() => dot.classList.add('active'), 200);
+  t(() => document.getElementById('floatCircle').classList.add('drawn'), 500);
+  t(() => document.getElementById('siCircle').classList.add('drawn'), 1200);
+  const cps = document.querySelectorAll('.checkpoint');
+  cps.forEach((cp, i) => t(() => cp.classList.add('visible'), 2000 + i * 280));
+  const after = 2000 + cps.length * 280;
+  t(() => document.getElementById('inlineScore').classList.add('visible'), after + 100);
+  t(() => document.getElementById('lazygateCard').classList.add('visible'), after + 400);
+  t(() => {
+    if (scored && scored.killed) {
+      document.getElementById('killScreen').classList.add('visible');
+    } else {
+      document.getElementById('finalScore').classList.add('visible');
+      document.getElementById('topScore').classList.add('visible');
+    }
+  }, after + 800);
+  t(() => document.getElementById('edgarBtn').classList.add('visible'), after + 1200);
+  t(() => dot.classList.remove('active'), after + 1600);
+}
+
+// RENDER
+function renderCard(d, ticker) {
+  document.getElementById('dispTicker').textContent = ticker;
+  document.getElementById('dispName').textContent = d.name || '';
+  document.getElementById('dispPrice').textContent = d.price || '--';
+
+  const chgPct = d.currentPrice && d.prevClose ? ((d.currentPrice - d.prevClose) / d.prevClose * 100) : null;
+  const chgEl = document.getElementById('dispChange');
+  if (chgPct !== null) {
+    chgEl.textContent = (chgPct >= 0 ? '+' : '') + chgPct.toFixed(2) + '% today';
+    chgEl.className = 'price-change ' + (chgPct >= 0 ? 'up' : 'down');
+  }
+
+  // Float
+  const fe = document.getElementById('dispFloat'), fs = document.getElementById('dispFloatSub');
+  if (d.floatShares) {
+    fe.textContent = d.floatFormatted || (d.floatShares/1e6).toFixed(1)+'M';
+    fe.className = 'stat-value ' + (d.floatShares < 30e6 ? 'gold' : d.floatShares > 100e6 ? 'red' : '');
+    fs.textContent = d.floatShares < 30e6 ? 'low float' : d.floatShares > 100e6 ? 'kill switch' : 'mid float';
+  } else { fe.textContent = 'N/A'; fe.className = 'stat-value'; fs.textContent = ''; }
+
+  // SI
+  const se = document.getElementById('dispSI'), ss = document.getElementById('dispSISub');
+  if (d.shortPct) {
+    se.textContent = (d.shortPct * 100).toFixed(1) + '%';
+    se.className = 'stat-value ' + (d.shortPct > 0.20 ? 'red' : d.shortPct > 0.10 ? 'gold' : '');
+    ss.textContent = d.shortPct > 0.20 ? 'high squeeze potential' : 'elevated SI';
+  } else { se.textContent = 'N/A'; se.className = 'stat-value'; ss.textContent = ''; }
+
+  // Revenue
+  const re = document.getElementById('dispRev'), rs = document.getElementById('dispRevSub');
+  if (d.revenueGrowth) {
+    const rg = (d.revenueGrowth * 100).toFixed(0);
+    re.textContent = (rg > 0 ? '+' : '') + rg + '%';
+    re.className = 'stat-value ' + (rg > 0 ? 'green' : 'red');
+    rs.textContent = d.revenueFormatted || '';
+  } else { re.textContent = 'N/A'; re.className = 'stat-value'; rs.textContent = ''; }
+
+  // Surge
+  const ue = document.getElementById('dispSurge'), us = document.getElementById('dispSurgeSub');
+  if (d.surgeVal) {
+    ue.textContent = '+' + d.surgeVal.toFixed(0) + '%';
+    ue.className = 'stat-value ' + (d.surgeVal >= 200 ? 'green' : d.surgeVal >= 100 ? 'gold' : 'red');
+    us.textContent = 'from 52W low';
+  } else { ue.textContent = 'N/A'; ue.className = 'stat-value'; us.textContent = ''; }
+
+  // Catalyst
+  const cw = document.getElementById('catalystWrap');
+  if (d.nextEarnings) {
+    const days = d.earningsDaysOut || '—';
+    cw.innerHTML = `<div class="catalyst-banner"><div class="cat-icon">📅</div><div class="cat-body"><div class="cat-label">Approaching Catalyst</div><div class="cat-event">Earnings Report</div><div class="cat-date">${d.nextEarnings}</div></div><div class="cat-days-block"><div class="cat-days">${days}</div><div class="cat-days-label">days</div></div></div>`;
+  } else {
+    cw.innerHTML = '<div class="no-catalyst">No upcoming catalyst on record</div>';
+  }
+
+  // Score
+  const scored = scoreSignal(d);
+  _lastScored = scored;
+
+  // Checkpoints
+  const cpContainer = document.getElementById('checkpoints');
+  cpContainer.innerHTML = scored.results.map((cp, i) => {
+    const sc = cp.score >= 1.5 ? 'full' : cp.score >= 1.0 ? 'half' : 'zero';
+    const ic = cp.ind === 'pass' ? '✓' : cp.ind === 'warn' ? '~' : '✕';
+    return `<div class="checkpoint" id="cp-${i}"><div class="cp-letter">${cp.letter}</div><div class="cp-body"><div class="cp-label">${cp.label}</div><div class="cp-sub">${cp.sub}</div></div><div class="cp-indicator ${cp.ind}">${ic}</div><div class="cp-score-val ${sc}">${cp.score}</div></div>`;
+  }).join('');
+
+  const scoreStr = scored.total.toFixed(1) + '/10';
+  document.getElementById('inlineScore').textContent = scoreStr;
+  document.getElementById('topScore').textContent = scoreStr;
+
+  // LazyGate
+  document.getElementById('lazygateRules').innerHTML = `
+    <div class="lazygate-rule active"><div class="rule-num">1</div><div>Thesis check — verify filed catalyst still intact</div></div>
+    <div class="lazygate-rule ${d.nextEarnings ? 'active' : ''}"><div class="rule-num">2</div><div>90-day clock — ${d.nextEarnings ? 'earnings approaching' : 'no catalyst flagged'}</div></div>
+    <div class="lazygate-rule"><div class="rule-num">3</div><div>Winner Ladder — sell to recover cost basis at 100%+</div></div>
+    <div class="lazygate-rule"><div class="rule-num">6</div><div>Tax clock — confirm duration before any exit</div></div>`;
+
+  // Final / Kill
+  if (scored.killed) {
+    document.getElementById('killReason').textContent = scored.killed.reason;
+    document.getElementById('killSub').textContent = scored.killed.sub;
+  } else {
+    document.getElementById('scoreNum').textContent = scored.total.toFixed(1);
+    document.getElementById('scoreNote').textContent =
+      scored.total >= 9 ? 'Maximum conviction zone' :
+      scored.total >= 7.5 ? 'Above personal entry threshold' :
+      scored.total >= 7 ? 'Meets minimum — run deep dive before entry' :
+      'Below minimum threshold — pass or watchlist';
+  }
+
+  document.getElementById('edgarBtn').href = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${ticker}&type=10-K&dateb=&owner=include&count=40`;
+
+  setState('card');
+  runAnimation(scored);
+}
+
+// STATE
+function setState(s) {
+  document.getElementById('stateEmpty').style.display   = s==='empty'   ? 'flex' : 'none';
+  document.getElementById('stateLoading').style.display = s==='loading' ? 'flex' : 'none';
+  document.getElementById('stateError').style.display   = s==='error'   ? 'flex' : 'none';
+  document.getElementById('cardWrap').style.display     = s==='card'    ? 'flex' : 'none';
+  if (s !== 'card') { clearAnims(); resetCard(); }
+}
+
+// FETCH
+async function runScan(ticker) {
+  ticker = (ticker || '').toUpperCase().trim();
+  if (!ticker) return;
+  setState('loading');
+  document.getElementById('scanBtn').disabled = true;
+  try {
+    const res = await fetch(`${WORKER}/scan?ticker=${ticker}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    renderCard(data, ticker);
+  } catch(e) {
+    document.getElementById('errorText').textContent = e.message || 'Scan failed.';
+    setState('error');
+  } finally {
+    document.getElementById('scanBtn').disabled = false;
+  }
+}
+
+// EVENTS
+document.getElementById('scanBtn').addEventListener('click', () => runScan(document.getElementById('tickerInput').value));
+document.getElementById('tickerInput').addEventListener('keydown', e => { if (e.key === 'Enter') runScan(e.target.value); });
+document.getElementById('replayBtn').addEventListener('click', () => runAnimation(_lastScored));
+
+setState('empty');
+</script>
+</body>
+</html>

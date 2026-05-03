@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>K1LADEX Intelligence — ONDS</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --border: #2a2a38;
+    --green: #00d084;
+    --red: #ff4757;
+    --pencil: #ff3b3b;
+    --pencil-glow: rgba(255,59,59,0.3);
+    --gold: #f0c040;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --accent: #7c6fff;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    max-width: 390px;
+    margin: 0 auto;
+    overflow-x: hidden;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+
+  .brand span { color: var(--pencil); }
+
+  .top-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--green);
+    background: rgba(0,208,132,0.1);
+    border: 1px solid rgba(0,208,132,0.3);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .top-score {
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--pencil);
+    opacity: 0;
+    transition: opacity 0.5s;
+    filter: drop-shadow(0 0 6px var(--pencil-glow));
+  }
+
+  .top-score.visible { opacity: 1; }
+
+  /* SCROLL CONTAINER */
+  .scroll-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* STOCK HEADER */
+  .stock-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .ticker-block {}
+
+  .ticker {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .company-name {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .price-block {
+    text-align: right;
+  }
+
+  .price {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .price-change {
+    font-size: 12px;
+    color: var(--green);
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-value.green { color: var(--green); }
+  .stat-value.red { color: var(--red); }
+  .stat-value.gold { color: var(--gold); }
+
+  .stat-sub {
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* PENCIL CIRCLES */
+  .pencil-circle-svg {
+    position: absolute;
+    top: -8px; left: -8px;
+    width: calc(100% + 16px);
+    height: calc(100% + 16px);
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .draw-circle {
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    transition: stroke-dashoffset 0.8s ease;
+  }
+
+  .draw-circle.drawn { stroke-dashoffset: 0; }
+
+  /* CATALYST BANNER */
+  .catalyst-banner {
+    background: rgba(240,192,64,0.06);
+    border: 1px solid rgba(240,192,64,0.2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .cat-body { flex: 1; }
+
+  .cat-label {
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .cat-event {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .cat-date {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .cat-days-block {
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .cat-days {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .cat-days-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* SIGNAL+ CARD — THE MAIN CARD */
+  .signal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .signal-card-header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .signal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .signal-score-inline {
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--pencil);
+    opacity: 0;
+    transition: opacity 0.4s;
+    filter: drop-shadow(0 0 6px var(--pencil-glow));
+  }
+
+  .signal-score-inline.visible { opacity: 1; }
+
+  /* CHECKPOINTS */
+  .checkpoints {
+    padding: 4px 0;
+  }
+
+  .checkpoint {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-bottom: 1px solid rgba(42,42,56,0.5);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.35s, transform 0.35s;
+  }
+
+  .checkpoint:last-child { border-bottom: none; }
+  .checkpoint.visible { opacity: 1; transform: translateX(0); }
+
+  .cp-letter {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    width: 18px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .cp-body { flex: 1; min-width: 0; }
+
+  .cp-label {
+    font-size: 11px;
+    color: var(--text);
+    letter-spacing: 0.3px;
+  }
+
+  .cp-sub {
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* INDICATOR BOXES */
+  .cp-indicator {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.3s 0.15s;
+  }
+
+  .checkpoint.visible .cp-indicator { opacity: 1; }
+
+  .cp-indicator.pass {
+    background: rgba(0,208,132,0.15);
+    border: 1px solid rgba(0,208,132,0.4);
+    color: var(--green);
+  }
+
+  .cp-indicator.warn {
+    background: rgba(240,192,64,0.12);
+    border: 1px solid rgba(240,192,64,0.35);
+    color: var(--gold);
+  }
+
+  .cp-indicator.fail {
+    background: rgba(255,71,87,0.12);
+    border: 1px solid rgba(255,71,87,0.35);
+    color: var(--red);
+  }
+
+  .cp-score-val {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    font-weight: 700;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.3s 0.2s;
+  }
+
+  .checkpoint.visible .cp-score-val { opacity: 1; }
+  .cp-score-val.full { color: var(--green); }
+  .cp-score-val.half { color: var(--gold); }
+  .cp-score-val.zero { color: var(--red); }
+
+  /* LAZYGATE */
+  .lazygate-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+
+  .lazygate-card.visible { opacity: 1; transform: translateY(0); }
+
+  .lazygate-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .lazygate-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .gate-status {
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+
+  .lazygate-rules {
+    padding: 8px 0;
+  }
+
+  .lazygate-rule {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 16px;
+    font-size: 11px;
+    color: var(--muted);
+    border-bottom: 1px solid rgba(42,42,56,0.4);
+  }
+
+  .lazygate-rule:last-child { border-bottom: none; }
+
+  .lazygate-rule.active { color: var(--text); }
+
+  .rule-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    width: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* FINAL SCORE */
+  .final-score {
+    background: var(--surface);
+    border: 1px solid rgba(255,59,59,0.25);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s, transform 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-score::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--pencil), transparent);
+  }
+
+  .final-score.visible { opacity: 1; transform: translateY(0); }
+
+  .score-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .score-display {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 2px;
+    margin-bottom: 10px;
+  }
+
+  .score-number {
+    font-family: 'Caveat', cursive;
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--pencil);
+    line-height: 1;
+    filter: drop-shadow(0 0 16px var(--pencil-glow));
+  }
+
+  .score-max {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .verdict {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .verdict-sub {
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* EDGAR BUTTON */
+  .edgar-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: rgba(240,192,64,0.08);
+    border: 1px solid rgba(240,192,64,0.3);
+    border-radius: 10px;
+    color: var(--gold);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+    opacity: 0;
+    transition: opacity 0.4s, background 0.2s;
+  }
+
+  .edgar-btn.visible { opacity: 1; }
+  .edgar-btn:active { background: rgba(240,192,64,0.15); }
+
+  /* REPLAY */
+  .replay-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    text-align: center;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: 32px;
+  }
+
+  .replay-btn:active { color: var(--text); border-color: var(--text); }
+
+  /* PENCIL CURSOR DOT */
+  .pencil-dot {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--pencil);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    box-shadow: 0 0 10px var(--pencil-glow);
+  }
+
+  .pencil-dot.active { opacity: 1; }
+
+  /* SVG DRAW ANIMATIONS */
+  .draw-line, .draw-arrow, .draw-check {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    transition: stroke-dashoffset 0.7s ease;
+  }
+
+  .draw-line.drawn, .draw-arrow.drawn, .draw-check.drawn {
+    stroke-dashoffset: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="pencil-dot" id="pencilDot"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="brand">K1<span>L</span>ADEX</div>
+  <div class="top-right">
+    <div class="top-score" id="topScore">9/10</div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+</div>
+
+<div class="scroll-body">
+
+  <!-- STOCK HEADER -->
+  <div class="stock-header">
+    <div class="ticker-block">
+      <div class="ticker">ONDS</div>
+      <div class="company-name">Ondas Holdings</div>
+    </div>
+    <div class="price-block">
+      <div class="price">$10.42</div>
+      <div class="price-change">+2.79% today</div>
+    </div>
+  </div>
+
+  <!-- STATS GRID -->
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-label">Float</div>
+      <div class="stat-value gold">8.2M</div>
+      <div class="stat-sub">low float confirmed</div>
+      <svg class="pencil-circle-svg" viewBox="0 0 116 66" preserveAspectRatio="none">
+        <ellipse cx="58" cy="33" rx="54" ry="29" fill="none" stroke="#ff3b3b" stroke-width="2"
+          class="draw-circle" stroke-linecap="round" opacity="0.8" transform="rotate(-3, 58, 33)"/>
+      </svg>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Short Interest</div>
+      <div class="stat-value red">35%</div>
+      <div class="stat-sub">squeeze fuel loaded</div>
+      <svg class="pencil-circle-svg" viewBox="0 0 116 66" preserveAspectRatio="none">
+        <ellipse cx="58" cy="33" rx="54" ry="29" fill="none" stroke="#ff3b3b" stroke-width="2.5"
+          class="draw-circle" stroke-linecap="round" opacity="0.9" transform="rotate(4, 58, 33)"/>
+      </svg>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Revenue YoY</div>
+      <div class="stat-value green">+150%</div>
+      <div class="stat-sub">$38–41M guided</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Entry Cost</div>
+      <div class="stat-value">$7.01</div>
+      <div class="stat-sub">+48% unrealized</div>
+    </div>
+
+  </div>
+
+  <!-- CATALYST BANNER -->
+  <div class="catalyst-banner">
+    <div class="cat-icon">📅</div>
+    <div class="cat-body">
+      <div class="cat-label">Approaching Catalyst</div>
+      <div class="cat-event">Q1 Earnings Report</div>
+      <div class="cat-date">May 14, 2026 · Pre-market</div>
+    </div>
+    <div class="cat-days-block">
+      <div class="cat-days">11</div>
+      <div class="cat-days-label">days</div>
+    </div>
+  </div>
+
+  <!-- SIGNAL+ CARD — CHECKPOINTS FILL THE BOX -->
+  <div class="signal-card">
+    <div class="signal-card-header">
+      <div class="signal-title">S · I · G · N · A · L · +</div>
+      <div class="signal-score-inline" id="inlineScore">9/10</div>
+    </div>
+
+    <div class="checkpoints">
+
+      <div class="checkpoint" id="cp-s">
+        <div class="cp-letter">S</div>
+        <div class="cp-body">
+          <div class="cp-label">Surge</div>
+          <div class="cp-sub">+248% from $2.91 low ✓</div>
+        </div>
+        <div class="cp-indicator pass">✓</div>
+        <div class="cp-score-val full">1.5</div>
+      </div>
+
+      <div class="checkpoint" id="cp-i">
+        <div class="cp-letter">I</div>
+        <div class="cp-body">
+          <div class="cp-label">In Consolidation</div>
+          <div class="cp-sub">Tightening · 2/3 gates</div>
+        </div>
+        <div class="cp-indicator warn">~</div>
+        <div class="cp-score-val half">1.0</div>
+      </div>
+
+      <div class="checkpoint" id="cp-g">
+        <div class="cp-letter">G</div>
+        <div class="cp-body">
+          <div class="cp-label">Growth Confirmed</div>
+          <div class="cp-sub">Revenue +150% YoY, guided up</div>
+        </div>
+        <div class="cp-indicator pass">✓</div>
+        <div class="cp-score-val full">1.5</div>
+      </div>
+
+      <div class="checkpoint" id="cp-n">
+        <div class="cp-letter">N</div>
+        <div class="cp-body">
+          <div class="cp-label">No Red Flags</div>
+          <div class="cp-sub">Clean filings, no legal strikes</div>
+        </div>
+        <div class="cp-indicator pass">✓</div>
+        <div class="cp-score-val full">1.5</div>
+      </div>
+
+      <div class="checkpoint" id="cp-a">
+        <div class="cp-letter">A</div>
+        <div class="cp-body">
+          <div class="cp-label">Approaching Catalyst</div>
+          <div class="cp-sub">Earnings May 14 · 11 days</div>
+        </div>
+        <div class="cp-indicator pass">✓</div>
+        <div class="cp-score-val full">1.5</div>
+      </div>
+
+      <div class="checkpoint" id="cp-l">
+        <div class="cp-letter">L</div>
+        <div class="cp-body">
+          <div class="cp-label">Levels & Macro</div>
+          <div class="cp-sub">Support $8.20 · Defense macro ✓</div>
+        </div>
+        <div class="cp-indicator warn">~</div>
+        <div class="cp-score-val half">1.0</div>
+      </div>
+
+      <div class="checkpoint" id="cp-plus">
+        <div class="cp-letter">+</div>
+        <div class="cp-body">
+          <div class="cp-label">Volume & Short Pressure</div>
+          <div class="cp-sub">35% SI · 8.2M float · high vol</div>
+        </div>
+        <div class="cp-indicator pass">✓</div>
+        <div class="cp-score-val full">1.0</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LAZYGATE -->
+  <div class="lazygate-card" id="lazygateCard">
+    <div class="lazygate-header">
+      <div class="lazygate-title">LazyGate</div>
+      <div class="gate-status">ACTIVE ↗</div>
+    </div>
+    <div class="lazygate-rules">
+      <div class="lazygate-rule active">
+        <div class="rule-num">1</div>
+        <div>Thesis check: Defense drones + secure comms. Still true ✓</div>
+      </div>
+      <div class="lazygate-rule active">
+        <div class="rule-num">2</div>
+        <div>90-day clock: Active — earnings in 11 days</div>
+      </div>
+      <div class="lazygate-rule">
+        <div class="rule-num">3</div>
+        <div>Winner Ladder: $14.02 — not yet at threshold</div>
+      </div>
+      <div class="lazygate-rule">
+        <div class="rule-num">6</div>
+        <div>Tax clock: Hold — confirm duration before exit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL SCORE -->
+  <div class="final-score" id="finalScore">
+    <div class="score-label">K1LADEX Signal Score</div>
+    <div class="score-display">
+      <div class="score-number">9</div>
+      <div class="score-max">/10</div>
+    </div>
+    <div class="verdict">Winner Ladder $14.02</div>
+    <div class="verdict-sub">Earnings May 14 · 195.5M warrants overhead at $28</div>
+  </div>
+
+  <!-- EDGAR BUTTON -->
+  <a class="edgar-btn" id="edgarBtn"
+    href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=ONDS&type=10-K&dateb=&owner=include&count=40"
+    target="_blank">
+    View SEC Filings on EDGAR
+  </a>
+
+  <!-- REPLAY -->
+  <button class="replay-btn" id="replayBtn">↺ Replay Analysis</button>
+
+</div>
+
+<script>
+  const dot = document.getElementById('pencilDot');
+  let animTimeouts = [];
+
+  function t(fn, delay) {
+    animTimeouts.push(setTimeout(fn, delay));
+  }
+
+  function clearAnims() {
+    animTimeouts.forEach(clearTimeout);
+    animTimeouts = [];
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.draw-circle').forEach(el => el.classList.remove('drawn'));
+    document.querySelectorAll('.checkpoint').forEach(el => el.classList.remove('visible'));
+    document.getElementById('lazygateCard').classList.remove('visible');
+    document.getElementById('finalScore').classList.remove('visible');
+    document.getElementById('edgarBtn').classList.remove('visible');
+    document.getElementById('topScore').classList.remove('visible');
+    document.getElementById('inlineScore').classList.remove('visible');
+    dot.classList.remove('active');
+  }
+
+  function runAnimation() {
+    clearAnims();
+    resetAll();
+
+    // Pencil dot appears
+    t(() => dot.classList.add('active'), 300);
+
+    // Circle float
+    t(() => {
+      document.querySelectorAll('.draw-circle')[0].classList.add('drawn');
+    }, 600);
+
+    // Circle short interest
+    t(() => {
+      document.querySelectorAll('.draw-circle')[1].classList.add('drawn');
+    }, 1400);
+
+    // Reveal checkpoints one by one
+    const cps = ['cp-s','cp-i','cp-g','cp-n','cp-a','cp-l','cp-plus'];
+    cps.forEach((id, i) => {
+      t(() => {
+        document.getElementById(id).classList.add('visible');
+      }, 2200 + (i * 300));
+    });
+
+    // Inline score
+    t(() => {
+      document.getElementById('inlineScore').classList.add('visible');
+    }, 2200 + (cps.length * 300) + 100);
+
+    // LazyGate
+    t(() => {
+      document.getElementById('lazygateCard').classList.add('visible');
+    }, 2200 + (cps.length * 300) + 500);
+
+    // Final score
+    t(() => {
+      document.getElementById('finalScore').classList.add('visible');
+      document.getElementById('topScore').classList.add('visible');
+    }, 2200 + (cps.length * 300) + 1000);
+
+    // EDGAR button
+    t(() => {
+      document.getElementById('edgarBtn').classList.add('visible');
+    }, 2200 + (cps.length * 300) + 1400);
+
+    // Hide dot
+    t(() => dot.classList.remove('active'), 2200 + (cps.length * 300) + 1800);
+  }
+
+  document.getElementById('replayBtn').addEventListener('click', runAnimation);
+  window.addEventListener('load', () => setTimeout(runAnimation, 600));
+</script>
+</body>
+</html>
