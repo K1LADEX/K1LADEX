@@ -90,6 +90,20 @@ const FLOAT_TABLE = {
   'BA':     760000000,
 };
 
+// ── INSTITUTIONAL OWNERSHIP TABLE ───────────────────────────
+// Source: 13F filings. Update on material ownership changes.
+// Last updated: May 3, 2026
+const INST_TABLE = {
+  'GLNG':  92.0,
+  'ONDS':  45.0,
+  'DNN':   62.0,
+  'MRAM':  55.0,
+  'LTRX':  38.0,
+  'LWLG':  41.0,
+  'PL':    48.0,
+  'WYY':   22.0,
+};
+
 async function fullScan(ticker) {
   try {
     const [quoteRes, profileRes, metricsRes, earningsRes, candleRes, instOwnershipRes] = await Promise.all([
@@ -162,7 +176,7 @@ async function fullScan(ticker) {
     try { instOwnershipSafe = instOwnership; } catch(e) { instOwnershipSafe = null; }
     const instList = (instOwnershipSafe?.ownership || []).sort((a,b) => b.share - a.share);
     const totalInstShares = instList.reduce((sum, h) => sum + (h.share || 0), 0);
-    const instOwnershipPct = instOwnershipPctFV;
+    const instOwnershipPct = INST_TABLE[ticker] ?? instOwnershipPctFV ?? null;
     const instDirection = instList.length ? instList.reduce((sum, h) => sum + (h.change || 0), 0) : 0;
     const largestHolder = instList.length ? instList[0].name : null;
     const totalHolders = instList.length;
