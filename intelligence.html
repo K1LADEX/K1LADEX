@@ -243,13 +243,6 @@
     <div id="checkpoints"></div>
   </div>
 
-  <div class="lazygate-card" id="lazygateCard">
-    <div class="lazygate-header">
-      <div class="lazygate-title">LazyGate</div>
-      <div class="gate-status">ACTIVE ↗</div>
-    </div>
-    <div id="lazygateRules"></div>
-  </div>
 
   <div class="final-score" id="finalScore">
     <div class="score-label">K1LADEX Signal Score</div>
@@ -353,7 +346,7 @@ function clearAnims() { anims.forEach(clearTimeout); anims = []; }
 function resetCard() {
   document.querySelectorAll('.draw-circle').forEach(e => e.classList.remove('drawn'));
   document.querySelectorAll('.checkpoint').forEach(e => e.classList.remove('visible'));
-  ['lazygateCard','finalScore','killScreen','edgarBtn','inlineScore','topScore'].forEach(id => {
+  ['finalScore','killScreen','edgarBtn','inlineScore','topScore'].forEach(id => {
     document.getElementById(id).classList.remove('visible');
   });
   document.getElementById('pencilDot').classList.remove('active');
@@ -370,7 +363,6 @@ function runAnimation(scored) {
   cps.forEach((cp, i) => t(() => cp.classList.add('visible'), 2000 + i * 280));
   const after = 2000 + cps.length * 280;
   t(() => document.getElementById('inlineScore').classList.add('visible'), after + 100);
-  t(() => document.getElementById('lazygateCard').classList.add('visible'), after + 400);
   t(() => {
     if (scored && scored.killed) {
       document.getElementById('killScreen').classList.add('visible');
@@ -517,11 +509,6 @@ function renderCard(d, ticker) {
   document.getElementById('topScore').textContent = scoreStr;
 
   // LazyGate
-  document.getElementById('lazygateRules').innerHTML = `
-    <div class="lazygate-rule active"><div class="rule-num">1</div><div>Thesis check — verify filed catalyst still intact</div></div>
-    <div class="lazygate-rule ${d.nextEarnings ? 'active' : ''}"><div class="rule-num">2</div><div>90-day clock — ${d.nextEarnings ? 'earnings approaching' : 'no catalyst flagged'}</div></div>
-    <div class="lazygate-rule"><div class="rule-num">3</div><div>Winner Ladder — sell to recover cost basis at 100%+</div></div>
-    <div class="lazygate-rule"><div class="rule-num">6</div><div>Tax clock — confirm duration before any exit</div></div>`;
 
   // Final / Kill
   if (scored.killed) {
