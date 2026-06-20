@@ -201,6 +201,16 @@
 
   <div class="stats-grid">
     <div class="stat-card">
+      <div class="stat-label">Revenue YoY</div>
+      <div class="stat-value" id="dispRev"></div>
+      <div class="stat-sub" id="dispRevSub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">52W Surge</div>
+      <div class="stat-value" id="dispSurge"></div>
+      <div class="stat-sub" id="dispSurgeSub"></div>
+    </div>
+    <div class="stat-card">
       <div class="stat-label">Float</div>
       <div class="stat-value" id="dispFloat"></div>
       <div class="stat-sub" id="dispFloatSub"></div>
@@ -215,16 +225,6 @@
       <svg class="pencil-circle-svg" viewBox="0 0 116 66" preserveAspectRatio="none">
         <path d="M4,18 L4,4 L18,4 M98,4 L112,4 L112,18 M4,48 L4,62 L18,62 M112,48 L112,62 L98,62" fill="none" stroke="#00e5ff" stroke-width="2.5" class="draw-circle" id="siCircle" stroke-linecap="round" opacity="0.9"/>
       </svg>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Revenue YoY</div>
-      <div class="stat-value" id="dispRev"></div>
-      <div class="stat-sub" id="dispRevSub"></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">52W Surge</div>
-      <div class="stat-value" id="dispSurge"></div>
-      <div class="stat-sub" id="dispSurgeSub"></div>
     </div>
   </div>
 
@@ -523,7 +523,7 @@ function renderCard(d, ticker) {
       '';
   }
 
-  document.getElementById('edgarBtn').href = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${ticker}&type=10-K&dateb=&owner=include&count=40`;
+  document.getElementById('edgarBtn').href = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${d.cik || ticker}&type=10-K&dateb=&owner=include&count=40`;
 
   setState('card');
   runAnimation(scored);

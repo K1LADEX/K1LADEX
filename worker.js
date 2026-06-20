@@ -183,10 +183,10 @@ async function fullScan(ticker) {
     const largestHolder = instList.length ? instList[0].name : null;
     const totalHolders = instList.length;
 
-    let nScore = 1.5, nStrikes = 0, nFlags = [], nSplitDate = null;
+    let nScore = 1.5, nStrikes = 0, nFlags = [], nSplitDate = null, nCik = null;
     try {
       const n = await checkN(ticker);
-      nScore = n.score; nStrikes = n.strikes; nFlags = n.flags; nSplitDate = n.splitDate || null;
+      nScore = n.score; nStrikes = n.strikes; nFlags = n.flags; nSplitDate = n.splitDate || null; nCik = n.cik || null;
     } catch(e) { nScore = 0; nStrikes = 99; nFlags = ['Legal scan error: ' + e.message]; }
 
     const fmt = (n,b,s) => n>=b?(n/b).toFixed(1)+s:n>=1e6?(n/1e6).toFixed(0)+'M':n?(n/1e3).toFixed(0)+'K':'N/A';
@@ -223,7 +223,7 @@ async function fullScan(ticker) {
       revenueFormatted: totalRevenue?'$'+fmt(totalRevenue,1e9,'B')+' TTM':'Pre-revenue',
       nextEarnings,
       cashFlowPerShare, cashPerShare, currentRatio, debtToEquity,
-      nScore, nStrikes, nFlags, splitDate: nSplitDate,
+      nScore, nStrikes, nFlags, splitDate: nSplitDate, cik: nCik,
       instOwnershipPct, instDirection, largestHolder, totalHolders,
       rec, verdict, col
     }), {headers:CORS});
@@ -273,7 +273,7 @@ async function checkN(ticker) {
 
   const cik = await getCIK(ticker);
   if (!cik) {
-    return { strikes: 1, flags: ['Could not verify CIK on EDGAR — legal scan unscoped, manual review recommended'], score: 0.5, splitDate: null };
+    return { strikes: 1, flags: ['Could not verify CIK on EDGAR — legal scan unscoped, manual review recommended'], score: 0.5, splitDate: null, cik: null };
   }
   const cikParam = `&ciks=${cik}`;
 
@@ -299,10 +299,10 @@ async function checkN(ticker) {
     }
   } catch(e) {
     flags.push('Legal scan error: ' + e.message);
-    return { strikes: 0, flags, score: 0.75, splitDate: null };
+    return { strikes: 0, flags, score: 0.75, splitDate: null, cik };
   }
 
-  if (strikes === 0) return { strikes: 0, flags: ['No disqualifying legal flags found on EDGAR'], score: 1.5, splitDate: null };
-  if (strikes === 1) return { strikes: 1, flags, score: 0.5, splitDate: null };
-  return { strikes, flags, score: 0, splitDate: null };
+  if (strikes === 0) return { strikes: 0, flags: ['No disqualifying legal flags found on EDGAR'], score: 1.5, splitDate: null, cik };
+  if (strikes === 1) return { strikes: 1, flags, score: 0.5, splitDate: null, cik };
+  return { strikes, flags, score: 0, splitDate: null, cik };
 }
