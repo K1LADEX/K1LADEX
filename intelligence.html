@@ -254,7 +254,7 @@
   </div>
 
   <div class="kill-screen" id="killScreen">
-    <div class="kill-label">Checkpoint Zero — Killed</div>
+    <div class="kill-label" id="killLabel">Checkpoint Zero — Killed</div>
     <div class="kill-reason" id="killReason"></div>
     <div class="kill-sub" id="killSub"></div>
   </div>
@@ -276,7 +276,13 @@ function scoreSignal(d) {
 
   // Float kill switch
   if (d.floatShares && d.floatShares > 100e6) {
-    killed = { reason: 'Float Kill Switch', sub: `${(d.floatShares/1e6).toFixed(1)}M shares — exceeds 100M ceiling` };
+    killed = { label: 'Checkpoint Zero — Killed', reason: 'Float Kill Switch', sub: `${(d.floatShares/1e6).toFixed(1)}M shares — exceeds 100M ceiling` };
+    return { results, total: 0, killed };
+  }
+
+  // Legal/governance kill switch — too many red flags
+  if (d.nStrikes && d.nStrikes >= 2) {
+    killed = { label: 'Too Many Red Flags', reason: 'This company has too many legal or financial red flags for K1LADEX to score it.', sub: (d.nFlags || []).join(' • ') || `${d.nStrikes} red flags found` };
     return { results, total: 0, killed };
   }
 
@@ -512,6 +518,7 @@ function renderCard(d, ticker) {
 
   // Final / Kill
   if (scored.killed) {
+    document.getElementById('killLabel').textContent = scored.killed.label || 'Checkpoint Zero — Killed';
     document.getElementById('killReason').textContent = scored.killed.reason;
     document.getElementById('killSub').textContent = scored.killed.sub;
   } else {
