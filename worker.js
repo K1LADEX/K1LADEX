@@ -54,13 +54,15 @@ async function legacyPrice(ticker) {
 
 // ── FLOAT LOOKUP TABLE ───────────────────────────────────────
 // Real float figures — updated on material events (offerings, warrants, ATM)
-// Last updated: March 29, 2026
+// Last updated: June 20, 2026
 const FLOAT_TABLE = {
   'ONDS':   8200000,
   'GSAT':   1200000000,
   'LWLG':   131000000,
-  'IBRX':   15000000,
-  'DNN':    620000000,
+  'IBRX':   388462115,
+  'ELVA':   33357807,
+  'MRAM':   18919681,
+  'DNN':    900664773,
   'MVIS':   180000000,
   'PL':     14000000,
   'TSEM':   160000000,
@@ -254,9 +256,26 @@ async function debugMetrics(ticker) {
   }
 }
 
+async function getCIK(ticker) {
+  try {
+    const r = await fetch('https://www.sec.gov/files/company_tickers.json', { headers: { 'User-Agent': 'K1LADEX/1.0' } });
+    const data = await r.json();
+    const match = Object.values(data).find(e => e.ticker && e.ticker.toUpperCase() === ticker.toUpperCase());
+    return match ? String(match.cik_str).padStart(10, '0') : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function checkN(ticker) {
   const flags = [];
   let strikes = 0;
+
+  const cik = await getCIK(ticker);
+  if (!cik) {
+    return { strikes: 1, flags: ['Could not verify CIK on EDGAR — legal scan unscoped, manual review recommended'], score: 0.5, splitDate: null };
+  }
+  const cikParam = `&ciks=${cik}`;
 
   const searches = [
     { terms: `"${ticker}" "class action" "securities"`, label: 'Class action lawsuit' },
@@ -269,7 +288,7 @@ async function checkN(ticker) {
 
   try {
     for (const s of searches) {
-      const url = `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(s.terms)}&dateRange=custom&startdt=${new Date(Date.now()-2*365*24*3600*1000).toISOString().split('T')[0]}&enddt=${new Date().toISOString().split('T')[0]}&hits.hits._source=period_of_report,display_names,file_date,form_type`;
+      const url = `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(s.terms)}${cikParam}&dateRange=custom&startdt=${new Date(Date.now()-2*365*24*3600*1000).toISOString().split('T')[0]}&enddt=${new Date().toISOString().split('T')[0]}&hits.hits._source=period_of_report,display_names,file_date,form_type`;
       const r = await fetch(url, { headers: { 'User-Agent': 'K1LADEX/1.0' } });
       const data = await r.json();
       const hits = data?.hits?.total?.value || 0;
