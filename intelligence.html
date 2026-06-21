@@ -60,12 +60,12 @@
 
   .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; position:relative; overflow:visible; }
-  .stat-label { font-size:13px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
+  .stat-label { font-size:13px; color:#ffffff; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
   .stat-value { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; line-height:1; }
   .stat-value.green { color:var(--green); }
   .stat-value.red { color:var(--red); }
   .stat-value.gold { color:var(--gold); }
-  .stat-sub { font-size:13px; color:var(--muted); margin-top:3px; }
+  .stat-sub { font-size:17px; color:#ffffff; font-family:'Helvetica Neue',Arial,sans-serif; margin-top:3px; text-transform:capitalize; }
 
   .pencil-circle-svg { position:absolute; top:-8px; left:-8px; width:calc(100% + 16px); height:calc(100% + 16px); pointer-events:none; overflow:visible; }
   .draw-circle { stroke-dasharray:120; stroke-dashoffset:120; transition:stroke-dashoffset 0.8s ease; }
@@ -94,7 +94,7 @@
   .cp-letter { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; width:28px; height:28px; background:var(--accent); color:#080b0f; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .cp-body { flex:1; min-width:0; }
   .cp-label { font-size:15px; color:var(--text); }
-  .cp-sub { font-size:13px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cp-sub { font-size:17px; color:var(--muted); font-family:'Helvetica Neue',Arial,sans-serif; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-transform:capitalize; }
   .cp-indicator { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:17px; opacity:0; transition:opacity 0.3s 0.15s; }
   .checkpoint.visible .cp-indicator { opacity:1; }
   .cp-indicator.pass { background:rgba(0,208,132,0.15); border:1px solid rgba(0,208,132,0.4); color:var(--green); }
@@ -129,7 +129,7 @@
   .kill-screen.visible { opacity:1; transform:translateY(0); }
   .kill-label { font-size:13px; color:var(--red); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
   .kill-reason { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:var(--red); }
-  .kill-sub { font-size:14px; color:var(--muted); margin-top:6px; }
+  .kill-sub { font-size:18px; color:var(--muted); font-family:'Helvetica Neue',Arial,sans-serif; margin-top:6px; text-transform:capitalize; }
 
   .edgar-btn { display:block; width:100%; padding:14px; background:rgba(240,192,64,0.08); border:1px solid rgba(240,192,64,0.3); border-radius:10px; color:var(--gold); font-family:'Syne',sans-serif; font-size:16px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; text-align:center; cursor:pointer; text-decoration:none; opacity:0; transition:opacity 0.4s, background 0.2s; }
   .edgar-btn.visible { opacity:1; }
@@ -146,12 +146,12 @@
   .cash-item { padding:12px 16px; border-bottom:1px solid rgba(42,42,56,0.5); border-right:1px solid rgba(42,42,56,0.5); }
   .cash-item:nth-child(even) { border-right:none; }
   .cash-item:nth-last-child(-n+2) { border-bottom:none; }
-  .cash-item-label { font-size:13px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
+  .cash-item-label { font-size:13px; color:#ffffff; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
   .cash-item-value { font-family:"Syne",sans-serif; font-size:20px; font-weight:700; }
   .cash-item-value.green { color:var(--green); }
   .cash-item-value.red { color:var(--red); }
   .cash-item-value.gold { color:var(--gold); }
-  .cash-item-sub { font-size:13px; color:var(--muted); margin-top:2px; }
+  .cash-item-sub { font-size:17px; color:var(--muted); font-family:'Helvetica Neue',Arial,sans-serif; margin-top:2px; text-transform:capitalize; }
 </style>
 </head>
 <body>
@@ -199,32 +199,35 @@
     </div>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label">Revenue YoY</div>
-      <div class="stat-value" id="dispRev"></div>
-      <div class="stat-sub" id="dispRevSub"></div>
+  <div class="cash-card">
+    <div class="cash-card-header"><div class="cash-card-title">Growth &amp; Momentum</div></div>
+    <div class="cash-grid">
+      <div class="cash-item">
+        <div class="cash-item-label">Revenue Year-Over-Year</div>
+        <div class="cash-item-value" id="dispRev"></div>
+        <div class="cash-item-sub" id="dispRevSub"></div>
+      </div>
+      <div class="cash-item">
+        <div class="cash-item-label">52 Week Surge</div>
+        <div class="cash-item-value" id="dispSurge"></div>
+        <div class="cash-item-sub" id="dispSurgeSub"></div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">52W Surge</div>
-      <div class="stat-value" id="dispSurge"></div>
-      <div class="stat-sub" id="dispSurgeSub"></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Float</div>
-      <div class="stat-value" id="dispFloat"></div>
-      <div class="stat-sub" id="dispFloatSub"></div>
-      <svg class="pencil-circle-svg" viewBox="0 0 116 66" preserveAspectRatio="none">
-        <path d="M4,18 L4,4 L18,4 M98,4 L112,4 L112,18 M4,48 L4,62 L18,62 M112,48 L112,62 L98,62" fill="none" stroke="#00e5ff" stroke-width="2" class="draw-circle" id="floatCircle" stroke-linecap="round" opacity="0.85"/>
-      </svg>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Short Interest</div>
-      <div class="stat-value" id="dispSI"></div>
-      <div class="stat-sub" id="dispSISub"></div>
-      <svg class="pencil-circle-svg" viewBox="0 0 116 66" preserveAspectRatio="none">
-        <path d="M4,18 L4,4 L18,4 M98,4 L112,4 L112,18 M4,48 L4,62 L18,62 M112,48 L112,62 L98,62" fill="none" stroke="#00e5ff" stroke-width="2.5" class="draw-circle" id="siCircle" stroke-linecap="round" opacity="0.9"/>
-      </svg>
+  </div>
+
+  <div class="cash-card">
+    <div class="cash-card-header"><div class="cash-card-title">Trading Structure</div></div>
+    <div class="cash-grid">
+      <div class="cash-item">
+        <div class="cash-item-label">Float</div>
+        <div class="cash-item-value" id="dispFloat"></div>
+        <div class="cash-item-sub" id="dispFloatSub"></div>
+      </div>
+      <div class="cash-item">
+        <div class="cash-item-label">Short Interest</div>
+        <div class="cash-item-value" id="dispSI"></div>
+        <div class="cash-item-sub" id="dispSISub"></div>
+      </div>
     </div>
   </div>
 
@@ -287,7 +290,7 @@ function scoreSignal(d) {
   const surge = d.surgeVal || 0;
   let sScore = surge >= 200 ? 1.5 : surge >= 100 ? 1.0 : 0;
   let sInd = surge >= 200 ? 'pass' : surge >= 100 ? 'warn' : 'fail';
-  results.push({ letter:'S', label:'Surge', sub: surge > 0 ? `+${surge.toFixed(0)}% from 52W low` : 'Data unavailable', score:sScore, ind:sInd });
+  results.push({ letter:'S', label:'Surge', sub: surge > 0 ? `+${surge.toFixed(0)}% from 52-week low` : 'Data unavailable', score:sScore, ind:sInd });
   total += sScore;
 
   // I — Integrity (3 gates)
@@ -295,8 +298,8 @@ function scoreSignal(d) {
   let iDetail = '';
   if (d.week52High && d.currentPrice) {
     const pctFromHigh = (d.week52High - d.currentPrice) / d.week52High * 100;
-    if (pctFromHigh <= 30) { iGates++; iDetail = 'within 30% of 52W high'; }
-    else { iDetail = `${pctFromHigh.toFixed(0)}% below 52W high`; }
+    if (pctFromHigh <= 30) { iGates++; iDetail = 'within 30% of 52-week high'; }
+    else { iDetail = `${pctFromHigh.toFixed(0)}% below 52-week high`; }
   }
   if (d.ma50 && d.currentPrice && d.currentPrice >= d.ma50) iGates++;
   if (!d.newLow30d) iGates++;
@@ -357,8 +360,6 @@ function resetCard() {
 function runAnimation(scored) {
   clearAnims();
   resetCard();
-  t(() => document.getElementById('floatCircle').classList.add('drawn'), 500);
-  t(() => document.getElementById('siCircle').classList.add('drawn'), 1200);
   const cps = document.querySelectorAll('.checkpoint');
   cps.forEach((cp, i) => t(() => cp.classList.add('visible'), 2000 + i * 280));
   const after = 2000 + cps.length * 280;
@@ -417,7 +418,7 @@ function renderCard(d, ticker) {
   if (d.surgeVal) {
     ue.textContent = '+' + d.surgeVal.toFixed(0) + '%';
     ue.className = 'stat-value ' + (d.surgeVal >= 200 ? 'green' : d.surgeVal >= 100 ? 'gold' : 'red');
-    us.textContent = 'from 52W low';
+    us.textContent = 'from 52-week low';
   } else { ue.textContent = 'N/A'; ue.className = 'stat-value'; us.textContent = ''; }
 
   // Catalyst
@@ -436,7 +437,7 @@ function renderCard(d, ticker) {
       label: 'Cash Flow/Share',
       value: d.cashFlowPerShare !== null && d.cashFlowPerShare !== undefined ? (d.cashFlowPerShare >= 0 ? '+' : '') + d.cashFlowPerShare.toFixed(2) : 'N/A',
       cls: d.cashFlowPerShare >= 0 ? 'green' : 'red',
-      sub: 'TTM'
+      sub: 'Trailing Twelve Months'
     },
     {
       label: 'Cash/Share',
@@ -476,8 +477,8 @@ function renderCard(d, ticker) {
   const instHolder = d.largestHolder || 'N/A';
   const instHolders = d.totalHolders !== null && d.totalHolders !== undefined ? d.totalHolders.toString() : 'N/A';
   const instItems = [
-    { label: 'Inst. Ownership', value: instPct, cls: instPctCls, sub: '>70% = smart money confirmed' },
-    { label: 'Direction', value: instDir, cls: instDirCls, sub: 'QoQ change across all holders' },
+    { label: 'Institutional Ownership', value: instPct, cls: instPctCls, sub: '>70% = smart money confirmed' },
+    { label: 'Direction', value: instDir, cls: instDirCls, sub: 'quarter-over-quarter change across all holders' },
     { label: 'Largest Holder', value: instHolder, cls: 'green', sub: 'Top institutional position' },
     { label: 'Total Holders', value: instHolders, cls: 'green', sub: 'Institutional filers on record' },
   ];
