@@ -131,6 +131,9 @@
   .kill-label { font-size:13px; color:var(--red); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
   .kill-reason { font-family:'Helvetica Neue',Arial,sans-serif; font-size:18px; font-weight:700; color:var(--red); }
   .kill-sub { font-size:18px; color:var(--muted); font-family:'Helvetica Neue',Arial,sans-serif; margin-top:6px; text-transform:capitalize; }
+  .kill-screen.legal { background:rgba(245,200,66,0.08); border:1px solid rgba(245,200,66,0.35); }
+  .kill-screen.legal .kill-label { color:var(--gold); }
+  .kill-screen.legal .kill-reason { color:var(--gold); }
 
   .edgar-btn { display:block; width:100%; padding:14px; background:rgba(240,192,64,0.08); border:1px solid rgba(240,192,64,0.3); border-radius:10px; color:var(--gold); font-family:'Helvetica Neue',Arial,sans-serif; font-size:16px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; text-align:center; cursor:pointer; text-decoration:none; opacity:0; transition:opacity 0.4s, background 0.2s; }
   .edgar-btn.visible { opacity:1; }
@@ -277,13 +280,13 @@ function scoreSignal(d) {
 
   // Float kill switch
   if (d.floatShares && d.floatShares > 100e6) {
-    killed = { label: 'Checkpoint Zero — Killed', reason: 'Float Kill Switch', sub: `${(d.floatShares/1e6).toFixed(1)}M shares — exceeds 100M ceiling` };
+    killed = { label: 'Checkpoint Zero — Killed', reason: 'Float Kill Switch', sub: `${(d.floatShares/1e6).toFixed(1)}M shares — exceeds 100M ceiling`, type: 'float' };
     return { results, total: 0, killed };
   }
 
   // Legal/governance kill switch — too many red flags
   if (d.nStrikes && d.nStrikes >= 2) {
-    killed = { label: 'Too Many Red Flags', reason: 'This company has too many legal or financial red flags for K1LADEX to score it.', sub: (d.nFlags || []).join(' • ') || `${d.nStrikes} red flags found` };
+    killed = { label: 'Too Many Red Flags', reason: 'This company has too many legal or financial red flags for K1LADEX to score it.', sub: (d.nFlags || []).join(' • ') || `${d.nStrikes} red flags found`, type: 'legal' };
     return { results, total: 0, killed };
   }
 
@@ -513,6 +516,7 @@ function renderCard(d, ticker) {
 
   // Final / Kill
   if (scored.killed) {
+    document.getElementById('killScreen').classList.toggle('legal', scored.killed.type === 'legal');
     document.getElementById('killLabel').textContent = scored.killed.label || 'Checkpoint Zero — Killed';
     document.getElementById('killReason').textContent = scored.killed.reason;
     document.getElementById('killSub').textContent = scored.killed.sub;
