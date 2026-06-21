@@ -148,7 +148,7 @@
   .cash-item:nth-child(even) { border-right:none; }
   .cash-item:nth-last-child(-n+2) { border-bottom:none; }
   .cash-item-label { font-size:13px; color:#ffffff; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
-  .cash-item-value { font-family:"Syne",sans-serif; font-size:20px; font-weight:700; }
+  .cash-item-value { font-family:'Helvetica Neue',Arial,sans-serif; font-size:20px; font-weight:700; }
   .cash-item-value.green { color:var(--green); }
   .cash-item-value.red { color:var(--red); }
   .cash-item-value.gold { color:var(--gold); }
@@ -475,13 +475,13 @@ function renderCard(d, ticker) {
   const instPctCls = d.instOwnershipPct >= 70 ? 'green' : d.instOwnershipPct >= 40 ? 'gold' : 'red';
   const instDir = d.instDirection > 0 ? '↑ Increasing' : d.instDirection < 0 ? '↓ Decreasing' : '→ Neutral';
   const instDirCls = d.instDirection > 0 ? 'green' : d.instDirection < 0 ? 'red' : 'gold';
-  const instHolder = d.largestHolder || 'N/A';
-  const instHolders = d.totalHolders !== null && d.totalHolders !== undefined ? d.totalHolders.toString() : 'N/A';
+  const instHolder = d.largestHolder || 'Data Unavailable';
+  const instHolders = d.totalHolders !== null && d.totalHolders !== undefined && d.totalHolders > 0 ? d.totalHolders.toString() : 'Data Unavailable';
   const instItems = [
     { label: 'Institutional Ownership', value: instPct, cls: instPctCls, sub: '>70% = smart money confirmed' },
     { label: 'Direction', value: instDir, cls: instDirCls, sub: 'quarter-over-quarter change across all holders' },
-    { label: 'Largest Holder', value: instHolder, cls: 'green', sub: 'Top institutional position' },
-    { label: 'Total Holders', value: instHolders, cls: 'green', sub: 'Institutional filers on record' },
+    { label: 'Largest Holder', value: instHolder, cls: instHolder === 'Data Unavailable' ? '' : 'green', sub: 'Top institutional position' },
+    { label: 'Total Holders', value: instHolders, cls: instHolders === 'Data Unavailable' ? '' : 'green', sub: 'Institutional filers on record' },
   ];
   instCard.innerHTML = `
     <div class="cash-card-header"><div class="cash-card-title">Institutional Ownership</div></div>
