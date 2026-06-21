@@ -77,9 +77,11 @@
   .cat-label { font-size:13px; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:3px; }
   .cat-event { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; }
   .cat-date { font-size:14px; color:var(--muted); margin-top:2px; }
-  .cat-days-block { text-align:center; flex-shrink:0; }
+  .cat-days-block { text-align:center; flex-shrink:0; position:relative; }
   .cat-days { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; color:var(--gold); line-height:1; }
   .cat-days-label { font-size:13px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+  .cat-days-ring { position:absolute; top:50%; left:50%; width:72px; height:72px; margin:-36px 0 0 -36px; animation:catDaysSpin 3s linear infinite; pointer-events:none; }
+  @keyframes catDaysSpin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
   .no-catalyst { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:15px; color:var(--muted); text-align:center; }
 
   .signal-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
@@ -425,7 +427,7 @@ function renderCard(d, ticker) {
   const cw = document.getElementById('catalystWrap');
   if (d.nextEarnings) {
     const days = d.nextEarnings ? Math.max(0, Math.ceil((new Date(d.nextEarnings) - new Date()) / (1000*60*60*24))) : '—';
-    cw.innerHTML = `<div class="catalyst-banner"><div class="cat-icon">📅</div><div class="cat-body"><div class="cat-label">Approaching Catalyst</div><div class="cat-event">Earnings Report</div><div class="cat-date">${d.nextEarnings}</div></div><div class="cat-days-block"><div class="cat-days">${days}</div><div class="cat-days-label">days</div></div></div>`;
+    cw.innerHTML = `<div class="catalyst-banner"><div class="cat-icon">📅</div><div class="cat-body"><div class="cat-label">Approaching Catalyst</div><div class="cat-event">Earnings Report</div><div class="cat-date">${d.nextEarnings}</div></div><div class="cat-days-block"><svg class="cat-days-ring" viewBox="0 0 72 72"><circle cx="36" cy="36" r="32" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5"/><circle cx="36" cy="36" r="32" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="50 151"/></svg><div class="cat-days">${days}</div><div class="cat-days-label">days</div></div></div>`;
   } else {
     cw.innerHTML = '<div class="no-catalyst">No upcoming catalyst on record</div>';
   }
