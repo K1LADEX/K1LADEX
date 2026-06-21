@@ -54,10 +54,11 @@ async function legacyPrice(ticker) {
 
 // ── FLOAT LOOKUP TABLE ───────────────────────────────────────
 // Real float figures — updated on material events (offerings, warrants, ATM)
-// Last updated: June 20, 2026
+// Last updated: June 21, 2026
 const FLOAT_TABLE = {
-  'ONDS':   8200000,
+  'ONDS':   506296500,
   'GSAT':   1200000000,
+  'WYY':    8295314,
   'LWLG':   131000000,
   'IBRX':   388462115,
   'ELVA':   33357807,
@@ -66,7 +67,7 @@ const FLOAT_TABLE = {
   'MVIS':   180000000,
   'PL':     273396855,
   'TSEM':   160000000,
-  'RCAT':   28000000,
+  'RCAT':   134191948,
   'GLNG':   95000000,
   'ERAS':   120000000,
   'NVDA':   2400000000,
