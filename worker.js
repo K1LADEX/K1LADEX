@@ -288,14 +288,17 @@ async function checkN(ticker) {
   ];
 
   try {
-    for (const s of searches) {
+    const results = await Promise.all(searches.map(async (s) => {
       const url = `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(s.terms)}${cikParam}&dateRange=custom&startdt=${new Date(Date.now()-2*365*24*3600*1000).toISOString().split('T')[0]}&enddt=${new Date().toISOString().split('T')[0]}&hits.hits._source=period_of_report,display_names,file_date,form_type`;
       const r = await fetch(url, { headers: { 'User-Agent': 'K1LADEX research contact@k1ladex.com' } });
       const data = await r.json();
       const hits = data?.hits?.total?.value || 0;
+      return { label: s.label, hits };
+    }));
+    for (const { label, hits } of results) {
       if (hits > 0) {
         strikes++;
-        flags.push(`${s.label} — ${hits} filing(s) found on EDGAR`);
+        flags.push(`${label} — ${hits} filing(s) found on EDGAR`);
       }
     }
   } catch(e) {
