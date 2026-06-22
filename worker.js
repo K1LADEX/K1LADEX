@@ -279,12 +279,13 @@ async function checkN(ticker) {
   const cikParam = `&ciks=${cik}`;
 
   const searches = [
-    { terms: `"${ticker}" "class action" "securities"`, label: 'Class action lawsuit' },
+    { terms: `"${ticker}" "class action" "shareholders" "securities fraud"`, label: 'Class action lawsuit (securities)' },
     { terms: `"${ticker}" "SEC investigation" OR "${ticker}" "SEC enforcement action"`, label: 'SEC investigation' },
     { terms: `"${ticker}" "FDA warning letter"`, label: 'FDA warning letter' },
     { terms: `"${ticker}" "securities fraud" "shareholders"`, label: 'Securities fraud allegation' },
     { terms: `"${ticker}" "Department of Justice" "investigation"`, label: 'DOJ investigation' },
     { terms: `"${ticker}" "424B5"`, label: 'ATM offering (424B5)' },
+    { terms: `"${ticker}" "patent infringement"`, label: 'Patent litigation (commercial dispute)' },
   ];
 
   try {
