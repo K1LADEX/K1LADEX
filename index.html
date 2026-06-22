@@ -273,7 +273,7 @@ const WORKER = 'https://k1ladex-prices.robertasloss.workers.dev';
 let _lastScored = null;
 
 // SCORING
-function scoreSignal(d) {
+function scoreSignal(d, ticker) {
   const results = [];
   let total = 0;
   let killed = null;
@@ -497,7 +497,7 @@ function renderCard(d, ticker) {
     </div>`;
 
   // Score
-  const scored = scoreSignal(d);
+  const scored = scoreSignal(d, ticker);
   _lastScored = scored;
 
   // Checkpoints
