@@ -137,14 +137,14 @@ async function fullScan(ticker) {
     const floatShares   = FLOAT_TABLE[ticker] || (profile.shareOutstanding ? profile.shareOutstanding * 1e6 : null);
     let shortPct        = m.shortInterestPercentOfFloat ? m.shortInterestPercentOfFloat/100 : null;
     let instOwnershipPctFV = null;
-    if (shortPct === null) {
+    if (shortPct === null || !INST_TABLE[ticker]) {
       try {
         const fvRes = await fetch(`https://finviz.com/quote.ashx?t=${ticker}`, {
           headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' }
         });
         const fvHtml = await fvRes.text();
         const fvMatch = fvHtml.match(/Short Float<\/a><\/div><\/td><td[^>]*>.*?([\d.]+)%/);
-        if (fvMatch) shortPct = parseFloat(fvMatch[1]) / 100;
+        if (shortPct === null && fvMatch) shortPct = parseFloat(fvMatch[1]) / 100;
         const fvInstMatch = fvHtml.match(/Inst Own<\/a><\/div><\/td><td[^>]*>.*?([\d.]+)%/);
         if (fvInstMatch) instOwnershipPctFV = parseFloat(fvInstMatch[1]);
       } catch (_) { /* leave shortPct as null */ }
