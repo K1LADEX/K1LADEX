@@ -529,7 +529,7 @@ function renderCard(d, ticker) {
       '';
   }
 
-  document.getElementById('edgarBtn').href = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${d.cik || ticker}&type=10-K&dateb=&owner=include&count=40`;
+  document.getElementById('edgarBtn').href = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${d.cik || ticker}&type=&dateb=&owner=include&count=100`;
 
   setState('card');
   runAnimation(scored);

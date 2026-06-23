@@ -84,7 +84,7 @@
   .no-catalyst { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:15px; color:var(--muted); text-align:center; }
 
   .signal-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-  .signal-card-header { padding:14px 16px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:linear-gradient(180deg, rgba(0,229,255,0.06), rgba(0,229,255,0)); }
+  .signal-card-header { padding:14px 16px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
   .signal-title { font-family:'Helvetica Neue',Arial,sans-serif; font-size:15px; font-weight:700; letter-spacing:3px; color:var(--accent); text-transform:uppercase; }
   .signal-score-inline { font-family:'Helvetica Neue',Arial,sans-serif; font-size:28px; font-weight:700; color:var(--pencil); opacity:0; transition:opacity 0.4s; filter:drop-shadow(0 0 6px var(--pencil-glow)); }
   .signal-score-inline.visible { opacity:1; }
@@ -144,7 +144,7 @@
 
 
   .cash-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-  .cash-card-header { padding:12px 16px; border-bottom:1px solid var(--border); background:linear-gradient(180deg, rgba(0,229,255,0.06), rgba(0,229,255,0)); }
+  .cash-card-header { padding:12px 16px; border-bottom:1px solid var(--border); }
   .cash-card-title { font-family:"Syne",sans-serif; font-size:15px; font-weight:700; letter-spacing:3px; color:var(--accent); text-transform:uppercase; }
   .cash-grid { display:grid; grid-template-columns:1fr 1fr; gap:0; }
   .cash-item { padding:12px 16px; border-bottom:1px solid rgba(42,42,56,0.5); border-right:1px solid rgba(42,42,56,0.5); }
@@ -273,14 +273,14 @@ const WORKER = 'https://k1ladex-prices.robertasloss.workers.dev';
 let _lastScored = null;
 
 // SCORING
-function scoreSignal(d, ticker) {
+function scoreSignal(d) {
   const results = [];
   let total = 0;
   let killed = null;
 
   // Float kill switch
   if (d.floatShares && d.floatShares > 100e6) {
-    killed = { label: 'Too Many Shares on the Market — The Crowd Has Arrived', reason: `${ticker} is Outside K1LADEX's Early Intelligence Window`, sub: `${ticker} has issued ${(d.floatShares/1e6).toFixed(1)} million shares, which automatically scores it 0.0/10 under this framework. Check the SEC EDGAR link below for the full filing history.`, type: 'float' };
+    killed = { label: 'Checkpoint Zero — Killed', reason: 'Float Kill Switch', sub: `${(d.floatShares/1e6).toFixed(1)}M shares — exceeds 100M ceiling`, type: 'float' };
     return { results, total: 0, killed };
   }
 
@@ -429,7 +429,7 @@ function renderCard(d, ticker) {
   const cw = document.getElementById('catalystWrap');
   if (d.nextEarnings) {
     const days = d.nextEarnings ? Math.max(0, Math.ceil((new Date(d.nextEarnings) - new Date()) / (1000*60*60*24))) : '—';
-    cw.innerHTML = `<div class="catalyst-banner"><div class="cat-icon">📅</div><div class="cat-body"><div class="cat-label">Approaching Catalyst</div><div class="cat-event">Earnings Report (Est.)</div><div class="cat-date">${d.nextEarnings}</div></div><div class="cat-days-block"><svg class="cat-days-ring" viewBox="0 0 72 72"><circle cx="36" cy="36" r="32" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5"/><circle cx="36" cy="36" r="32" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="50 151"/></svg><div class="cat-days">${days}</div><div class="cat-days-label">days</div></div></div>`;
+    cw.innerHTML = `<div class="catalyst-banner"><div class="cat-icon">📅</div><div class="cat-body"><div class="cat-label">Approaching Catalyst</div><div class="cat-event">Earnings Report</div><div class="cat-date">${d.nextEarnings}</div></div><div class="cat-days-block"><svg class="cat-days-ring" viewBox="0 0 72 72"><circle cx="36" cy="36" r="32" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5"/><circle cx="36" cy="36" r="32" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="50 151"/></svg><div class="cat-days">${days}</div><div class="cat-days-label">days</div></div></div>`;
   } else {
     cw.innerHTML = '<div class="no-catalyst">No upcoming catalyst on record</div>';
   }
@@ -497,7 +497,7 @@ function renderCard(d, ticker) {
     </div>`;
 
   // Score
-  const scored = scoreSignal(d, ticker);
+  const scored = scoreSignal(d);
   _lastScored = scored;
 
   // Checkpoints
@@ -529,7 +529,7 @@ function renderCard(d, ticker) {
       '';
   }
 
-  document.getElementById('edgarBtn').href = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${d.cik || ticker}&type=&dateb=&owner=include&count=100`;
+  document.getElementById('edgarBtn').href = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${d.cik || ticker}&type=10-K&dateb=&owner=include&count=40`;
 
   setState('card');
   runAnimation(scored);

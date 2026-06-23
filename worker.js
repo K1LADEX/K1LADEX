@@ -283,23 +283,32 @@ async function checkN(ticker) {
     { terms: `"${ticker}" "SEC investigation" OR "${ticker}" "SEC enforcement action"`, label: 'SEC investigation' },
     { terms: `"${ticker}" "FDA warning letter"`, label: 'FDA warning letter' },
     { terms: `"${ticker}" "securities fraud" "shareholders"`, label: 'Securities fraud allegation' },
-    { terms: `"${ticker}" "Department of Justice" "investigation"`, label: 'DOJ investigation' },
+    { terms: `"${ticker}" "Department of Justice investigation" OR "${ticker}" "investigation by the Department of Justice" OR "${ticker}" "subpoena from the Department of Justice"`, label: 'DOJ investigation' },
     { terms: `"${ticker}" "424B5"`, label: 'ATM offering (424B5)' },
     { terms: `"${ticker}" "patent infringement"`, label: 'Patent litigation (commercial dispute)' },
   ];
 
   try {
-    const results = await Promise.all(searches.map(async (s) => {
+    const results = await Promise.allSettled(searches.map(async (s) => {
       const url = `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(s.terms)}${cikParam}&dateRange=custom&startdt=${new Date(Date.now()-2*365*24*3600*1000).toISOString().split('T')[0]}&enddt=${new Date().toISOString().split('T')[0]}&hits.hits._source=period_of_report,display_names,file_date,form_type`;
       const r = await fetch(url, { headers: { 'User-Agent': 'K1LADEX research contact@k1ladex.com' } });
       const data = await r.json();
       const hits = data?.hits?.total?.value || 0;
       return { label: s.label, hits };
     }));
-    for (const { label, hits } of results) {
-      if (hits > 0) {
-        strikes++;
-        flags.push(`${label} — ${hits} filing(s) found on EDGAR`);
+    for (const result of results) {
+      if (result.status === 'fulfilled') {
+        const { label, hits, recentCount } = result.value;
+        if (hits > 0) {
+          strikes++;
+          if (label === 'ATM offering (424B5)' && recentCount >= 3) {
+            flags.push(`${label} — ${hits} filing(s) found on EDGAR (${recentCount} in last 90 days — pattern: recurring, verify reason before relying on score)`);
+          } else {
+            flags.push(`${label} — ${hits} filing(s) found on EDGAR`);
+          }
+        }
+      } else {
+        flags.push(`Legal scan partial failure: ${result.reason?.message || 'unknown error'}`);
       }
     }
   } catch(e) {
